@@ -11,4 +11,13 @@ public protocol AuthSessionProvider {
     func authSessionPublisher<T: AuthTokenProtocol>() -> AnyPublisher<T?, Never>
 }
 
+@available(macOS 10.15, *)
+extension AuthSessionProvider {
+    
+    func remove() -> Bool {
+        replace(with: Optional<AnyAuthToken>.none)
+    }
+    
+}
+
 #endif
