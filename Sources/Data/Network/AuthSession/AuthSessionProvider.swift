@@ -14,7 +14,7 @@ public protocol AuthSessionProvider {
 @available(macOS 10.15, *)
 extension AuthSessionProvider {
     
-    func remove() -> Bool {
+    public func remove() -> Bool {
         replace(with: Optional<AnyAuthToken>.none)
     }
     
