@@ -4,29 +4,33 @@
 import PackageDescription
 
 extension Target {
-    static func target(name: String,
-                       sources: [String],
-                       dependencies: [Target.Dependency] = [])
-    -> Target {
-        return .target(name: name,
-                       dependencies: dependencies,
-                       path: "Sources",
-                       exclude: [],
-                       sources: sources,
-                       publicHeadersPath: nil,
-                       cSettings: nil,
-                       cxxSettings: nil,
-                       swiftSettings: nil,
-                       linkerSettings: nil)
+    static func target(
+        name: String,
+        sources: [String],
+        dependencies: [Target.Dependency] = []
+    ) -> Target {
+        .target(
+            name: name,
+            dependencies: dependencies,
+            path: "Sources",
+            exclude: [],
+            sources: sources,
+            publicHeadersPath: nil,
+            cSettings: nil,
+            cxxSettings: nil,
+            swiftSettings: nil,
+            linkerSettings: nil
+        )
     }
 }
 
 extension Target {
-    static func testTarget(name: String,
-                       sources: [String],
-                       dependencies: [Target.Dependency] = [])
-    -> Target {
-        return .testTarget(
+    static func testTarget(
+        name: String,
+        sources: [String],
+        dependencies: [Target.Dependency] = []
+    ) -> Target {
+        .testTarget(
             name: name,
             dependencies: dependencies,
             path: "Tests",
@@ -45,7 +49,8 @@ let package = Package(
     products: [
         .library(
             name: "AppsPlus",
-            targets: ["AppsPlus"]),
+            targets: ["AppsPlus"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/typelift/SwiftCheck", .exact("0.12.0"))
