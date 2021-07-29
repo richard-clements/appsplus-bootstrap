@@ -1,11 +1,5 @@
-//
-//  File.swift
-//  
-//
-//  Created by Richard Clements on 29/07/2021.
-//
-
 #if canImport(Foundation) && canImport(Combine)
+
 import Foundation
 import Combine
 
@@ -15,7 +9,7 @@ extension SecureStorageKey {
 }
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
-struct AuthSessionProviderImpl: AuthSessionProvider {
+struct AuthSessionProviderImpl<AuthToken: AuthTokenProtocol>: AuthSessionProvider {
     
     let secureStorage: SecureStorage
     private let authSessionPassthroughSubject = PassthroughSubject<AuthToken?, Never>()
@@ -44,4 +38,5 @@ struct AuthSessionProviderImpl: AuthSessionProvider {
         authSessionPassthroughSubject.share().eraseToAnyPublisher()
     }
 }
+
 #endif

@@ -1,31 +1,25 @@
-//
-//  File.swift
-//  
-//
-//  Created by Richard Clements on 29/07/2021.
-//
-
 #if canImport(Foundation) && canImport(Combine)
+
 import Foundation
 import Combine
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
-class BearerAuthenticator: Authenticator {
+class BearerAuthenticator<ASProvider: AuthSessionProvider>: Authenticator {
     
     private let queue: DispatchQueue
-    private var refreshPublisher: AnyPublisher<AuthToken, AuthenticatorError>?
-    private let authSessionProvider: AuthSessionProvider
+    private var refreshPublisher: AnyPublisher<ASProvider.AuthToken, AuthenticatorError>?
+    private let authSessionProvider: ASProvider
     private let refreshUrl: URL
     private let version: String
     
-    init(authSessionProvider: AuthSessionProvider, refreshUrl: URL, bundleIdentifier: String, version: String) {
+    init(authSessionProvider: ASProvider, refreshUrl: URL, bundleIdentifier: String, version: String) {
         self.authSessionProvider = authSessionProvider
         self.refreshUrl = refreshUrl
         self.version = version
         self.queue = DispatchQueue(label: bundleIdentifier.appending(".network.bearerauthenticator"))
     }
     
-    private func refreshToken(authSession: AuthToken, urlSession: URLSession) -> AnyPublisher<AuthToken, AuthenticatorError> {
+    private func refreshToken(authSession: ASProvider.AuthToken, urlSession: URLSession) -> AnyPublisher<ASProvider.AuthToken, AuthenticatorError> {
         queue.sync {
             if let refreshPublisher = refreshPublisher {
                 return refreshPublisher
@@ -46,8 +40,8 @@ class BearerAuthenticator: Authenticator {
                 .dataTaskPublisher(for: request)
                 .retry(3)
                 .map(\.data)
-                .decode(type: AuthToken.self, decoder: JSONDecoder())
-                .tryMap { [unowned self] token -> AuthToken in
+                .decode(type: ASProvider.AuthToken.self, decoder: JSONDecoder())
+                .tryMap { [unowned self] token -> ASProvider.AuthToken in
                     guard authSessionProvider.replace(with: token) else {
                         throw AuthenticatorError.refreshFailed
                     }
@@ -99,4 +93,5 @@ class BearerAuthenticator: Authenticator {
     }
     
 }
+
 #endif

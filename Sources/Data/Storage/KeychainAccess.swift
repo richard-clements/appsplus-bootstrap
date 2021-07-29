@@ -1,11 +1,5 @@
-//
-//  File.swift
-//  
-//
-//  Created by Richard Clements on 29/07/2021.
-//
-
 #if canImport(Foundation)
+
 import Foundation
 
 protocol KeychainAccess {
@@ -17,10 +11,4 @@ protocol KeychainAccess {
     
     func remove(_ key: String, ignoringAttributeSynchronizable: Bool) throws
 }
-
-#if canImport(KeychainAccess)
-import KeychainAccess
-extension Keychain: KeychainAccess { }
-#endif
-
 #endif

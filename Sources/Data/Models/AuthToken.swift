@@ -1,15 +1,10 @@
-//
-//  File.swift
-//  
-//
-//  Created by Richard Clements on 29/07/2021.
-//
-
 #if canImport(Foundation)
+
 import Foundation
 
-struct AuthToken: Codable {
-    let accessToken: String
-    let refreshToken: String
+protocol AuthTokenProtocol: Codable, Equatable {
+    var accessToken: String { get }
+    var refreshToken: String { get }
 }
+
 #endif

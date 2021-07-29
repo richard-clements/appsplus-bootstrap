@@ -21,6 +21,25 @@ extension Target {
     }
 }
 
+extension Target {
+    static func testTarget(name: String,
+                       sources: [String],
+                       dependencies: [Target.Dependency] = [])
+    -> Target {
+        return .testTarget(
+            name: name,
+            dependencies: dependencies,
+            path: "Tests",
+            exclude: [], sources: sources,
+            resources: nil,
+            cSettings: nil,
+            cxxSettings: nil,
+            swiftSettings: nil,
+            linkerSettings: nil
+        )
+    }
+}
+
 let package = Package(
     name: "AppsPlus",
     products: [
@@ -28,10 +47,18 @@ let package = Package(
             name: "AppsPlus",
             targets: ["AppsPlus"]),
     ],
-    dependencies: [],
+    dependencies: [
+        .package(url: "https://github.com/typelift/SwiftCheck", .exact("0.12.0"))
+    ],
     targets: [
         .target(
             name: "AppsPlus",
-            sources: ["Data"]),
+            sources: ["Data"]
+        ),
+        .testTarget(
+            name: "AppsPlusTests",
+            sources: ["Data"],
+            dependencies: ["AppsPlus", "SwiftCheck"]
+        )
     ]
 )
