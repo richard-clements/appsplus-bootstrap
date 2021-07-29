@@ -4,7 +4,7 @@ import Foundation
 
 extension URLRequest {
     
-    init(url: URL, versionNumber: String) {
+    public init(url: URL, versionNumber: String) {
         self.init(url: url)
         set(headerField: .accept, value: .applicationJson)
         set(headerField: .deviceType, value: .ios)

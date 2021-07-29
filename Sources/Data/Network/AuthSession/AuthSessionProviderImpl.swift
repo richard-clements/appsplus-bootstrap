@@ -4,27 +4,17 @@ import Foundation
 import Combine
 
 extension SecureStorageKey {
-    static fileprivate let deviceName = SecureStorageKey(rawValue: "deviceName")
-    static fileprivate let authToken = SecureStorageKey(rawValue: "authToken")
+    static fileprivate let deviceName: SecureStorageKey = "deviceName"
+    static fileprivate let authToken: SecureStorageKey = "authToken"
 }
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
-struct AuthSessionProviderImpl<AuthToken: AuthTokenProtocol>: AuthSessionProvider {
+public struct AuthSessionProviderImpl<AuthToken: AuthTokenProtocol>: AuthSessionProvider {
     
-    let secureStorage: SecureStorage
+    private let secureStorage: SecureStorage
     private let authSessionPassthroughSubject = PassthroughSubject<AuthToken?, Never>()
     
-    func current() -> AuthToken? {
-        return secureStorage.value(for: .authToken)
-    }
-    
-    func replace(with authToken: AuthToken?) -> Bool {
-        let replaced = (try? secureStorage.setValue(authToken, with: .authToken)) != nil
-        authSessionPassthroughSubject.send(authToken)
-        return replaced
-    }
-    
-    var deviceName: String {
+    public var deviceName: String {
         if let name = secureStorage.string(for: .deviceName) {
             return name
         }
@@ -34,7 +24,21 @@ struct AuthSessionProviderImpl<AuthToken: AuthTokenProtocol>: AuthSessionProvide
         return name
     }
     
-    func authSessionPublisher() -> AnyPublisher<AuthToken?, Never> {
+    public init(secureStorage: SecureStorage) {
+        self.secureStorage = secureStorage
+    }
+    
+    public func current() -> AuthToken? {
+        return secureStorage.value(for: .authToken)
+    }
+    
+    public func replace(with authToken: AuthToken?) -> Bool {
+        let replaced = (try? secureStorage.setValue(authToken, with: .authToken)) != nil
+        authSessionPassthroughSubject.send(authToken)
+        return replaced
+    }
+    
+    public func authSessionPublisher() -> AnyPublisher<AuthToken?, Never> {
         authSessionPassthroughSubject.share().eraseToAnyPublisher()
     }
 }

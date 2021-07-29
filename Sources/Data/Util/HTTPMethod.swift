@@ -2,29 +2,29 @@
 
 import Foundation
 
-struct HTTPMethod {
+public struct HTTPMethod {
     fileprivate let rawValue: String
 }
 
 extension HTTPMethod: ExpressibleByStringLiteral {
     
-    init(stringLiteral value: String) {
+    public init(stringLiteral value: String) {
         self.rawValue = value
     }
     
 }
 
 extension HTTPMethod {
-    static let get: Self = "GET"
-    static let patch: Self = "PATCH"
-    static let post: Self = "POST"
-    static let put: Self = "PUT"
-    static let delete: Self = "DELETE"
+    public static let get: Self = "GET"
+    public static let patch: Self = "PATCH"
+    public static let post: Self = "POST"
+    public static let put: Self = "PUT"
+    public static let delete: Self = "DELETE"
 }
 
 extension URLRequest {
     
-    mutating func set(httpMethod: HTTPMethod) {
+    public mutating func set(httpMethod: HTTPMethod) {
         self.httpMethod = httpMethod.rawValue
     }
     

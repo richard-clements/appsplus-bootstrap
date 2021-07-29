@@ -4,7 +4,7 @@ import Foundation
 import Combine
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
-class BearerAuthenticator<ASProvider: AuthSessionProvider>: Authenticator {
+public class BearerAuthenticator<ASProvider: AuthSessionProvider>: Authenticator {
     
     private let queue: DispatchQueue
     private var refreshPublisher: AnyPublisher<ASProvider.AuthToken, AuthenticatorError>?
@@ -12,7 +12,7 @@ class BearerAuthenticator<ASProvider: AuthSessionProvider>: Authenticator {
     private let refreshUrl: URL
     private let version: String
     
-    init(authSessionProvider: ASProvider, refreshUrl: URL, bundleIdentifier: String, version: String) {
+    public init(authSessionProvider: ASProvider, refreshUrl: URL, bundleIdentifier: String, version: String) {
         self.authSessionProvider = authSessionProvider
         self.refreshUrl = refreshUrl
         self.version = version
@@ -63,7 +63,7 @@ class BearerAuthenticator<ASProvider: AuthSessionProvider>: Authenticator {
         }
     }
     
-    func authenticate(request: Request, forceRefresh: Bool, urlSession: URLSession) -> AnyPublisher<URLRequest, AuthenticatorError> {
+    public func authenticate(request: Request, forceRefresh: Bool, urlSession: URLSession) -> AnyPublisher<URLRequest, AuthenticatorError> {
         guard request.requiresAuthentication else {
             return Just(request.urlRequest)
                 .setFailureType(to: AuthenticatorError.self)

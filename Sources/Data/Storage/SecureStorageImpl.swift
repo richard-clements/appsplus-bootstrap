@@ -2,19 +2,19 @@
 
 import Foundation
 
-struct SecureStorageImpl: SecureStorage {
+public struct SecureStorageImpl: SecureStorage {
     
     private let keychain: KeychainAccess
     private let encoder: JSONEncoder
     private let decoder: JSONDecoder
     
-    init(keychain: KeychainAccess, encoder: JSONEncoder, decoder: JSONDecoder) {
+    public init(keychain: KeychainAccess, encoder: JSONEncoder, decoder: JSONDecoder) {
         self.keychain = keychain
         self.encoder = encoder
         self.decoder = decoder
     }
     
-    func setString(_ item: String?, with key: SecureStorageKey) throws {
+    public func setString(_ item: String?, with key: SecureStorageKey) throws {
         if let item = item {
             try keychain.set(item, key: key.rawValue, ignoringAttributeSynchronizable: true)
         } else {
@@ -22,7 +22,7 @@ struct SecureStorageImpl: SecureStorage {
         }
     }
     
-    func setValue<Item: Codable>(_ item: Item?, with key: SecureStorageKey) throws {
+    public func setValue<Item: Codable>(_ item: Item?, with key: SecureStorageKey) throws {
         if let item = item {
             let encodedValue = try encoder.encode(item)
             try keychain.set(encodedValue, key: key.rawValue, ignoringAttributeSynchronizable: true)
@@ -31,11 +31,11 @@ struct SecureStorageImpl: SecureStorage {
         }
     }
     
-    func string(for key: SecureStorageKey) -> String? {
+    public func string(for key: SecureStorageKey) -> String? {
         return try? keychain.get(key.rawValue, ignoringAttributeSynchronizable: true)
     }
     
-    func value<Item: Codable>(for key: SecureStorageKey) -> Item? {
+    public func value<Item: Codable>(for key: SecureStorageKey) -> Item? {
         guard let data = try? keychain.getData(key.rawValue, ignoringAttributeSynchronizable: true) else {
             return nil
         }

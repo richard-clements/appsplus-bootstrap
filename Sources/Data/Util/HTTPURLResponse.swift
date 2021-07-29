@@ -4,11 +4,11 @@ import Foundation
 
 extension HTTPURLResponse {
     
-    var isSuccessful: Bool {
+    public var isSuccessful: Bool {
         200 ..< 300 ~= statusCode
     }
     
-    var isUnauthorized: Bool {
+    public var isUnauthorized: Bool {
         statusCode == 401
     }
     

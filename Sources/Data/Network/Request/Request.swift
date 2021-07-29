@@ -2,24 +2,24 @@
 
 import Foundation
 
-protocol Request {
+public protocol Request {
     
     var urlRequest: URLRequest { get }
     var requiresAuthentication: Bool { get }
     
 }
 
-struct AuthenticatedRequest: Request {
+public struct AuthenticatedRequest: Request {
     
-    let urlRequest: URLRequest
-    let requiresAuthentication = true
+    public let urlRequest: URLRequest
+    public let requiresAuthentication = true
     
 }
 
-struct PublicRequest: Request {
+public struct PublicRequest: Request {
     
-    let urlRequest: URLRequest
-    let requiresAuthentication = false
+    public let urlRequest: URLRequest
+    public let requiresAuthentication = false
     
 }
 

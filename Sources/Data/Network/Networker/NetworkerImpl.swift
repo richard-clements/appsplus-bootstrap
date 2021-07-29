@@ -4,7 +4,7 @@ import Foundation
 import Combine
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
-struct NetworkerImpl: Network {
+public struct NetworkerImpl: Network {
     
     private enum RequestError: Error {
         case unauthorized
@@ -16,12 +16,12 @@ struct NetworkerImpl: Network {
     private let session: URLSession
     private let authenticator: Authenticator
     
-    init(session: URLSession, authenticator: Authenticator) {
+    public init(session: URLSession, authenticator: Authenticator) {
         self.session = session
         self.authenticator = authenticator
     }
     
-    func publisher(for request: Request) -> AnyPublisher<(data: Data, response: URLResponse), NetworkError> {
+    public func publisher(for request: Request) -> AnyPublisher<(data: Data, response: URLResponse), NetworkError> {
         publisher(for: request, forceAuthRefresh: false)
             .mapError {
                 switch $0 {
