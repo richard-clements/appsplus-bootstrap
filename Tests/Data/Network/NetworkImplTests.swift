@@ -10,7 +10,7 @@ class NetworkerImplTests: XCTestCase {
     var networker: NetworkerImpl!
     var authenticator: MockAuthenticator!
     var cancellables: Set<AnyCancellable>!
-
+    
     override func setUpWithError() throws {
         MockNetworkProtocol.setUpForTests()
         session = URLSession.mock
@@ -19,7 +19,7 @@ class NetworkerImplTests: XCTestCase {
         cancellables = Set()
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
-
+    
     override func tearDownWithError() throws {
         MockNetworkProtocol.tearDownForTests()
         authenticator = nil
@@ -28,7 +28,7 @@ class NetworkerImplTests: XCTestCase {
         cancellables = nil
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
-
+    
     func testRequestFailsWithNotAuthenticated_WhenAuthenticatorReturnsNoAuthSession() {
         let expectation = XCTestExpectation()
         
@@ -97,7 +97,7 @@ class NetworkerImplTests: XCTestCase {
         // Initial request, plus 3 retries
         XCTAssertEqual(4, MockNetworkProtocol.requests.count)
     }
-
+    
     func testRequestRetries_WithForceAuthRefresh_WhenReceive401() {
         let expectation = XCTestExpectation()
         

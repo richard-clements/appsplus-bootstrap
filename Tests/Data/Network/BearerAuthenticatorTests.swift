@@ -12,7 +12,7 @@ class BearerAuthenticatorTests: XCTestCase {
     var authSessionProvider: MockAuthSessionProvider!
     var authenticator: BearerAuthenticator<MockAuthSessionProvider>!
     var cancellables: Set<AnyCancellable>!
-
+    
     override func setUpWithError() throws {
         MockNetworkProtocol.setUpForTests()
         session = URLSession.mock
@@ -23,7 +23,7 @@ class BearerAuthenticatorTests: XCTestCase {
         cancellables = Set()
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
-
+    
     override func tearDownWithError() throws {
         MockNetworkProtocol.tearDownForTests()
         session = nil
@@ -33,7 +33,7 @@ class BearerAuthenticatorTests: XCTestCase {
         cancellables = nil
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
-
+    
     func testAuthenticatingRequests() {
         property("Requests which do not require authentication remain unaltered") <- forAll(MockRequest.generator(requiresAuthenticationGenerator: .pure(false)), Bool.arbitrary) { [unowned self] request, forceRefresh in
             let expectation = XCTestExpectation()
@@ -276,7 +276,7 @@ class BearerAuthenticatorTests: XCTestCase {
         
         let expectedAccessTokens = Array(repeating: "Bearer NEW_ACCESS_TOKEN", count: 4)
         let accessTokens = outputRequests.map { $0.value(forHTTPHeaderField: "Authorization") }
-
+        
         XCTAssertEqual(1, MockNetworkProtocol.requests.count)
         XCTAssertEqual(expectedAccessTokens, accessTokens)
     }

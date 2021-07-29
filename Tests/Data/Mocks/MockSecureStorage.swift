@@ -19,5 +19,5 @@ class MockSecureStorage: SecureStorage {
     func value<Item>(for key: SecureStorageKey) -> Item? where Item : Decodable, Item : Encodable {
         items[key.rawValue] as? Item
     }
-
+    
 }

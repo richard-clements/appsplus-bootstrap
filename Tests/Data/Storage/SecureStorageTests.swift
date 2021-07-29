@@ -31,7 +31,7 @@ class SecureStorageTests: XCTestCase {
     func test_settingValues() {
         property("Adding string value sets the string correctly") <- forAll(String.arbitrary) { [unowned self] in
             try? storage.setString($0, with: .testKey)
-        
+            
             return mockKeychain.addedValues[.testKey] == $0
         }
         
@@ -39,7 +39,7 @@ class SecureStorageTests: XCTestCase {
             try? storage.setValue($0, with: .testKey)
             
             let decodedObject = try? decoder.decode(MockCodable.self, from: mockKeychain.addedItem!)
-
+            
             return decodedObject == $0
         }
     }
@@ -72,7 +72,7 @@ class SecureStorageTests: XCTestCase {
             return mockKeychain.removedItemKey == key.rawValue
         }
     }
-
+    
 }
 
 extension SecureStorageKey: Arbitrary, Hashable {

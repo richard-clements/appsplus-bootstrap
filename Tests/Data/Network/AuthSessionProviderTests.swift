@@ -28,9 +28,9 @@ class AuthSessionProviderTests: XCTestCase {
     func test_currentSession() {
         property("Current returns auth token from storage") <- forAll(MockAuthToken.arbitrary) { [unowned self] in
             secureStorage.items["authToken"] = $0
-
+            
             let authToken = authSession.current()
-
+            
             return authToken?.accessToken == $0.accessToken &&
                 authToken?.refreshToken == $0.refreshToken
         }
@@ -39,7 +39,7 @@ class AuthSessionProviderTests: XCTestCase {
     func test_replaceSession() {
         property("Replace updates auth token in storage") <- forAll(MockAuthToken.arbitrary) { [unowned self] in
             _ = authSession.replace(with: $0)
-
+            
             let retrievedValue = secureStorage.items.values.first as? MockAuthToken
             return secureStorage.items.keys.first == "authToken" && retrievedValue == $0
         }
@@ -83,6 +83,6 @@ class AuthSessionProviderTests: XCTestCase {
             return authToken == $0
         }
     }
-
+    
 }
 #endif

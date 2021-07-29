@@ -28,5 +28,5 @@ class MockKeychainAccess: KeychainAccess {
     func remove(_ key: String, ignoringAttributeSynchronizable: Bool) throws {
         removedItemKey = key
     }
-
+    
 }
