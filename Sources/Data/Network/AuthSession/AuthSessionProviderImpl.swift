@@ -9,10 +9,10 @@ extension SecureStorageKey {
 }
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
-public struct AuthSessionProviderImpl<AuthToken: AuthTokenProtocol>: AuthSessionProvider {
+public struct AuthSessionProviderImpl: AuthSessionProvider {
     
     private let secureStorage: SecureStorage
-    private let authSessionPassthroughSubject = PassthroughSubject<AuthToken?, Never>()
+    private let authSessionPassthroughSubject = PassthroughSubject<AnyAuthToken?, Never>()
     
     public var deviceName: String {
         if let name = secureStorage.string(for: .deviceName) {
@@ -28,18 +28,21 @@ public struct AuthSessionProviderImpl<AuthToken: AuthTokenProtocol>: AuthSession
         self.secureStorage = secureStorage
     }
     
-    public func current() -> AuthToken? {
+    public func current<T: AuthTokenProtocol>() -> T? {
         return secureStorage.value(for: .authToken)
     }
     
-    public func replace(with authToken: AuthToken?) -> Bool {
+    public func replace<T: AuthTokenProtocol>(with authToken: T?) -> Bool {
         let replaced = (try? secureStorage.setValue(authToken, with: .authToken)) != nil
-        authSessionPassthroughSubject.send(authToken)
+        authSessionPassthroughSubject.send(authToken?.toAnyAuthToken())
         return replaced
     }
     
-    public func authSessionPublisher() -> AnyPublisher<AuthToken?, Never> {
-        authSessionPassthroughSubject.share().eraseToAnyPublisher()
+    public func authSessionPublisher<T: AuthTokenProtocol>() -> AnyPublisher<T?, Never> {
+        authSessionPassthroughSubject
+            .share()
+            .map { $0?.value as? T }
+            .eraseToAnyPublisher()
     }
 }
 

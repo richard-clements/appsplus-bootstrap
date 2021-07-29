@@ -28,15 +28,15 @@ class MockAuthSessionProvider: AuthSessionProvider {
     var didCallReplace = false
     var replaceSuccess = false
     var currentDeviceName: String?
-    var authSessionPublisherPassthroughSubject = PassthroughSubject<AuthToken?, Never>()
+    var authSessionPublisherPassthroughSubject = PassthroughSubject<MockAuthToken?, Never>()
     
-    func current() -> MockAuthToken? {
-        currentAuthSession
+    func current<T>() -> T? where T : AuthTokenProtocol {
+        currentAuthSession as? T
     }
     
-    func replace(with token: MockAuthToken?) -> Bool {
+    func replace<T>(with authToken: T?) -> Bool where T : AuthTokenProtocol {
         didCallReplace = true
-        replacedAuthSession = token
+        replacedAuthSession = authToken as? MockAuthToken
         return replaceSuccess
     }
     
@@ -44,8 +44,11 @@ class MockAuthSessionProvider: AuthSessionProvider {
         return currentDeviceName!
     }
     
-    func authSessionPublisher() -> AnyPublisher<MockAuthToken?, Never> {
-        authSessionPublisherPassthroughSubject.share().eraseToAnyPublisher()
+    func authSessionPublisher<T>() -> AnyPublisher<T?, Never> where T : AuthTokenProtocol {
+        authSessionPublisherPassthroughSubject
+            .share()
+            .map { $0 as? T }
+            .eraseToAnyPublisher()
     }
     
 }

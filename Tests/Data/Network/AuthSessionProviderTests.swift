@@ -8,7 +8,7 @@ import Combine
 class AuthSessionProviderTests: XCTestCase {
     
     var secureStorage: MockSecureStorage!
-    var authSession: AuthSessionProviderImpl<MockAuthToken>!
+    var authSession: AuthSessionProviderImpl!
     var cancellables: Set<AnyCancellable>!
     
     override func setUp() {
@@ -29,7 +29,7 @@ class AuthSessionProviderTests: XCTestCase {
         property("Current returns auth token from storage") <- forAll(MockAuthToken.arbitrary) { [unowned self] in
             secureStorage.items["authToken"] = $0
             
-            let authToken = authSession.current()
+            let authToken: MockAuthToken? = authSession.current()
             
             return authToken?.accessToken == $0.accessToken &&
                 authToken?.refreshToken == $0.refreshToken
@@ -46,11 +46,12 @@ class AuthSessionProviderTests: XCTestCase {
     }
     
     func test_currentSessionNullWithNoToken() {
-        XCTAssertNil(authSession.current())
+        let token: MockAuthToken? = authSession.current()
+        XCTAssertNil(token)
     }
     
     func test_settingNilTokenRemovesFromStorage() {
-        _ = authSession.replace(with: nil)
+        _ = authSession.replace(with: Optional<MockAuthToken>.none)
         
         let retrievedToken = secureStorage.items["authToken"] as? MockAuthToken
         XCTAssertNil(retrievedToken)
@@ -74,8 +75,8 @@ class AuthSessionProviderTests: XCTestCase {
             let expectation = XCTestExpectation()
             var authToken: MockAuthToken? = nil
             authSession.authSessionPublisher()
-                .sink {
-                    authToken = $0
+                .sink { (token: MockAuthToken?) in
+                    authToken = token
                     expectation.fulfill()
                 }
                 .store(in: &cancellables)

@@ -10,7 +10,7 @@ class BearerAuthenticatorTests: XCTestCase {
     var session: URLSession!
     var refreshUrl: URL!
     var authSessionProvider: MockAuthSessionProvider!
-    var authenticator: BearerAuthenticator<MockAuthSessionProvider>!
+    var authenticator: BearerAuthenticator<MockAuthToken>!
     var cancellables: Set<AnyCancellable>!
     
     override func setUpWithError() throws {

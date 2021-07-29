@@ -5,12 +5,10 @@ import Combine
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 public protocol AuthSessionProvider {
-    associatedtype AuthToken: AuthTokenProtocol
     var deviceName: String { get }
-    func current() -> AuthToken?
-    func replace(with authToken: AuthToken?) -> Bool
-    
-    func authSessionPublisher() -> AnyPublisher<AuthToken?, Never>
+    func current<T: AuthTokenProtocol>() -> T?
+    func replace<T: AuthTokenProtocol>(with authToken: T?) -> Bool
+    func authSessionPublisher<T: AuthTokenProtocol>() -> AnyPublisher<T?, Never>
 }
 
 #endif

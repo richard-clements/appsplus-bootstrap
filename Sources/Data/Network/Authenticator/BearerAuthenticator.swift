@@ -4,22 +4,22 @@ import Foundation
 import Combine
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
-public class BearerAuthenticator<ASProvider: AuthSessionProvider>: Authenticator {
+public class BearerAuthenticator<AuthToken: AuthTokenProtocol>: Authenticator {
     
     private let queue: DispatchQueue
-    private var refreshPublisher: AnyPublisher<ASProvider.AuthToken, AuthenticatorError>?
-    private let authSessionProvider: ASProvider
+    private var refreshPublisher: AnyPublisher<AuthToken, AuthenticatorError>?
+    private let authSessionProvider: AuthSessionProvider
     private let refreshUrl: URL
     private let version: String
     
-    public init(authSessionProvider: ASProvider, refreshUrl: URL, bundleIdentifier: String, version: String) {
+    public init(authSessionProvider: AuthSessionProvider, refreshUrl: URL, bundleIdentifier: String, version: String) {
         self.authSessionProvider = authSessionProvider
         self.refreshUrl = refreshUrl
         self.version = version
         self.queue = DispatchQueue(label: bundleIdentifier.appending(".network.bearerauthenticator"))
     }
     
-    private func refreshToken(authSession: ASProvider.AuthToken, urlSession: URLSession) -> AnyPublisher<ASProvider.AuthToken, AuthenticatorError> {
+    private func refreshToken(authSession: AuthToken, urlSession: URLSession) -> AnyPublisher<AuthToken, AuthenticatorError> {
         queue.sync {
             if let refreshPublisher = refreshPublisher {
                 return refreshPublisher
@@ -40,8 +40,8 @@ public class BearerAuthenticator<ASProvider: AuthSessionProvider>: Authenticator
                 .dataTaskPublisher(for: request)
                 .retry(3)
                 .map(\.data)
-                .decode(type: ASProvider.AuthToken.self, decoder: JSONDecoder())
-                .tryMap { [unowned self] token -> ASProvider.AuthToken in
+                .decode(type: AuthToken.self, decoder: JSONDecoder())
+                .tryMap { [unowned self] token -> AuthToken in
                     guard authSessionProvider.replace(with: token) else {
                         throw AuthenticatorError.refreshFailed
                     }
@@ -50,7 +50,7 @@ public class BearerAuthenticator<ASProvider: AuthSessionProvider>: Authenticator
                 .mapError { _ in AuthenticatorError.refreshFailed }
                 .handleEvents(receiveCompletion: { [weak self] in
                     if case .failure = $0 {
-                        _ = self?.authSessionProvider.replace(with: nil)
+                        _ = self?.authSessionProvider.replace(with: Optional<AuthToken>.none)
                     }
                     self?.queue.sync {
                         self?.refreshPublisher = nil
@@ -70,7 +70,7 @@ public class BearerAuthenticator<ASProvider: AuthSessionProvider>: Authenticator
                 .eraseToAnyPublisher()
         }
         
-        guard let authSession = authSessionProvider.current() else {
+        guard let authSession: AuthToken = authSessionProvider.current() else {
             return Fail(error: .noAuthSession)
                 .eraseToAnyPublisher()
         }
