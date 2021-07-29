@@ -48,4 +48,5 @@ struct SecureStorageImpl: SecureStorage {
     }
     
 }
+
 #endif

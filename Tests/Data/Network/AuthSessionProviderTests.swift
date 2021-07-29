@@ -1,4 +1,5 @@
 #if canImport(SwiftCheck) && canImport(Combine)
+
 import XCTest
 import SwiftCheck
 import Combine

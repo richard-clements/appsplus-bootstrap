@@ -13,4 +13,5 @@ enum NetworkError: Error {
 protocol Network {
     func publisher(for request: Request) -> AnyPublisher<(data: Data, response: URLResponse), NetworkError>
 }
+
 #endif

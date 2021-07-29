@@ -1,4 +1,5 @@
 #if canImport(SwiftCheck)
+
 import XCTest
 import SwiftCheck
 @testable import AppsPlus

@@ -13,4 +13,5 @@ protocol SecureStorage {
     func string(for key: SecureStorageKey) -> String?
     func value<Item: Codable>(for key: SecureStorageKey) -> Item?
 }
+
 #endif

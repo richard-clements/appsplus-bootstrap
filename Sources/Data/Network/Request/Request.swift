@@ -22,4 +22,5 @@ struct PublicRequest: Request {
     let requiresAuthentication = false
     
 }
+
 #endif

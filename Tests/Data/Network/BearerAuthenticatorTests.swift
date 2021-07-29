@@ -1,4 +1,5 @@
 #if canImport(XCTest) && canImport(SwiftCheck) && canImport(Combine)
+
 import XCTest
 import SwiftCheck
 import Combine
@@ -327,4 +328,5 @@ class BearerAuthenticatorTests: XCTestCase {
         XCTAssertEqual(expectedAccessTokens, outputAccessTokens)
     }
 }
+
 #endif
