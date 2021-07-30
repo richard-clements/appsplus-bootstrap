@@ -14,6 +14,10 @@ public protocol AuthSessionProvider {
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 extension AuthSessionProvider {
     
+    public func current<T: AuthTokenProtocol>(as type: T.Type) -> T? {
+        return current()
+    }
+    
     public func remove() -> Bool {
         replace(with: Optional<AnyAuthToken>.none)
     }
