@@ -43,6 +43,13 @@ class AuthSessionProviderTests: XCTestCase {
             let retrievedValue = secureStorage.items.values.first as? MockAuthToken
             return secureStorage.items.keys.first == "authToken" && retrievedValue == $0
         }
+        
+        property("Remove session removes token in storage") <- forAll(MockAuthToken.arbitrary) { [unowned self] in
+            secureStorage.items["authToken"] = $0
+            _ = authSession.remove()
+            
+            return secureStorage.items.isEmpty
+        }
     }
     
     func test_currentSessionNullWithNoToken() {

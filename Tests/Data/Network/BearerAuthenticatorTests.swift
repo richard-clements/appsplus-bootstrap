@@ -103,7 +103,17 @@ class BearerAuthenticatorTests: XCTestCase {
         XCTAssertEqual(refreshUrl, uniqueRequestsMade.first!.url)
         XCTAssertEqual("my_test_device", requestData?["device_name"] as? String)
         XCTAssertEqual("Bearer REFRESH_TOKEN", uniqueRequestsMade.first!.value(forHTTPHeaderField: "Authorization"))
+        
+        #if os(iOS)
         XCTAssertEqual("ios", uniqueRequestsMade.first?.value(forHTTPHeaderField: "Device-Type"))
+        #elseif os(macOS)
+        XCTAssertEqual("macos", uniqueRequestsMade.first?.value(forHTTPHeaderField: "Device-Type"))
+        #elseif os(tvOS)
+        XCTAssertEqual("tvos", uniqueRequestsMade.first?.value(forHTTPHeaderField: "Device-Type"))
+        #elseif os(watchOS)
+        XCTAssertEqual("watchos", uniqueRequestsMade.first?.value(forHTTPHeaderField: "Device-Type"))
+        #endif
+        
         XCTAssertEqual("device_version", uniqueRequestsMade.first?.value(forHTTPHeaderField: "Device-Version"))
         XCTAssertEqual("application/json", uniqueRequestsMade.first?.value(forHTTPHeaderField: "Content-Type"))
         XCTAssertEqual("application/json", uniqueRequestsMade.first?.value(forHTTPHeaderField: "Accept"))

@@ -30,6 +30,49 @@ class RequestTests: XCTestCase {
         }
     }
     
+    func testURLRequest_initURL_Version() {
+        property("URL Request uses input url") <- forAll(URL.arbitrary, String.arbitrary) { url, version in
+            let request = URLRequest(url: url, versionNumber: version)
+            return request.url == url
+        }
+        
+        property("URL Request sets version and device type") <- forAll(URL.arbitrary, String.arbitrary) { url, version in
+            let request = URLRequest(url: url, versionNumber: version)
+            
+            #if os(iOS)
+            let expectedDeviceType = "ios"
+            #elseif os(macOS)
+            let expectedDeviceType = "macos"
+            #elseif os(watchOS)
+            let expectedDeviceType = "watchos"
+            #elseif os(tvOS)
+            let expectedDeviceType = "tvos"
+            #endif
+            
+            return request.value(forHTTPHeaderField: "Device-Type") == expectedDeviceType &&
+                request.value(forHTTPHeaderField: "Device-Version") == version
+        }
+        
+        property("Accept header matches accept") <- forAll(URL.arbitrary, String.arbitrary, String.arbitrary) { url, version, accept in
+            let request = URLRequest(url: url, versionNumber: version, accept: .init(accept))
+            return request.value(forHTTPHeaderField: "Accept") == accept
+        }
+    }
+    
+    func testURLRequest_setHttpBody() {
+        property("setHttpBody updates body") <- forAll(URL.arbitrary, MockCodable.arbitrary) { url, codable in
+            var request = URLRequest(url: url)
+            try? request.set(httpBody: codable)
+            let bodyValue = request.httpBody.flatMap { try? JSONDecoder().decode(MockCodable.self, from: $0) }
+            return bodyValue == codable
+        }
+        
+        property("setHttpBody updates content type to application/json") <- forAll(URL.arbitrary, MockCodable.arbitrary) { url, codable in
+            var request = URLRequest(url: url)
+            try? request.set(httpBody: codable)
+            return request.value(forHTTPHeaderField: "Content-Type") == "application/json"
+        }
+    }
 }
 
 #endif

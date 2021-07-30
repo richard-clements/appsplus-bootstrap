@@ -4,6 +4,10 @@ import Foundation
 
 public struct HTTPHeaderField {
     fileprivate let rawValue: String
+    
+    public init(_ value: String) {
+        self.rawValue = value
+    }
 }
 
 extension HTTPHeaderField: ExpressibleByStringLiteral {
@@ -44,7 +48,10 @@ extension HTTPHeaderValue: ExpressibleByStringLiteral, ExpressibleByStringInterp
 
 extension HTTPHeaderValue {
     public static var applicationJson: HTTPHeaderValue = "application/json"
-    public static var ios: HTTPHeaderValue = "ios"
+    public static var iOS: HTTPHeaderValue = "ios"
+    public static var macOS: HTTPHeaderValue = "macos"
+    public static var watchOS: HTTPHeaderValue = "watchos"
+    public static var tvOS: HTTPHeaderValue = "tvOS"
     
     public static func bearer(token: String) -> HTTPHeaderValue {
         "Bearer \(token)"

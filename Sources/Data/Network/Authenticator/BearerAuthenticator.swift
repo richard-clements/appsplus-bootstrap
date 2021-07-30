@@ -25,16 +25,12 @@ public class BearerAuthenticator<AuthToken: AuthTokenProtocol>: Authenticator {
                 return refreshPublisher
             }
             
-            var request = URLRequest(url: refreshUrl)
+            var request = URLRequest(url: refreshUrl, versionNumber: version)
             request.set(httpMethod: .post)
             request.set(headerField: .authorization, value: .bearer(token: authSession.refreshToken))
-            request.set(headerField: .accept, value: .applicationJson)
-            request.set(headerField: .contentType, value: .applicationJson)
-            request.set(headerField: .deviceType, value: .ios)
-            request.set(headerField: .deviceVersion, value: HTTPHeaderValue(version))
-            request.httpBody = try? JSONSerialization.data(withJSONObject: [
+            try? request.set(httpBody: [
                 "device_name": authSessionProvider.deviceName
-            ], options: [])
+            ])
             
             let refreshPublisher = urlSession
                 .dataTaskPublisher(for: request)
