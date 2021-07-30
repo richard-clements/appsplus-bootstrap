@@ -9,9 +9,9 @@ import Foundation
 
 extension URLRequest {
     
-    public mutating func set<Body: Codable>(httpBody body: Body, encoder: JSONEncoder()) {
+    public mutating func set<Body: Codable>(httpBody body: Body, encoder: JSONEncoder = JSONEncoder()) throws {
         set(headerField: .contentType, value: .applicationJson)
-        httpBody = encoder.encode(body)
+        httpBody = try encoder.encode(body)
     }
     
 }
