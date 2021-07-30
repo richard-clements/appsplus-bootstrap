@@ -2,7 +2,7 @@
 
 import Foundation
 import SwiftCheck
-@testable import AppsPlus
+@testable import AppsPlusData
 
 struct MockRequest: Request {
     

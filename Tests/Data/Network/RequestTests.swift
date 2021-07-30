@@ -2,7 +2,7 @@
 
 import XCTest
 import SwiftCheck
-@testable import AppsPlus
+@testable import AppsPlusData
 
 class RequestTests: XCTestCase {
     

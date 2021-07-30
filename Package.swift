@@ -51,6 +51,14 @@ let package = Package(
             name: "AppsPlus",
             targets: ["AppsPlus"]
         ),
+        .library(
+            name: "AppsPlusData",
+            targets: ["AppsPlusData"]
+        ),
+        .library(
+            name: "AppsPlusUI",
+            targets: ["AppsPlusUI"]
+        )
     ],
     dependencies: [
         .package(url: "https://github.com/typelift/SwiftCheck", .exact("0.12.0"))
@@ -58,12 +66,24 @@ let package = Package(
     targets: [
         .target(
             name: "AppsPlus",
+            sources: ["AppsPlus"],
+            dependencies: [
+                "AppsPlusData",
+                "AppsPlusUI"
+            ]
+        ),
+        .target(
+            name: "AppsPlusData",
             sources: ["Data"]
         ),
         .testTarget(
-            name: "AppsPlusTests",
+            name: "AppsPlusDataTests",
             sources: ["Data"],
-            dependencies: ["AppsPlus", "SwiftCheck"]
+            dependencies: ["AppsPlusData", "SwiftCheck"]
+        ),
+        .target(
+            name: "AppsPlusUI",
+            sources: ["UI"]
         )
     ]
 )

@@ -3,7 +3,7 @@
 import Foundation
 import SwiftCheck
 import Combine
-@testable import AppsPlus
+@testable import AppsPlusData
 
 extension MockAuthToken: Arbitrary {
     

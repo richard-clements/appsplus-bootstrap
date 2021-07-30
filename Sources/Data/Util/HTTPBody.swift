@@ -1,9 +1,4 @@
-//
-//  File.swift
-//  
-//
-//  Created by Richard Clements on 30/07/2021.
-//
+#if canImport(Foundation)
 
 import Foundation
 
@@ -15,3 +10,5 @@ extension URLRequest {
     }
     
 }
+
+#endif

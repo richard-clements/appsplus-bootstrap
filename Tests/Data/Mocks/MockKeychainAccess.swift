@@ -1,5 +1,5 @@
 import XCTest
-@testable import AppsPlus
+@testable import AppsPlusData
 
 class MockKeychainAccess: KeychainAccess {
     

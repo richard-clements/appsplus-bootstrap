@@ -1,4 +1,4 @@
-@testable import AppsPlus
+@testable import AppsPlusData
 
 struct MockAuthToken: AuthTokenProtocol, Codable, Equatable {
     let accessToken: String

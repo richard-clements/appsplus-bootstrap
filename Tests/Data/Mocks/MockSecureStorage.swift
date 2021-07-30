@@ -1,4 +1,4 @@
-@testable import AppsPlus
+@testable import AppsPlusData
 
 class MockSecureStorage: SecureStorage {
     
