@@ -1,7 +1,4 @@
-#if canImport(SwiftCheck)
-
 import XCTest
-import SwiftCheck
 @testable import AppsPlusData
 
 class ValidationErrorTests: XCTestCase {
@@ -65,5 +62,3 @@ extension ValidationErrorTests {
     }
     
 }
-
-#endif
