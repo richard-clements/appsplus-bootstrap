@@ -5,6 +5,7 @@ import SwiftCheck
 import Combine
 @testable import AppsPlus
 
+@available(iOS 13.0, *)
 class BearerAuthenticatorTests: XCTestCase {
     
     var session: URLSession!

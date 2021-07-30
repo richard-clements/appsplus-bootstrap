@@ -4,6 +4,7 @@ import XCTest
 import Combine
 @testable import AppsPlus
 
+@available(iOS 13.0, *)
 class NetworkerImplTests: XCTestCase {
     
     var session: URLSession!

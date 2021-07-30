@@ -4,6 +4,7 @@ import Foundation
 import Combine
 @testable import AppsPlus
 
+@available(iOS 13.0, *)
 class MockAuthenticator: Authenticator {
     
     var authenticationUpdater: ((Request) -> URLRequest)?

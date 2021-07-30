@@ -21,6 +21,7 @@ extension MockAuthToken: Arbitrary {
     
 }
 
+@available(iOS 13.0, *)
 class MockAuthSessionProvider: AuthSessionProvider {
     
     var currentAuthSession: MockAuthToken?
