@@ -11,7 +11,7 @@ public protocol AuthSessionProvider {
     func authSessionPublisher<T: AuthTokenProtocol>() -> AnyPublisher<T?, Never>
 }
 
-@available(macOS 10.15, *)
+@available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 extension AuthSessionProvider {
     
     public func remove() -> Bool {
