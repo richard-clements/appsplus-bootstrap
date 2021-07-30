@@ -21,3 +21,11 @@ jobs:
       run: set -o pipefail && env NSUnbufferedIO=YES xcodebuild build-for-testing -scheme AppsPlus -destination "platform=iOS Simulator,OS=latest,name=iPhone 12" | xcpretty
     - name: Run iOS tests
       run: set -o pipefail && env NSUnbufferedIO=YES xcodebuild test-without-building -scheme AppsPlus -destination "platform=iOS Simulator,OS=latest,name=iPhone 12" | xcpretty
+    - name: Build for watchOS
+      run: set -o pipefail && env NSUnbufferedIO=YES xcodebuild build-for-testing -scheme AppsPlus -destination "platform=watchOS Simulator,OS=latest,name=Apple Watch Series 6 - 44mm" | xcpretty
+    - name: Run watchOS tests
+      run: set -o pipefail && env NSUnbufferedIO=YES xcodebuild test-without-building -scheme AppsPlus -destination "platform=watchOS Simulator,OS=latest,name=Apple Watch Series 6 - 44mm" | xcpretty
+    - name: Build for tvOS
+      run: set -o pipefail && env NSUnbufferedIO=YES xcodebuild build-for-testing -scheme AppsPlus -destination "platform=tvOS Simulator,OS=latest,name=Apple TV 4K (2nd generation)" | xcpretty
+    - name: Run tvOS tests
+      run: set -o pipefail && env NSUnbufferedIO=YES xcodebuild test-without-building -scheme AppsPlus -destination "platform=tvOS Simulator,OS=latest,name=Apple TV 4K (2nd generation)" | xcpretty

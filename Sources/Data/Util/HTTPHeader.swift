@@ -51,7 +51,7 @@ extension HTTPHeaderValue {
     public static var iOS: HTTPHeaderValue = "ios"
     public static var macOS: HTTPHeaderValue = "macos"
     public static var watchOS: HTTPHeaderValue = "watchos"
-    public static var tvOS: HTTPHeaderValue = "tvOS"
+    public static var tvOS: HTTPHeaderValue = "tvos"
     
     public static func bearer(token: String) -> HTTPHeaderValue {
         "Bearer \(token)"

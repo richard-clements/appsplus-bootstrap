@@ -1,4 +1,4 @@
-#if canImport(XCTest) && canImport(Combine)
+#if canImport(XCTest) && canImport(Combine) && !os(watchOS)
 
 import XCTest
 import Combine

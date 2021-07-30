@@ -1,4 +1,4 @@
-#if canImport(XCTest) && canImport(SwiftCheck) && canImport(Combine)
+#if canImport(XCTest) && canImport(SwiftCheck) && canImport(Combine) && !os(watchOS)
 
 import XCTest
 import SwiftCheck
