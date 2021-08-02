@@ -21,7 +21,7 @@ public struct AsyncImage: Equatable {
         self.rawData = .image(image)
     }
     
-    func fetchPublisher() -> AnyPublisher<(image: UIImage, isCached: Bool), URLError> {
+    public func fetchPublisher() -> AnyPublisher<(image: UIImage, isCached: Bool), URLError> {
         switch rawData {
         case .url(let url):
             if let cachedResult = URLCache.shared.cachedResponse(for: URLRequest(url: url)),
@@ -148,7 +148,7 @@ public class AsyncImageView: UIView {
     /**
      Should only be called by the instance itself and never by another object. Setting a new url will call this function indirectly.
      */
-    func fetchImage() {
+    private func fetchImage() {
         cancel()
         guard let image = image else {
             return
