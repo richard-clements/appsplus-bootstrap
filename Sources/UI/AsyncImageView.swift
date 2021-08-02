@@ -5,10 +5,45 @@ import Combine
 
 @available(iOS 13.0, tvOS 13.0, *)
 public struct AsyncImage: Equatable {
-    public let url: URL
+    
+    enum RawData: Equatable {
+        case url(URL)
+        case image(UIImage)
+    }
+    
+    private var rawData: RawData
     
     init(url: URL) {
-        self.url = url
+        self.rawData = .url(url)
+    }
+    
+    init(image: UIImage) {
+        self.rawData = .image(image)
+    }
+    
+    func fetchPublisher() -> AnyPublisher<(image: UIImage, isCached: Bool), URLError> {
+        switch rawData {
+        case .url(let url):
+            if let cachedResult = URLCache.shared.cachedResponse(for: URLRequest(url: url)),
+               let image = UIImage(data: cachedResult.data) {
+                return Just((image, true))
+                    .setFailureType(to: URLError.self)
+                    .eraseToAnyPublisher()
+            }
+            return URLSession.shared.dataTaskPublisher(for: url)
+                .tryMap { data, _ in
+                    guard let image = UIImage(data: data) else {
+                        throw URLError(.cannotDecodeRawData)
+                    }
+                    return (image, false)
+                }
+                .mapError { $0 as? URLError ?? URLError(.badServerResponse) }
+                .eraseToAnyPublisher()
+        case .image(let image):
+            return Just((image, false))
+                .setFailureType(to: URLError.self)
+                .eraseToAnyPublisher()
+        }
     }
 }
 
@@ -119,7 +154,8 @@ public class AsyncImageView: UIView {
             return
         }
         state = .loading
-        imageCancellable = imagePublisher(for: image.url)
+        imageCancellable = image.fetchPublisher()
+            .map { AssetImage(image: $0, isCached: $1) }
             .flatMap { [unowned self] in
                 self.resizeImage($0)
             }
@@ -145,24 +181,6 @@ public class AsyncImageView: UIView {
     
     public func retry() {
         fetchImage()
-    }
-    
-    private func imagePublisher(for url: URL) -> AnyPublisher<AssetImage, URLError> {
-        if let cachedResult = URLCache.shared.cachedResponse(for: URLRequest(url: url)),
-           let image = UIImage(data: cachedResult.data) {
-            return Just(AssetImage(image: image, isCached: true))
-                .setFailureType(to: URLError.self)
-                .eraseToAnyPublisher()
-        }
-        return URLSession.shared.dataTaskPublisher(for: url)
-            .tryMap { data, _ in
-                guard let image = UIImage(data: data) else {
-                    throw URLError(.cannotDecodeRawData)
-                }
-                return AssetImage(image: image, isCached: false)
-            }
-            .mapError { $0 as? URLError ?? URLError(.badServerResponse) }
-            .eraseToAnyPublisher()
     }
     
     private func cancel() {
