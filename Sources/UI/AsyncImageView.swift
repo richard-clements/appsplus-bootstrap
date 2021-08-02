@@ -3,59 +3,83 @@
 import UIKit
 import Combine
 
+public struct AssetImage {
+    let image: UIImage
+    let isCached: Bool
+}
+
 @available(iOS 13.0, tvOS 13.0, *)
-public struct AsyncImage: Equatable {
+public protocol AsyncImage {
+    func equals(_ image: AsyncImage) -> Bool
+    func imagePublisher() -> AnyPublisher<AssetImage, URLError>
+}
+
+@available(iOS 13.0, tvOS 13.0, *)
+extension AsyncImage where Self: Equatable {
     
-    enum RawData: Equatable {
-        case url(URL)
-        case image(UIImage)
+    public func equals(_ image: AsyncImage) -> Bool {
+        guard let image = image as? Self else {
+            return false
+        }
+        return image == self
     }
     
-    private var rawData: RawData
+}
+
+@available(iOS 13.0, tvOS 13.0, *)
+extension Optional where Wrapped == AsyncImage {
     
-    init(url: URL) {
-        self.rawData = .url(url)
+    fileprivate func equals(_ image: AsyncImage?) -> Bool {
+        if case .none = self, case .none = image {
+            return true
+        } else if case .some(let lhs) = self,
+                  case .some(let rhs) = image {
+            return lhs.equals(rhs)
+        }
+        return false
     }
     
-    init(image: UIImage) {
-        self.rawData = .image(image)
-    }
+}
+
+@available(iOS 13.0, tvOS 13.0, *)
+extension URL: AsyncImage {
     
-    public func fetchPublisher() -> AnyPublisher<(image: UIImage, isCached: Bool), URLError> {
-        switch rawData {
-        case .url(let url):
-            if let cachedResult = URLCache.shared.cachedResponse(for: URLRequest(url: url)),
-               let image = UIImage(data: cachedResult.data) {
-                return Just((image, true))
-                    .setFailureType(to: URLError.self)
-                    .eraseToAnyPublisher()
-            }
-            return URLSession.shared.dataTaskPublisher(for: url)
-                .tryMap { data, _ in
-                    guard let image = UIImage(data: data) else {
-                        throw URLError(.cannotDecodeRawData)
-                    }
-                    return (image, false)
-                }
-                .mapError { $0 as? URLError ?? URLError(.badServerResponse) }
-                .eraseToAnyPublisher()
-        case .image(let image):
-            return Just((image, false))
+    public func imagePublisher() -> AnyPublisher<AssetImage, URLError> {
+        if let cachedResult = URLCache.shared.cachedResponse(for: URLRequest(url: self)),
+           let image = UIImage(data: cachedResult.data) {
+            return Just(AssetImage(image: image, isCached: true))
                 .setFailureType(to: URLError.self)
                 .eraseToAnyPublisher()
         }
+        return URLSession.shared.dataTaskPublisher(for: self)
+            .tryMap { data, _ in
+                guard let image = UIImage(data: data) else {
+                    throw URLError(.cannotDecodeRawData)
+                }
+                return AssetImage(image: image, isCached: false)
+            }
+            .mapError { $0 as? URLError ?? URLError(.badServerResponse) }
+            .eraseToAnyPublisher()
     }
+    
 }
+
+@available(iOS 13.0, tvOS 13.0, *)
+extension UIImage: AsyncImage {
+    
+    public func imagePublisher() -> AnyPublisher<AssetImage, URLError> {
+        Just(AssetImage(image: self, isCached: true))
+            .setFailureType(to: URLError.self)
+            .eraseToAnyPublisher()
+    }
+    
+}
+
 
 @available(iOS 13.0, tvOS 13.0, *)
 public class AsyncImageView: UIView {
     
-    private struct AssetImage {
-        let image: UIImage
-        let isCached: Bool
-    }
-    
-    public enum CornerRadius {
+    public enum CornerRadius: Equatable {
         case value(CGFloat)
         case percentage(CGFloat)
     }
@@ -75,12 +99,18 @@ public class AsyncImageView: UIView {
     public var shouldShowLoadingAnimation = false
     public var image: AsyncImage? {
         didSet {
-            if oldValue != image {
+            if oldValue.equals(image) != true {
                 fetchImage()
             }
         }
     }
-    public var cornerRadius: CornerRadius = .value(0)
+    public var cornerRadius: CornerRadius = .value(0) {
+        didSet {
+            if oldValue != cornerRadius {
+                setNeedsLayout()
+            }
+        }
+    }
     
     @Published public private(set) var state = State.idle
     
@@ -154,8 +184,7 @@ public class AsyncImageView: UIView {
             return
         }
         state = .loading
-        imageCancellable = image.fetchPublisher()
-            .map { AssetImage(image: $0, isCached: $1) }
+        imageCancellable = image.imagePublisher()
             .flatMap { [unowned self] in
                 self.resizeImage($0)
             }
