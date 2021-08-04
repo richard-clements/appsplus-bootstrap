@@ -46,7 +46,7 @@ public class BearerAuthenticator<AuthToken: AuthTokenProtocol>: Authenticator {
                 .mapError { _ in AuthenticatorError.refreshFailed }
                 .handleEvents(receiveCompletion: { [weak self] in
                     if case .failure = $0 {
-                        _ = self?.authSessionProvider.replace(with: Optional<AuthToken>.none)
+                        _ = self?.authSessionProvider.remove()
                     }
                     self?.queue.sync {
                         self?.refreshPublisher = nil
