@@ -10,7 +10,7 @@ class MockKeychainAccess: KeychainAccess {
     var removedItemKey: String?
     
     func set(_ value: String, key: String, ignoringAttributeSynchronizable: Bool) throws {
-        addedValues[SecureStorageKey(rawValue: key)] = value
+        addedValues[SecureStorageKey(value: key)] = value
     }
     
     func set(_ value: Data, key: String, ignoringAttributeSynchronizable: Bool) throws {

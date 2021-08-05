@@ -4,12 +4,16 @@ import Foundation
 
 public struct SecureStorageKey {
     let rawValue: String
+    
+    public init(value: String) {
+        self.rawValue = value
+    }
 }
 
 extension SecureStorageKey: ExpressibleByStringLiteral {
     
     public init(stringLiteral value: String) {
-        self.init(rawValue: value)
+        self.rawValue = value
     }
     
 }
