@@ -1,0 +1,9 @@
+#if canImport(Foundation)
+
+@available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
+public protocol PersistentStorage {
+    
+    func entity<T>(_ type: T.Type) -> AnyAsynchronousEntity<T>
+}
+
+#endif
