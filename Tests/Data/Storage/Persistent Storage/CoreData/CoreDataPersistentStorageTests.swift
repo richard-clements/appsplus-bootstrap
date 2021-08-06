@@ -279,6 +279,220 @@ class CoreDataPersistentStorageTests: XCTestCase {
         XCTAssertEqual(["Name 1"], result.map(\.name))
     }
     
+    func testSynchronousFetch() {
+        let object = TestEntity(context: coreDataStack.container.writingContext)
+        object.id = 1
+        object.name = "Name 1"
+        try! coreDataStack.container.writingContext.save()
+        
+        let expectation = XCTestExpectation()
+        
+        var itemIds = [Int32]()
+        var itemNames = [String]()
+        
+        storage.entity(TestEntity.self)
+            .update()
+            .suchThat(predicate: NSPredicate(format: "id == 1"))
+            .modify { _, db in
+                let items = db.entity(TestEntity.self)
+                    .fetch()
+                    .perform()
+                itemIds = items.map(\.id)
+                itemNames = items.map(\.name)
+            }
+            .perform()
+            .save()
+            .sink(receiveCompletion: { _ in
+                expectation.fulfill()
+            }, receiveValue: { _ in })
+            .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 1)
+        
+        XCTAssertEqual([1], itemIds)
+        XCTAssertEqual(["Name 1"], itemNames)
+    }
+    
+    func testSynchronousCreate_CreatesNewObject() {
+        let object = TestEntity(context: coreDataStack.container.writingContext)
+        object.id = 1
+        object.name = "Name 1"
+        try! coreDataStack.container.writingContext.save()
+        
+        let expectation = XCTestExpectation()
+        
+        storage.entity(TestEntity.self)
+            .update()
+            .modify { _, db in
+                db.entity(TestEntity.self)
+                    .create()
+                    .modify {
+                        $0.id = 1
+                        $0.name = "Name 1"
+                    }
+                    .perform()
+            }
+            .perform()
+            .save()
+            .sink(receiveCompletion: { _ in
+                expectation.fulfill()
+            }, receiveValue: { _ in })
+            .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 1)
+        
+        let fetchRequest = TestEntity.fetchRequest()
+        let result = try! coreDataStack.container.viewContext.fetch(fetchRequest).compactMap { $0 as? TestEntity }
+        
+        XCTAssertEqual([1, 1], result.map(\.id))
+        XCTAssertEqual(["Name 1", "Name 1"], result.map(\.name))
+    }
+    
+    func testSynchronousUpdateOrCreate_UpdatesObject() {
+        let object = TestEntity(context: coreDataStack.container.writingContext)
+        object.id = 1
+        object.name = "Name 1"
+        try! coreDataStack.container.writingContext.save()
+        
+        let expectation = XCTestExpectation()
+        
+        storage.entity(TestEntity.self)
+            .update()
+            .modify { _, db in
+                db.entity(TestEntity.self)
+                    .update(orCreate: true)
+                    .suchThat(predicate: NSPredicate(format: "id == 1"))
+                    .modify {
+                        $0.id = 1
+                        $0.name = "Name 2"
+                    }
+                    .perform()
+            }
+            .perform()
+            .save()
+            .sink(receiveCompletion: { _ in
+                expectation.fulfill()
+            }, receiveValue: { _ in })
+            .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 1)
+        
+        let fetchRequest = TestEntity.fetchRequest()
+        let result = try! coreDataStack.container.viewContext.fetch(fetchRequest).compactMap { $0 as? TestEntity }
+        
+        XCTAssertEqual([1], result.map(\.id))
+        XCTAssertEqual(["Name 2"], result.map(\.name))
+    }
+    
+    func testSynchronousUpdate_UpdatesObject() {
+        let object = TestEntity(context: coreDataStack.container.writingContext)
+        object.id = 1
+        object.name = "Name 1"
+        try! coreDataStack.container.writingContext.save()
+        
+        let expectation = XCTestExpectation()
+        
+        storage.entity(TestEntity.self)
+            .update()
+            .suchThat(predicate: NSPredicate(format: "id == 1"))
+            .modify { _, db in
+                db.entity(TestEntity.self)
+                    .update()
+                    .suchThat(predicate: NSPredicate(format: "id == 1"))
+                    .modify {
+                        $0.id = 1
+                        $0.name = "Name 2"
+                    }
+                    .perform()
+            }
+            .perform()
+            .save()
+            .sink(receiveCompletion: { _ in
+                expectation.fulfill()
+            }, receiveValue: { _ in })
+            .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 1)
+        
+        let fetchRequest = TestEntity.fetchRequest()
+        let result = try! coreDataStack.container.viewContext.fetch(fetchRequest).compactMap { $0 as? TestEntity }
+        
+        XCTAssertEqual([1], result.map(\.id))
+        XCTAssertEqual(["Name 2"], result.map(\.name))
+    }
+    
+    func testSynchronousUpdate_DoesNotCreate() {
+        let object = TestEntity(context: coreDataStack.container.writingContext)
+        object.id = 1
+        object.name = "Name 1"
+        try! coreDataStack.container.writingContext.save()
+        
+        let expectation = XCTestExpectation()
+        
+        storage.entity(TestEntity.self)
+            .update()
+            .modify { _, db in
+                db.entity(TestEntity.self)
+                    .update()
+                    .suchThat(predicate: NSPredicate(format: "id == 2"))
+                    .modify {
+                        $0.id = 2
+                        $0.name = "Name 2"
+                    }
+                    .perform()
+            }
+            .perform()
+            .save()
+            .sink(receiveCompletion: { _ in
+                expectation.fulfill()
+            }, receiveValue: { _ in })
+            .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 1)
+        
+        let fetchRequest = TestEntity.fetchRequest()
+        let result = try! coreDataStack.container.viewContext.fetch(fetchRequest).compactMap { $0 as? TestEntity }
+        
+        XCTAssertEqual([1], result.map(\.id))
+        XCTAssertEqual(["Name 1"], result.map(\.name))
+    }
+    
+    func testSynchronousUpdateOrCreate_CreatesObject() {
+        let object = TestEntity(context: coreDataStack.container.writingContext)
+        object.id = 1
+        object.name = "Name 1"
+        try! coreDataStack.container.writingContext.save()
+        
+        let expectation = XCTestExpectation()
+        
+        storage.entity(TestEntity.self)
+            .update()
+            .modify { _, db in
+                db.entity(TestEntity.self)
+                    .update(orCreate: true)
+                    .suchThat(predicate: NSPredicate(format: "id == 2"))
+                    .modify {
+                        $0.id = 2
+                        $0.name = "Name 2"
+                    }
+                    .perform()
+            }
+            .perform()
+            .save()
+            .sink(receiveCompletion: { _ in
+                expectation.fulfill()
+            }, receiveValue: { _ in })
+            .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 1)
+        
+        let fetchRequest = TestEntity.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \TestEntity.id, ascending: true)]
+        let result = try! coreDataStack.container.viewContext.fetch(fetchRequest).compactMap { $0 as? TestEntity }
+        
+        XCTAssertEqual([1, 2], result.map(\.id))
+        XCTAssertEqual(["Name 1", "Name 2"], result.map(\.name))
+    }
 }
 
 #endif
