@@ -8,7 +8,7 @@ public struct SynchronousUpdateRequest<T>: SynchronousPersistentStoreRequest {
     public typealias ReturnType = T
     public typealias Output = Void
     
-    public let executor: Executor
+    let executor: Executor
     let fetchRequest: UpdateRequest<T>
     
     var shouldUpdate: Bool {
@@ -76,5 +76,15 @@ extension SynchronousUpdateRequest: PersistentStoreRequest {
     }
     
 }
+
+@available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
+extension SynchronousUpdateRequest {
+    
+    public func perform() -> Output {
+        executor(self)
+    }
+    
+}
+
 
 #endif

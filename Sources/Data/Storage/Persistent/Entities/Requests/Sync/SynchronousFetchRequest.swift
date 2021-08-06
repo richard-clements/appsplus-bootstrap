@@ -8,7 +8,7 @@ public struct SynchronousFetchRequest<T>: SynchronousPersistentStoreRequest {
     public typealias ReturnType = T
     public typealias Output = [T]
     
-    public let executor: Executor
+    let executor: Executor
     let fetchRequest: FetchRequest<T>
     
     public var predicate: NSPredicate? {
@@ -65,6 +65,15 @@ extension SynchronousFetchRequest: PersistentStoreRequest {
     
     var batchSize: Int? {
         fetchRequest.batchSize
+    }
+    
+}
+
+@available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
+extension SynchronousFetchRequest {
+    
+    public func perform() -> Output {
+        executor(self)
     }
     
 }

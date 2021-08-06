@@ -1,6 +1,7 @@
-#if canImport(Foundation)
+#if canImport(Foundation) && canImport(Combine)
 
 import Foundation
+import Combine
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 public struct AsynchronousUpdateRequest<T>: AsynchronousPersistentStoreRequest {
@@ -8,7 +9,7 @@ public struct AsynchronousUpdateRequest<T>: AsynchronousPersistentStoreRequest {
     public typealias ReturnType = T
     public typealias Output = PersistentStoreUpdate
     
-    public let publisher: PublisherType
+    let publisher: PublisherType
     let fetchRequest: UpdateRequest<T>
     
     var shouldUpdate: Bool {
@@ -73,6 +74,15 @@ extension AsynchronousUpdateRequest: PersistentStoreRequest {
     
     var sortDescriptors: [NSSortDescriptor]? {
         fetchRequest.sortDescriptors
+    }
+    
+}
+
+@available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
+extension AsynchronousUpdateRequest {
+    
+    public func perform() -> AnyPublisher<Output, Error> {
+        publisher(self)
     }
     
 }

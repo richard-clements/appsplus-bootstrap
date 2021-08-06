@@ -9,7 +9,7 @@ public struct AsynchronousFetchRequest<T>: AsynchronousPersistentStoreRequest {
     public typealias ReturnType = T
     public typealias Output = [T]
     
-    public let publisher: PublisherType
+    let publisher: PublisherType
     let fetchRequest: FetchRequest<T>
     let shouldSubscribe: Bool
     
@@ -84,6 +84,10 @@ extension AsynchronousFetchRequest: PersistentStoreRequest {
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 extension AsynchronousFetchRequest {
+    
+    public func perform() -> AnyPublisher<Output, Error> {
+        publisher(self)
+    }
     
     public func subscribe() -> AnyPublisher<Output, Error> {
         publisher(AsynchronousFetchRequest(publisher: publisher, fetchRequest: fetchRequest, shouldSubscribe: true))

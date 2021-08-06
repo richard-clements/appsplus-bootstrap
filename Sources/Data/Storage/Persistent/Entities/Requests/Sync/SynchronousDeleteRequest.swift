@@ -8,7 +8,7 @@ public struct SynchronousDeleteRequest<T>: SynchronousPersistentStoreRequest {
     public typealias ReturnType = T
     public typealias Output = Void
     
-    public let executor: Executor
+    let executor: Executor
     let fetchRequest: DeleteRequest<T>
     
     public func suchThat(predicate: NSPredicate) -> SynchronousDeleteRequest<T> {
@@ -53,4 +53,12 @@ extension SynchronousDeleteRequest: PersistentStoreRequest {
     
 }
 
+@available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
+extension SynchronousDeleteRequest {
+    
+    public func perform() -> Output {
+        executor(self)
+    }
+    
+}
 #endif
