@@ -9,7 +9,6 @@ struct CoreDataUpdate: PersistentStoreUpdate {
     
     let identifier: String
     let context: NSManagedObjectContext
-    let type: PersistentStoreChange
     
     func commit() -> AnyPublisher<Void, Error> {
         Future { promise in
