@@ -23,26 +23,6 @@ public struct AsynchronousUpdateRequest<T>: AsynchronousPersistentStoreRequest {
         fetchRequest.modifier
     }
     
-    public var limit: Int? {
-        fetchRequest.limit
-    }
-    
-    public var predicate: NSPredicate? {
-        fetchRequest.predicate
-    }
-    
-    public var offset: Int? {
-        fetchRequest.offset
-    }
-    
-    public var batchSize: Int? {
-        fetchRequest.batchSize
-    }
-    
-    public var sortDescriptors: [NSSortDescriptor]? {
-        fetchRequest.sortDescriptors
-    }
-    
     public func sorted<Value>(by keyPath: KeyPath<T, Value>, ascending: Bool) -> AsynchronousUpdateRequest {
         AsynchronousUpdateRequest(publisher: publisher, fetchRequest: fetchRequest.sorted(by: keyPath, ascending: ascending))
     }
@@ -70,6 +50,31 @@ public struct AsynchronousUpdateRequest<T>: AsynchronousPersistentStoreRequest {
     public func modify(_ modifier: @escaping (T) -> Void) -> AsynchronousUpdateRequest<T> {
         AsynchronousUpdateRequest(publisher: publisher, fetchRequest: fetchRequest.modify(modifier))
     }
+}
+
+@available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
+extension AsynchronousUpdateRequest: PersistentStoreRequest {
+    
+    var limit: Int? {
+        fetchRequest.limit
+    }
+    
+    var predicate: NSPredicate? {
+        fetchRequest.predicate
+    }
+    
+    var offset: Int? {
+        fetchRequest.offset
+    }
+    
+    var batchSize: Int? {
+        fetchRequest.batchSize
+    }
+    
+    var sortDescriptors: [NSSortDescriptor]? {
+        fetchRequest.sortDescriptors
+    }
+    
 }
 
 #endif

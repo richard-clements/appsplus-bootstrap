@@ -11,26 +11,6 @@ public struct AsynchronousDeleteRequest<T>: AsynchronousPersistentStoreRequest {
     public let publisher: PublisherType
     let fetchRequest: DeleteRequest<T>
     
-    public var limit: Int? {
-        fetchRequest.limit
-    }
-    
-    public var predicate: NSPredicate? {
-        fetchRequest.predicate
-    }
-    
-    public var offset: Int? {
-        fetchRequest.offset
-    }
-    
-    public var batchSize: Int? {
-        fetchRequest.batchSize
-    }
-    
-    public var sortDescriptors: [NSSortDescriptor]? {
-        fetchRequest.sortDescriptors
-    }
-    
     public func suchThat(predicate: NSPredicate) -> AsynchronousDeleteRequest<T> {
         AsynchronousDeleteRequest(publisher: publisher, fetchRequest: fetchRequest.suchThat(predicate: predicate))
     }
@@ -46,6 +26,31 @@ public struct AsynchronousDeleteRequest<T>: AsynchronousPersistentStoreRequest {
     public func excluding(predicate: NSPredicate) -> AsynchronousDeleteRequest<T> {
         AsynchronousDeleteRequest(publisher: publisher, fetchRequest: fetchRequest.excluding(predicate: predicate))
     }
+}
+
+@available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
+extension AsynchronousDeleteRequest: PersistentStoreRequest {
+    
+    var limit: Int? {
+        fetchRequest.limit
+    }
+    
+    var predicate: NSPredicate? {
+        fetchRequest.predicate
+    }
+    
+    var offset: Int? {
+        fetchRequest.offset
+    }
+    
+    var batchSize: Int? {
+        fetchRequest.batchSize
+    }
+    
+    var sortDescriptors: [NSSortDescriptor]? {
+        fetchRequest.sortDescriptors
+    }
+    
 }
 
 #endif

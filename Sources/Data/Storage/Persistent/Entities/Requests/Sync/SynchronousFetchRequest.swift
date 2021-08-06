@@ -15,22 +15,6 @@ public struct SynchronousFetchRequest<T>: SynchronousPersistentStoreRequest {
         fetchRequest.predicate
     }
     
-    public var sortDescriptors: [NSSortDescriptor]? {
-        fetchRequest.sortDescriptors
-    }
-    
-    public var limit: Int? {
-        fetchRequest.limit
-    }
-    
-    public var offset: Int? {
-        fetchRequest.offset
-    }
-    
-    public var batchSize: Int? {
-        fetchRequest.batchSize
-    }
-    
     public func sorted<Value>(by keyPath: KeyPath<T, Value>, ascending: Bool) -> SynchronousFetchRequest {
         SynchronousFetchRequest(executor: executor, fetchRequest: fetchRequest.sorted(by: keyPath, ascending: ascending))
     }
@@ -64,5 +48,25 @@ public struct SynchronousFetchRequest<T>: SynchronousPersistentStoreRequest {
     }
 }
 
+@available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
+extension SynchronousFetchRequest: PersistentStoreRequest {
+    
+    var sortDescriptors: [NSSortDescriptor]? {
+        fetchRequest.sortDescriptors
+    }
+    
+    var limit: Int? {
+        fetchRequest.limit
+    }
+    
+    var offset: Int? {
+        fetchRequest.offset
+    }
+    
+    var batchSize: Int? {
+        fetchRequest.batchSize
+    }
+    
+}
 
 #endif

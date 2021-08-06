@@ -4,7 +4,7 @@ import Foundation
 import Combine
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
-public protocol AsynchronousPersistentStoreRequest: PersistentStoreRequest {
+public protocol AsynchronousPersistentStoreRequest {
     
     associatedtype Output
     typealias PublisherType = (Self) -> AnyPublisher<Output, Error>
