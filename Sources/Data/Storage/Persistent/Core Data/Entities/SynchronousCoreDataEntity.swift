@@ -6,6 +6,7 @@ import CoreData
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 struct SynchronousCoreDataEntity<EntityType>: SynchronousEntity {
     
+    let identifier: String
     let context: NSManagedObjectContext
     
     func create() -> SynchronousUpdateRequest<EntityType> {
@@ -22,13 +23,13 @@ struct SynchronousCoreDataEntity<EntityType>: SynchronousEntity {
     
     func fetch() -> SynchronousFetchRequest<EntityType> {
         SynchronousFetchRequest(executor: {
-            CoreDataEntity(context: context).fetch(request: $0.asFetchRequest())
+            CoreDataEntity(identifier: identifier, context: context).fetch(request: $0.asFetchRequest())
         }, fetchRequest: FetchRequest.empty())
     }
     
     func delete() -> SynchronousDeleteRequest<EntityType> {
         SynchronousDeleteRequest(executor: {
-            _ = CoreDataEntity(context: context).delete(request: $0.asFetchRequest())
+            _ = CoreDataEntity(identifier: identifier, context: context).delete(request: $0.asFetchRequest())
         }, fetchRequest: DeleteRequest.empty())
     }
     
@@ -38,7 +39,7 @@ struct SynchronousCoreDataEntity<EntityType>: SynchronousEntity {
 extension SynchronousCoreDataEntity {
     
     func createOrUpdateExecutor<EntityType>(for request: SynchronousUpdateRequest<EntityType>) {
-        _ = CoreDataEntity(context: context).update(entityName: request.entityName, shouldCreate: request.shouldCreate, shouldUpdate: request.shouldUpdate, fetchRequest: request.asFetchRequest(), modifier: request.modifier)
+        _ = CoreDataEntity(identifier: identifier, context: context).update(entityName: request.entityName, shouldCreate: request.shouldCreate, shouldUpdate: request.shouldUpdate, fetchRequest: request.asFetchRequest(), modifier: request.modifier)
     }
     
 }

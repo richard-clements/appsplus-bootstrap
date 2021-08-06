@@ -13,12 +13,14 @@ public enum PersistentStoreChange {
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 public protocol PersistentStoreUpdate {
+    var identifier: String { get }
     var type: PersistentStoreChange { get }
     func commit() -> AnyPublisher<Void, Error>
 }
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 public struct PersistentStoreUpdateSkip: PersistentStoreUpdate {
+    public let identifier: String = "PersistentStoreUpdate.Skip"
     public let type: PersistentStoreChange = .noChanges
     public func commit() -> AnyPublisher<Void, Error> {
         return Just(())
@@ -33,12 +35,16 @@ public struct PersistentStoreUpdateSkip: PersistentStoreUpdate {
 extension Publisher where Output == PersistentStoreUpdate {
     
     func save() -> AnyPublisher<Void, Error> {
-        filter { !($0 is PersistentStoreUpdateSkip) }
-            .reduce(nil) { _, next in next }
-            .replaceNil(with: PersistentStoreUpdateSkip())
-            .mapError { $0 as Error }
-            .flatMap { $0.commit() }
-            .eraseToAnyPublisher()
+        reduce([PersistentStoreUpdate]()) { current, value in
+            if current.contains(where: { $0.identifier == value.identifier }) {
+                return current
+            }
+            return current + [value]
+        }
+        .mapError { $0 as Error }
+        .flatMap { $0.publisher.setFailureType(to: Error.self) }
+        .flatMap { $0.commit() }
+        .eraseToAnyPublisher()
     }
     
 }

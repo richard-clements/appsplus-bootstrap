@@ -9,6 +9,7 @@ struct AsynchronousCoreDataEntity<EntityType>: AsynchronousEntity {
     
     typealias PublisherType = () -> AnyPublisher<NSManagedObjectContext, Error>
     
+    let identifier: String
     let writePublisher: PublisherType
     let readPublisher: PublisherType
     
@@ -25,7 +26,7 @@ struct AsynchronousCoreDataEntity<EntityType>: AsynchronousEntity {
             readPublisher()
                 .flatMap { context -> AnyPublisher<[EntityType], Error> in
                     if request.shouldSubscribe {
-                        return Just(CoreDataEntity(context: context).fetch(request: request.asFetchRequest()))
+                        return Just(CoreDataEntity(identifier: identifier, context: context).fetch(request: request.asFetchRequest()))
                             .setFailureType(to: Error.self)
                             .eraseToAnyPublisher()
                     } else {
@@ -41,7 +42,7 @@ struct AsynchronousCoreDataEntity<EntityType>: AsynchronousEntity {
         AsynchronousDeleteRequest(publisher: { request in
             writePublisher()
                 .map { context -> PersistentStoreUpdate in
-                    CoreDataEntity(context: context).delete(request: request.asFetchRequest())
+                    CoreDataEntity(identifier: identifier, context: context).delete(request: request.asFetchRequest())
                 }
                 .eraseToAnyPublisher()
         }, fetchRequest: .empty())
@@ -55,7 +56,7 @@ extension AsynchronousCoreDataEntity {
     func createOrUpdatePublisher<EntityType>(for request: AsynchronousUpdateRequest<EntityType>) -> AnyPublisher<PersistentStoreUpdate, Error> {
         writePublisher()
             .map {
-                CoreDataEntity(context: $0).update(entityName: request.entityName, shouldCreate: request.shouldCreate, shouldUpdate: request.shouldUpdate, fetchRequest: request.asFetchRequest(), modifier: request.modifier)
+                CoreDataEntity(identifier: identifier, context: $0).update(entityName: request.entityName, shouldCreate: request.shouldCreate, shouldUpdate: request.shouldUpdate, fetchRequest: request.asFetchRequest(), modifier: request.modifier)
             }
             .eraseToAnyPublisher()
     }
