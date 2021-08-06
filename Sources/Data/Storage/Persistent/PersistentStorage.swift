@@ -7,7 +7,7 @@ import Combine
 public protocol PersistentStorage {
     
     func entity<T>(_ type: T.Type) -> AnyAsynchronousEntity<T>
-    func beginTransactions(_ modifier: @escaping (SynchronousStorage) throws -> Void) -> AnyPublisher<PersistentStoreUpdate, Error>
+    func beginTransactions() -> PersistentStoreTransaction
 }
 
 #endif

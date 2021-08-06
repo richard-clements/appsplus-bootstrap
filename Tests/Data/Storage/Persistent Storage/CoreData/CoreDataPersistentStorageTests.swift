@@ -532,18 +532,20 @@ class CoreDataPersistentStorageTests: XCTestCase {
         var itemIds = [Int32]()
         var itemNames = [String]()
         
-        storage.beginTransactions { db in
-            let items = db.entity(TestEntity.self)
-                .fetch()
-                .perform()
-            itemIds = items.map(\.id)
-            itemNames = items.map(\.name)
-        }
-        .save()
-        .sink(receiveCompletion: { _ in
-            expectation.fulfill()
-        }, receiveValue: { _ in })
-        .store(in: &cancellables)
+        storage.beginTransactions()
+            .addTransaction { db in
+                let items = db.entity(TestEntity.self)
+                    .fetch()
+                    .perform()
+                itemIds = items.map(\.id)
+                itemNames = items.map(\.name)
+            }
+            .perform()
+            .save()
+            .sink(receiveCompletion: { _ in
+                expectation.fulfill()
+            }, receiveValue: { _ in })
+            .store(in: &cancellables)
         
         wait(for: [expectation], timeout: 1)
         
@@ -559,16 +561,18 @@ class CoreDataPersistentStorageTests: XCTestCase {
         
         let expectation = XCTestExpectation()
         
-        storage.beginTransactions { db in
-            db.entity(TestEntity.self)
-                .delete()
-                .perform()
-        }
-        .save()
-        .sink(receiveCompletion: { _ in
-            expectation.fulfill()
-        }, receiveValue: { _ in })
-        .store(in: &cancellables)
+        storage.beginTransactions()
+            .addTransaction { db in
+                db.entity(TestEntity.self)
+                    .delete()
+                    .perform()
+            }
+            .perform()
+            .save()
+            .sink(receiveCompletion: { _ in
+                expectation.fulfill()
+            }, receiveValue: { _ in })
+            .store(in: &cancellables)
         
         wait(for: [expectation], timeout: 1)
         
@@ -578,20 +582,22 @@ class CoreDataPersistentStorageTests: XCTestCase {
     func testBeginTransactionsCreate_CreatesNewObject() {
         let expectation = XCTestExpectation()
         
-        storage.beginTransactions { db in
-            db.entity(TestEntity.self)
-                .create()
-                .modify {
-                    $0.id = 1
-                    $0.name = "Name 1"
-                }
-                .perform()
-        }
-        .save()
-        .sink(receiveCompletion: { _ in
-            expectation.fulfill()
-        }, receiveValue: { _ in })
-        .store(in: &cancellables)
+        storage.beginTransactions()
+            .addTransaction { db in
+                db.entity(TestEntity.self)
+                    .create()
+                    .modify {
+                        $0.id = 1
+                        $0.name = "Name 1"
+                    }
+                    .perform()
+            }
+            .perform()
+            .save()
+            .sink(receiveCompletion: { _ in
+                expectation.fulfill()
+            }, receiveValue: { _ in })
+            .store(in: &cancellables)
         
         wait(for: [expectation], timeout: 1)
         
@@ -610,21 +616,23 @@ class CoreDataPersistentStorageTests: XCTestCase {
         
         let expectation = XCTestExpectation()
         
-        storage.beginTransactions { db in
-            db.entity(TestEntity.self)
-                .update(orCreate: true)
-                .suchThat(predicate: NSPredicate(format: "id == 1"))
-                .modify {
-                    $0.id = 1
-                    $0.name = "Name 2"
-                }
-                .perform()
-        }
-        .save()
-        .sink(receiveCompletion: { _ in
-            expectation.fulfill()
-        }, receiveValue: { _ in })
-        .store(in: &cancellables)
+        storage.beginTransactions()
+            .addTransaction { db in
+                db.entity(TestEntity.self)
+                    .update(orCreate: true)
+                    .suchThat(predicate: NSPredicate(format: "id == 1"))
+                    .modify {
+                        $0.id = 1
+                        $0.name = "Name 2"
+                    }
+                    .perform()
+            }
+            .perform()
+            .save()
+            .sink(receiveCompletion: { _ in
+                expectation.fulfill()
+            }, receiveValue: { _ in })
+            .store(in: &cancellables)
         
         wait(for: [expectation], timeout: 1)
         
@@ -643,21 +651,23 @@ class CoreDataPersistentStorageTests: XCTestCase {
         
         let expectation = XCTestExpectation()
         
-        storage.beginTransactions { db in
-            db.entity(TestEntity.self)
-                .update()
-                .suchThat(predicate: NSPredicate(format: "id == 1"))
-                .modify {
-                    $0.id = 1
-                    $0.name = "Name 2"
-                }
-                .perform()
-        }
-        .save()
-        .sink(receiveCompletion: { _ in
-            expectation.fulfill()
-        }, receiveValue: { _ in })
-        .store(in: &cancellables)
+        storage.beginTransactions()
+            .addTransaction { db in
+                db.entity(TestEntity.self)
+                    .update()
+                    .suchThat(predicate: NSPredicate(format: "id == 1"))
+                    .modify {
+                        $0.id = 1
+                        $0.name = "Name 2"
+                    }
+                    .perform()
+            }
+            .perform()
+            .save()
+            .sink(receiveCompletion: { _ in
+                expectation.fulfill()
+            }, receiveValue: { _ in })
+            .store(in: &cancellables)
         
         wait(for: [expectation], timeout: 1)
         
@@ -671,21 +681,23 @@ class CoreDataPersistentStorageTests: XCTestCase {
     func testBeginTransactionsUpdate_DoesNotCreate() {
         let expectation = XCTestExpectation()
         
-        storage.beginTransactions { db in
-            db.entity(TestEntity.self)
-                .update()
-                .suchThat(predicate: NSPredicate(format: "id == 1"))
-                .modify {
-                    $0.id = 1
-                    $0.name = "Name 1"
-                }
-                .perform()
-        }
-        .save()
-        .sink(receiveCompletion: { _ in
-            expectation.fulfill()
-        }, receiveValue: { _ in })
-        .store(in: &cancellables)
+        storage.beginTransactions()
+            .addTransaction { db in
+                db.entity(TestEntity.self)
+                    .update()
+                    .suchThat(predicate: NSPredicate(format: "id == 1"))
+                    .modify {
+                        $0.id = 1
+                        $0.name = "Name 1"
+                    }
+                    .perform()
+            }
+            .perform()
+            .save()
+            .sink(receiveCompletion: { _ in
+                expectation.fulfill()
+            }, receiveValue: { _ in })
+            .store(in: &cancellables)
         
         wait(for: [expectation], timeout: 1)
         
@@ -698,21 +710,23 @@ class CoreDataPersistentStorageTests: XCTestCase {
     func testBeginTransactionsUpdateOrCreate_CreatesObject() {
         let expectation = XCTestExpectation()
         
-        storage.beginTransactions { db in
-            db.entity(TestEntity.self)
-                .update(orCreate: true)
-                .suchThat(predicate: NSPredicate(format: "id == 1"))
-                .modify {
-                    $0.id = 1
-                    $0.name = "Name 1"
-                }
-                .perform()
-        }
-        .save()
-        .sink(receiveCompletion: { _ in
-            expectation.fulfill()
-        }, receiveValue: { _ in })
-        .store(in: &cancellables)
+        storage.beginTransactions()
+            .addTransaction { db in
+                db.entity(TestEntity.self)
+                    .update(orCreate: true)
+                    .suchThat(predicate: NSPredicate(format: "id == 1"))
+                    .modify {
+                        $0.id = 1
+                        $0.name = "Name 1"
+                    }
+                    .perform()
+            }
+            .perform()
+            .save()
+            .sink(receiveCompletion: { _ in
+                expectation.fulfill()
+            }, receiveValue: { _ in })
+            .store(in: &cancellables)
         
         wait(for: [expectation], timeout: 1)
         
