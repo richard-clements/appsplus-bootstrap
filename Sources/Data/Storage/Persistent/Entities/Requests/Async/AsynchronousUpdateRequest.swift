@@ -28,6 +28,18 @@ public struct AsynchronousUpdateRequest<T>: AsynchronousPersistentStoreRequest {
         AsynchronousUpdateRequest(publisher: publisher, fetchRequest: fetchRequest.sorted(by: keyPath, ascending: ascending))
     }
     
+    public func limit(_ limit: Int) -> AsynchronousUpdateRequest {
+        AsynchronousUpdateRequest(publisher: publisher, fetchRequest: fetchRequest.limit(limit))
+    }
+    
+    public func offset(_ offset: Int) -> AsynchronousUpdateRequest {
+        AsynchronousUpdateRequest(publisher: publisher, fetchRequest: fetchRequest.offset(offset))
+    }
+    
+    public func batchSize(_ batchSize: Int) -> AsynchronousUpdateRequest {
+        AsynchronousUpdateRequest(publisher: publisher, fetchRequest: fetchRequest.batchSize(batchSize))
+    }
+    
     public func suchThat(predicate: NSPredicate) -> AsynchronousUpdateRequest<T> {
         AsynchronousUpdateRequest(publisher: publisher, fetchRequest: fetchRequest.suchThat(predicate: predicate))
     }

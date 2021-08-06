@@ -71,6 +71,18 @@ struct DeleteRequest<T> {
         return setPredicate(updatedPredicate)
     }
     
+    func limit(_ limit: Int) -> DeleteRequest {
+        join(DeleteRequest(predicate: nil, sortDescriptors: nil, limit: limit, offset: nil, batchSize: nil))
+    }
+    
+    func offset(_ offset: Int) -> DeleteRequest {
+        join(DeleteRequest(predicate: nil, sortDescriptors: nil, limit: nil, offset: offset, batchSize: nil))
+    }
+    
+    func batchSize(_ batchSize: Int) -> DeleteRequest {
+        join(DeleteRequest(predicate: nil, sortDescriptors: nil, limit: nil, offset: nil, batchSize: batchSize))
+    }
+    
     private func join(_ request: DeleteRequest) -> DeleteRequest {
         DeleteRequest(
             predicate: request.predicate ?? predicate,

@@ -27,6 +27,18 @@ public struct SynchronousUpdateRequest<T>: SynchronousPersistentStoreRequest {
         SynchronousUpdateRequest(executor: executor, fetchRequest: fetchRequest.sorted(by: keyPath, ascending: ascending))
     }
     
+    public func limit(_ limit: Int) -> SynchronousUpdateRequest {
+        SynchronousUpdateRequest(executor: executor, fetchRequest: fetchRequest.limit(limit))
+    }
+    
+    public func offset(_ offset: Int) -> SynchronousUpdateRequest {
+        SynchronousUpdateRequest(executor: executor, fetchRequest: fetchRequest.offset(offset))
+    }
+    
+    public func batchSize(_ batchSize: Int) -> SynchronousUpdateRequest {
+        SynchronousUpdateRequest(executor: executor, fetchRequest: fetchRequest.batchSize(batchSize))
+    }
+    
     public func suchThat(predicate: NSPredicate) -> SynchronousUpdateRequest<T> {
         SynchronousUpdateRequest(executor: executor, fetchRequest: fetchRequest.suchThat(predicate: predicate))
     }

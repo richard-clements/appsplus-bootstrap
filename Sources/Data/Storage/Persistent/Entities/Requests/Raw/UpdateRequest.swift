@@ -62,6 +62,51 @@ struct UpdateRequest<T> {
         )
     }
     
+    func limit(_ limit: Int) -> UpdateRequest {
+        join(
+            UpdateRequest(
+                predicate: nil,
+                limit: limit,
+                offset: nil,
+                batchSize: nil,
+                sortDescriptors: nil,
+                shouldCreate: false,
+                shouldUpdate: false,
+                modifier: nil
+            )
+        )
+    }
+    
+    func offset(_ offset: Int) -> UpdateRequest {
+        join(
+            UpdateRequest(
+                predicate: nil,
+                limit: nil,
+                offset: offset,
+                batchSize: nil,
+                sortDescriptors: nil,
+                shouldCreate: false,
+                shouldUpdate: false,
+                modifier: nil
+            )
+        )
+    }
+    
+    func batchSize(_ batchSize: Int) -> UpdateRequest {
+        join(
+            UpdateRequest(
+                predicate: nil,
+                limit: nil,
+                offset: nil,
+                batchSize: batchSize,
+                sortDescriptors: nil,
+                shouldCreate: false,
+                shouldUpdate: false,
+                modifier: nil
+            )
+        )
+    }
+    
     func suchThat(predicate: NSPredicate) -> UpdateRequest {
         setPredicate(PredicateHelper.suchThat(predicate: predicate, from: self.predicate))
     }

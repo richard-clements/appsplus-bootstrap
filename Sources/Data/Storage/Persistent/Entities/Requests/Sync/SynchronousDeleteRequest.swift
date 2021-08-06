@@ -11,6 +11,23 @@ public struct SynchronousDeleteRequest<T>: SynchronousPersistentStoreRequest {
     let executor: Executor
     let fetchRequest: DeleteRequest<T>
     
+    public func sorted<Value>(by keyPath: KeyPath<T, Value>, ascending: Bool) -> SynchronousDeleteRequest<T> {
+        SynchronousDeleteRequest(executor: executor, fetchRequest: fetchRequest.sorted(by: keyPath, ascending: ascending))
+    }
+    
+    public func limit(_ limit: Int) -> SynchronousDeleteRequest<T> {
+        SynchronousDeleteRequest(executor: executor, fetchRequest: fetchRequest.limit(limit))
+    }
+    
+    public func offset(_ offset: Int) -> SynchronousDeleteRequest<T> {
+        SynchronousDeleteRequest(executor: executor, fetchRequest: fetchRequest.offset(offset))
+    }
+    
+    public func batchSize(_ batchSize: Int) -> SynchronousDeleteRequest<T> {
+        SynchronousDeleteRequest(executor: executor, fetchRequest: fetchRequest.batchSize(batchSize))
+    }
+    
+    
     public func suchThat(predicate: NSPredicate) -> SynchronousDeleteRequest<T> {
         SynchronousDeleteRequest(executor: executor, fetchRequest: fetchRequest.suchThat(predicate: predicate))
     }

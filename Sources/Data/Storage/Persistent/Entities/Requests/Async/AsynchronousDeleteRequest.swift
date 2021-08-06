@@ -12,6 +12,22 @@ public struct AsynchronousDeleteRequest<T>: AsynchronousPersistentStoreRequest {
     let publisher: PublisherType
     let fetchRequest: DeleteRequest<T>
     
+    public func sorted<Value>(by keyPath: KeyPath<T, Value>, ascending: Bool) -> AsynchronousDeleteRequest<T> {
+        AsynchronousDeleteRequest(publisher: publisher, fetchRequest: fetchRequest.sorted(by: keyPath, ascending: ascending))
+    }
+    
+    public func limit(_ limit: Int) -> AsynchronousDeleteRequest<T> {
+        AsynchronousDeleteRequest(publisher: publisher, fetchRequest: fetchRequest.limit(limit))
+    }
+    
+    public func offset(_ offset: Int) -> AsynchronousDeleteRequest<T> {
+        AsynchronousDeleteRequest(publisher: publisher, fetchRequest: fetchRequest.offset(offset))
+    }
+    
+    public func batchSize(_ batchSize: Int) -> AsynchronousDeleteRequest<T> {
+        AsynchronousDeleteRequest(publisher: publisher, fetchRequest: fetchRequest.batchSize(batchSize))
+    }
+    
     public func suchThat(predicate: NSPredicate) -> AsynchronousDeleteRequest<T> {
         AsynchronousDeleteRequest(publisher: publisher, fetchRequest: fetchRequest.suchThat(predicate: predicate))
     }
