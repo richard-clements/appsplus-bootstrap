@@ -7,6 +7,7 @@ extension Target {
     static func target(
         name: String,
         sources: [String],
+        resources: [Resource]? = nil,
         dependencies: [Target.Dependency] = []
     ) -> Target {
         .target(
@@ -15,6 +16,7 @@ extension Target {
             path: "Sources",
             exclude: [],
             sources: sources,
+            resources: resources,
             publicHeadersPath: nil,
             cSettings: nil,
             cxxSettings: nil,
@@ -28,14 +30,16 @@ extension Target {
     static func testTarget(
         name: String,
         sources: [String],
+        resources: [Resource]? = nil,
         dependencies: [Target.Dependency] = []
     ) -> Target {
         .testTarget(
             name: name,
             dependencies: dependencies,
             path: "Tests",
-            exclude: [], sources: sources,
-            resources: nil,
+            exclude: [],
+            sources: sources,
+            resources: resources,
             cSettings: nil,
             cxxSettings: nil,
             swiftSettings: nil,
@@ -79,6 +83,9 @@ let package = Package(
         .testTarget(
             name: "AppsPlusDataTests",
             sources: ["Data"],
+            resources: [
+                .copy("Resources")
+            ],
             dependencies: ["AppsPlusData", "SwiftCheck"]
         ),
         .target(

@@ -59,12 +59,14 @@ extension CoreDataFetchResultsPublisher.Subscription: Subscription {
 
     func request(_ demand: Subscribers.Demand) {
         guard let subscriber = subscriber else { return }
-        do {
-            try controller?.performFetch()
-            let results = controller?.fetchedObjects?.compactMap { $0 as? Entity } ?? []
-            _ = subscriber.receive(results)
-        } catch {
-            subscriber.receive(completion: .failure(error))
+        controller?.managedObjectContext.perform { [weak self] in
+            do {
+                try self?.controller?.performFetch()
+                let results = self?.controller?.fetchedObjects?.compactMap { $0 as? Entity } ?? []
+                _ = subscriber.receive(results)
+            } catch {
+                subscriber.receive(completion: .failure(error))
+            }
         }
     }
 
