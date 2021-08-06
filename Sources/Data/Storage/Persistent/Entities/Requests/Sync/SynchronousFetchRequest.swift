@@ -5,7 +5,7 @@ import Foundation
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 public struct SynchronousFetchRequest<T>: SynchronousPersistentStoreRequest {
     
-    typealias ReturnType = T
+    public typealias ReturnType = T
     public typealias Output = [T]
     
     public let executor: Executor

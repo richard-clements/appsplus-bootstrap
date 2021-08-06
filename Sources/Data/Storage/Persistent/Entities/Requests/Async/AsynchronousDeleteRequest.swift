@@ -5,10 +5,10 @@ import Foundation
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 public struct AsynchronousDeleteRequest<T>: AsynchronousPersistentStoreRequest {
     
-    typealias ReturnType = T
+    public typealias ReturnType = T
     public typealias Output = PersistentStoreUpdate
     
-    public let publisher: Publisher
+    public let publisher: PublisherType
     let fetchRequest: DeleteRequest<T>
     
     public var limit: Int? {

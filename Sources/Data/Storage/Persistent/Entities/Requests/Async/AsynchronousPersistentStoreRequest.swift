@@ -7,9 +7,9 @@ import Combine
 public protocol AsynchronousPersistentStoreRequest: PersistentStoreRequest {
     
     associatedtype Output
-    typealias Publisher = (Self) -> AnyPublisher<Output, Error>
+    typealias PublisherType = (Self) -> AnyPublisher<Output, Error>
     
-    var publisher: Publisher { get }
+    var publisher: PublisherType { get }
     
 }
 

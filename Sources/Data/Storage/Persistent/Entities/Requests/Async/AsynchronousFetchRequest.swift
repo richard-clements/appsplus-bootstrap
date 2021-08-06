@@ -1,15 +1,27 @@
-#if canImport(Foundation)
+#if canImport(Foundation) && canImport(Combine)
 
 import Foundation
+import Combine
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 public struct AsynchronousFetchRequest<T>: AsynchronousPersistentStoreRequest {
     
-    typealias ReturnType = T
+    public typealias ReturnType = T
     public typealias Output = [T]
     
-    public let publisher: Publisher
+    public let publisher: PublisherType
     let fetchRequest: FetchRequest<T>
+    let shouldSubscribe: Bool
+    
+    init(publisher: @escaping PublisherType, fetchRequest: FetchRequest<T>) {
+        self.init(publisher: publisher, fetchRequest: fetchRequest, shouldSubscribe: false)
+    }
+    
+    private init(publisher: @escaping PublisherType, fetchRequest: FetchRequest<T>, shouldSubscribe: Bool) {
+        self.publisher = publisher
+        self.fetchRequest = fetchRequest
+        self.shouldSubscribe = shouldSubscribe
+    }
     
     public var limit: Int? {
         fetchRequest.limit
@@ -61,6 +73,15 @@ public struct AsynchronousFetchRequest<T>: AsynchronousPersistentStoreRequest {
     
     public func batchSize(_ batchSize: Int) -> AsynchronousFetchRequest<T> {
         AsynchronousFetchRequest(publisher: publisher, fetchRequest: fetchRequest.batchSize(batchSize))
+    }
+    
+}
+
+@available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
+extension AsynchronousFetchRequest {
+    
+    public func subscribe() -> AnyPublisher<Output, Error> {
+        publisher(AsynchronousFetchRequest(publisher: publisher, fetchRequest: fetchRequest, shouldSubscribe: true))
     }
     
 }
