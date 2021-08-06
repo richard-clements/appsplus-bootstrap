@@ -5,6 +5,7 @@ import Combine
 import XCTest
 @testable import AppsPlusData
 
+@available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 class AsynchronousFetchRequestTest: XCTestCase {
     
     var initialRequest: AsynchronousFetchRequest<MockEntity>!
@@ -218,6 +219,7 @@ class AsynchronousFetchRequestTest: XCTestCase {
     
 }
 
+@available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 extension AsynchronousFetchRequestTest {
     
     func publisher(request: AsynchronousFetchRequest<MockEntity>) -> AnyPublisher<[MockEntity], Error> {

@@ -27,11 +27,11 @@ struct AsynchronousCoreDataEntity<EntityType>: AsynchronousEntity {
             readPublisher(request.backgroundScope)
                 .flatMap { context -> AnyPublisher<[EntityType], Error> in
                     if request.shouldSubscribe {
-                        return Just(CoreDataEntity(identifier: identifier, context: context).fetch(request: request.asFetchRequest()))
-                            .setFailureType(to: Error.self)
+                        return CoreDataFetchResultsPublisher(context: context, fetchRequest: request.asFetchRequest())
                             .eraseToAnyPublisher()
                     } else {
-                        return CoreDataFetchResultsPublisher(context: context, fetchRequest: request.asFetchRequest())
+                        return Just(CoreDataEntity(identifier: identifier, context: context).fetch(request: request.asFetchRequest()))
+                            .setFailureType(to: Error.self)
                             .eraseToAnyPublisher()
                     }
                 }

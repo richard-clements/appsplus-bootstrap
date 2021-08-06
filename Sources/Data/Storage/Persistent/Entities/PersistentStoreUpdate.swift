@@ -22,7 +22,7 @@ public struct PersistentStoreUpdateSkip: PersistentStoreUpdate {
 }
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
-extension Publisher where Output: PersistentStoreUpdate {
+extension Publisher where Output == PersistentStoreUpdate {
     
     func save() -> AnyPublisher<Void, Error> {
         reduce([PersistentStoreUpdate]()) { current, value in
@@ -35,6 +35,16 @@ extension Publisher where Output: PersistentStoreUpdate {
         .flatMap { $0.publisher.setFailureType(to: Error.self) }
         .flatMap { $0.commit() }
         .eraseToAnyPublisher()
+    }
+    
+}
+
+@available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
+extension Publisher where Output: PersistentStoreUpdate {
+    
+    func save() -> AnyPublisher<Void, Error> {
+        map { $0 as PersistentStoreUpdate }
+            .save()
     }
     
 }

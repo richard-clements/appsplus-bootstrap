@@ -11,7 +11,6 @@ struct CoreDataEntity {
     
     func delete(request: NSFetchRequest<NSFetchRequestResult>) -> PersistentStoreUpdate {
         let deleteRequest = NSBatchDeleteRequest(fetchRequest: request)
-        deleteRequest.resultType = .resultTypeCount
         _ = try? context.execute(deleteRequest)
         return CoreDataUpdate(identifier: identifier, context: context)
     }

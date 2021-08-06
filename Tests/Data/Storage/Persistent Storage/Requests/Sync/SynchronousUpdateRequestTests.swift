@@ -5,6 +5,7 @@ import Combine
 import XCTest
 @testable import AppsPlusData
 
+@available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 class SynchronousUpdateRequestTest: XCTestCase {
     
     var initialCreateRequest: SynchronousUpdateRequest<MockEntity>!

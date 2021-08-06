@@ -5,6 +5,7 @@ import Combine
 import XCTest
 @testable import AppsPlusData
 
+@available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 class AsynchronousDeleteRequestTest: XCTestCase {
     
     var initialRequest: AsynchronousDeleteRequest<MockEntity>!
@@ -124,6 +125,7 @@ class AsynchronousDeleteRequestTest: XCTestCase {
     }
 }
 
+@available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 extension AsynchronousDeleteRequestTest {
     
     func publisher(request: AsynchronousDeleteRequest<MockEntity>) -> AnyPublisher<PersistentStoreUpdate, Error> {
