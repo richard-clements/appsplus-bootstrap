@@ -47,7 +47,7 @@ public struct StringFilterOptions: OptionSet, CustomStringConvertible {
     public static let caseInsensitive = StringFilterOptions(rawValue: 1 << 0)
     public static let diacriticInsensitive = StringFilterOptions(rawValue: 1 << 1)
     
-    var description: String {
+    public var description: String {
         if isEmpty {
             return ""
         } else {
