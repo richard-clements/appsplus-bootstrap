@@ -15,7 +15,7 @@ public protocol CoreDataPersistentContainer {
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 extension CoreDataPersistentContainer {
     
-    static func container(for name: String) -> CoreDataPersistentContainer {
+    public static func container(for name: String) -> CoreDataPersistentContainer {
         _CoreDataPersistentContainer(name: name)
     }
     

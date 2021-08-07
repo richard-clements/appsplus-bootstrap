@@ -32,16 +32,6 @@ public class CoreDataPersistentStorage: PersistentStorage {
         .eraseToAnyEntity()
     }
     
-//    public func beginTransactions(_ modifier: @escaping (SynchronousStorage) throws -> Void) -> AnyPublisher<PersistentStoreUpdate, Error> {
-//        let identifier = self.identifier
-//        return container.contextForWriting()
-//            .tryMap { context in
-//                try modifier(SynchronousCoreDataStorage(identifier: identifier, context: context))
-//                return CoreDataUpdate(identifier: identifier, context: context)
-//            }
-//            .eraseToAnyPublisher()
-//    }
-    
     public func beginTransactions() -> PersistentStoreTransaction {
         PersistentStoreTransaction { [weak self] transaction in
             guard let self = self else {
