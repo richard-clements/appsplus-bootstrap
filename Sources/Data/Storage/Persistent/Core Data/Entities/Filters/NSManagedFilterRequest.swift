@@ -37,7 +37,7 @@ extension FilterRequest where Entity: NSManagedObject {
     
 }
 
-public struct StringFilterOptions: OptionSet {
+public struct StringFilterOptions: OptionSet, CustomStringConvertible {
     public let rawValue: Int
     
     public init(rawValue: Int) {
