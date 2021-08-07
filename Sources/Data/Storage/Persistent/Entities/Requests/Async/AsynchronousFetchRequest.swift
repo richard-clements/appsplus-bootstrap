@@ -21,7 +21,7 @@ public struct AsynchronousFetchRequestBackgroundScope: ExpressibleByStringLitera
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 public struct AsynchronousFetchRequest<T>: AsynchronousPersistentStoreRequest {
     
-    public typealias ReturnType = T
+    public typealias Entity = T
     public typealias Output = [T]
     
     let publisher: PublisherType
@@ -98,6 +98,9 @@ extension AsynchronousFetchRequest: PersistentStoreRequest {
     }
     
 }
+
+@available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
+extension AsynchronousFetchRequest: FilterRequest { }
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 extension AsynchronousFetchRequest {

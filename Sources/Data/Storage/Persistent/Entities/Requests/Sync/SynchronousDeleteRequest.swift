@@ -5,7 +5,7 @@ import Foundation
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 public struct SynchronousDeleteRequest<T>: SynchronousPersistentStoreRequest {
     
-    public typealias ReturnType = T
+    public typealias Entity = T
     public typealias Output = Void
     
     let executor: Executor
@@ -69,6 +69,9 @@ extension SynchronousDeleteRequest: PersistentStoreRequest {
     }
     
 }
+
+@available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
+extension SynchronousDeleteRequest: FilterRequest { }
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 extension SynchronousDeleteRequest {

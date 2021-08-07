@@ -7,16 +7,16 @@ import CoreData
 extension PersistentStoreRequest {
     
     var entityName: String {
-        guard let name = (ReturnType.self as? NSManagedObject.Type)?.entity().name else {
-            fatalError("Invalid entity \(String(describing: ReturnType.self))")
+        guard let name = (Entity.self as? NSManagedObject.Type)?.entity().name else {
+            fatalError("Invalid entity \(String(describing: Entity.self))")
         }
         return name
     }
     
     func asFetchRequest() -> NSFetchRequest<NSFetchRequestResult> {
-        guard let type = ReturnType.self as? NSManagedObject.Type,
+        guard let type = Entity.self as? NSManagedObject.Type,
               let name = type.entity().name else {
-            fatalError("Invalid entity \(String(describing: ReturnType.self))")
+            fatalError("Invalid entity \(String(describing: Entity.self))")
         }
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: name)
         fetchRequest.predicate = predicate

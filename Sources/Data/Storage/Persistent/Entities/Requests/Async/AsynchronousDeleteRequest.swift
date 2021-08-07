@@ -6,7 +6,7 @@ import Combine
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 public struct AsynchronousDeleteRequest<T>: AsynchronousPersistentStoreRequest {
     
-    public typealias ReturnType = T
+    public typealias Entity = T
     public typealias Output = PersistentStoreUpdate
     
     let publisher: PublisherType
@@ -69,6 +69,9 @@ extension AsynchronousDeleteRequest: PersistentStoreRequest {
     }
     
 }
+
+@available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
+extension AsynchronousDeleteRequest: FilterRequest { }
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 extension AsynchronousDeleteRequest {
