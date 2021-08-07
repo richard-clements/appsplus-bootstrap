@@ -50,10 +50,6 @@ let package = Package(
     name: "AppsPlus",
     products: [
         .library(
-            name: "AppsPlus",
-            targets: ["AppsPlus"]
-        ),
-        .library(
             name: "AppsPlusData",
             targets: ["AppsPlusData"]
         ),
