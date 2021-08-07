@@ -24,7 +24,7 @@ public struct PersistentStoreUpdateSkip: PersistentStoreUpdate {
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 extension Publisher where Output == PersistentStoreUpdate {
     
-    func save() -> AnyPublisher<Void, Error> {
+    public func save() -> AnyPublisher<Void, Error> {
         reduce([PersistentStoreUpdate]()) { current, value in
             if current.contains(where: { $0.identifier == value.identifier }) {
                 return current
@@ -42,7 +42,7 @@ extension Publisher where Output == PersistentStoreUpdate {
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 extension Publisher where Output: PersistentStoreUpdate {
     
-    func save() -> AnyPublisher<Void, Error> {
+    public func save() -> AnyPublisher<Void, Error> {
         map { $0 as PersistentStoreUpdate }
             .save()
     }
