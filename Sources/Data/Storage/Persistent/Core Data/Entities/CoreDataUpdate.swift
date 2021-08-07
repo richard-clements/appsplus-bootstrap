@@ -14,9 +14,7 @@ struct CoreDataUpdate: PersistentStoreUpdate {
         Future { promise in
             context.perform {
                 do {
-                    if context.hasChanges {
-                        try context.save()
-                    }
+                    try context.save()
                     promise(.success(()))
                 } catch {
                     promise(.failure(error))
