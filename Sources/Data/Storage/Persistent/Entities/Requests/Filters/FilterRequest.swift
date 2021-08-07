@@ -1,7 +1,6 @@
-#if canImport(Foundation) && canImport(CoreData)
+#if canImport(Foundation)
 
 import Foundation
-import CoreData
 
 public protocol FilterRequest {
     
@@ -9,40 +8,6 @@ public protocol FilterRequest {
     func suchThat(predicate: NSPredicate) -> Self
     func and(predicate: NSPredicate) -> Self
     func or(predicate: NSPredicate) -> Self
-    
-}
-
-extension FilterRequest where Entity: NSManagedObject {
-    
-    public typealias KeyPathFilterBuilder<Value> = () -> KeyPathFilter<Entity, Value>
-    
-    public func suchThat<Value>(filter: KeyPathFilterBuilder<Value>) -> Self {
-        suchThat(predicate: filter().predicate)
-    }
-    
-    public func and<Value>(filter: KeyPathFilterBuilder<Value>) -> Self {
-        and(predicate: filter().predicate)
-    }
-    
-    public func or<Value>(filter: KeyPathFilterBuilder<Value>) -> Self {
-        or(predicate: filter().predicate)
-    }
-    
-}
-
-extension FilterRequest where Entity: NSManagedObject {
-    
-    public func suchThat<Value>(_ keyPath: KeyPath<Entity, Value>, containedIn array: [Any]) -> Self {
-        suchThat(predicate: NSPredicate(format: "\(keyPath.keyPath) IN %@", array))
-    }
-    
-    public func and<Value>(_ keyPath: KeyPath<Entity, Value>, containedIn array: [Any]) -> Self {
-        and(predicate: NSPredicate(format: "\(keyPath.keyPath) IN %@", array))
-    }
-    
-    public func or<Value>(_ keyPath: KeyPath<Entity, Value>, containedIn array: [Any]) -> Self {
-        or(predicate: NSPredicate(format: "\(keyPath.keyPath) IN %@", array))
-    }
     
 }
 
