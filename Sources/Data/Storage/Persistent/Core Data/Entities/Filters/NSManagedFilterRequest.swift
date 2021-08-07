@@ -19,6 +19,10 @@ extension FilterRequest where Entity: NSManagedObject {
         or(predicate: filter().predicate)
     }
     
+    public func excluding<Value>(filter: KeyPathFilterBuilder<Value>) -> Self {
+        excluding(predicate: filter().predicate)
+    }
+    
 }
 
 extension FilterRequest where Entity: NSManagedObject {
@@ -33,6 +37,10 @@ extension FilterRequest where Entity: NSManagedObject {
     
     public func or<Value>(_ keyPath: KeyPath<Entity, Value>, containedIn array: [Any]) -> Self {
         or(predicate: NSPredicate(format: "\(keyPath.keyPath) IN %@", array))
+    }
+    
+    public func excluding<Value>(_ keyPath: KeyPath<Entity, Value>, containedIn array: [Any]) -> Self {
+        excluding(predicate: NSPredicate(format: "\(keyPath.keyPath) IN %@", array))
     }
     
 }
@@ -151,6 +159,30 @@ extension FilterRequest where Entity: NSManagedObject {
     
     public func or(_ keyPath: KeyPath<Entity, String?>, matches value: String, options: StringFilterOptions = []) -> Self {
         or(predicate: predicate(keyPath: keyPath, matches: value, options: options))
+    }
+    
+}
+
+extension FilterRequest where Entity: NSManagedObject {
+    
+    public func excluding(_ keyPath: KeyPath<Entity, String?>, like value: String, options: StringFilterOptions = []) -> Self {
+        excluding(predicate: predicate(keyPath: keyPath, like: value, options: options))
+    }
+    
+    public func excluding(_ keyPath: KeyPath<Entity, String?>, contains value: String, options: StringFilterOptions = []) -> Self {
+        excluding(predicate: predicate(keyPath: keyPath, contains: value, options: options))
+    }
+    
+    public func excluding(_ keyPath: KeyPath<Entity, String?>, beginsWith value: String, options: StringFilterOptions = []) -> Self {
+        excluding(predicate: predicate(keyPath: keyPath, beginsWith: value, options: options))
+    }
+    
+    public func excluding(_ keyPath: KeyPath<Entity, String?>, endsWith value: String, options: StringFilterOptions = []) -> Self {
+        excluding(predicate: predicate(keyPath: keyPath, endsWith: value, options: options))
+    }
+    
+    public func excluding(_ keyPath: KeyPath<Entity, String?>, matches value: String, options: StringFilterOptions = []) -> Self {
+        excluding(predicate: predicate(keyPath: keyPath, matches: value, options: options))
     }
     
 }

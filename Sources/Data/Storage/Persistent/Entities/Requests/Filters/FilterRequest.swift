@@ -8,6 +8,7 @@ public protocol FilterRequest {
     func suchThat(predicate: NSPredicate) -> Self
     func and(predicate: NSPredicate) -> Self
     func or(predicate: NSPredicate) -> Self
+    func excluding(predicate: NSPredicate) -> Self
     
 }
 
