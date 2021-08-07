@@ -32,15 +32,15 @@ extension FilterRequest where Entity: NSManagedObject {
 
 extension FilterRequest where Entity: NSManagedObject {
     
-    public func suchThat(_ keyPath: KeyPath<Entity, Any>, containedIn array: [Any]) -> Self {
+    public func suchThat<Value>(_ keyPath: KeyPath<Entity, Value>, containedIn array: [Any]) -> Self {
         suchThat(predicate: NSPredicate(format: "\(keyPath.keyPath) IN %@", array))
     }
     
-    public func and(_ keyPath: KeyPath<Entity, Any>, containedIn array: [Any]) -> Self {
+    public func and<Value>(_ keyPath: KeyPath<Entity, Value>, containedIn array: [Any]) -> Self {
         and(predicate: NSPredicate(format: "\(keyPath.keyPath) IN %@", array))
     }
     
-    public func or(_ keyPath: KeyPath<Entity, Any>, containedIn array: [Any]) -> Self {
+    public func or<Value>(_ keyPath: KeyPath<Entity, Value>, containedIn array: [Any]) -> Self {
         or(predicate: NSPredicate(format: "\(keyPath.keyPath) IN %@", array))
     }
     
