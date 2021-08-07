@@ -63,14 +63,6 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "AppsPlus",
-            sources: ["AppsPlus"],
-            dependencies: [
-                "AppsPlusData",
-                "AppsPlusUI"
-            ]
-        ),
-        .target(
             name: "AppsPlusData",
             sources: ["Data"]
         ),
