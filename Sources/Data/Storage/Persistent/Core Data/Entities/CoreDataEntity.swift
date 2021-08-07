@@ -10,8 +10,8 @@ struct CoreDataEntity {
     let context: NSManagedObjectContext
     
     func delete(request: NSFetchRequest<NSFetchRequestResult>) -> PersistentStoreUpdate {
-        let deleteRequest = NSBatchDeleteRequest(fetchRequest: request)
-        _ = try? context.execute(deleteRequest)
+        (try? context.fetch(request))?.compactMap { $0 as? NSManagedObject }
+            .forEach { context.delete($0) }
         return CoreDataUpdate(identifier: identifier, context: context)
     }
     

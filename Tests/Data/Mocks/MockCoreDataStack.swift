@@ -9,32 +9,11 @@ import XCTest
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 class MockPersistentContainer: NSPersistentContainer, CoreDataPersistentContainer {
     
-    class WritingContext: NSManagedObjectContext {
-        
-        var attemptedBatchDelete: Bool = false
-        
-        override func execute(_ request: NSPersistentStoreRequest) throws -> NSPersistentStoreResult {
-            if request is NSBatchDeleteRequest {
-                attemptedBatchDelete = true
-                return NSBatchDeleteResult()
-            } else {
-                return try super.execute(request)
-            }
-        }
-        
-    }
-    
     var cancellables = Set<AnyCancellable>()
     let expectation = XCTestExpectation()
     
-    var attemptedBatchDelete: Bool {
-        writingContext.attemptedBatchDelete
-    }
-    
-    lazy var writingContext: WritingContext = {
-        let context = WritingContext(concurrencyType: .privateQueueConcurrencyType)
-        context.parent = viewContext
-        return context
+    lazy var writingContext: NSManagedObjectContext = {
+        newBackgroundContext()
     }()
     
     func contextForWriting() -> AnyPublisher<NSManagedObjectContext, Error> {

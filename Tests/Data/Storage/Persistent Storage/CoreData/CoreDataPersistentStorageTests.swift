@@ -133,7 +133,9 @@ class CoreDataPersistentStorageTests: XCTestCase {
         
         wait(for: [expectation], timeout: 1)
         
-        XCTAssertTrue(coreDataStack.container.attemptedBatchDelete)
+        let fetchRequest = TestEntity.fetchRequest()
+        let result = try! coreDataStack.container.viewContext.fetch(fetchRequest).compactMap { $0 as? TestEntity }
+        XCTAssertTrue(result.isEmpty)
     }
     
     func testCreate_CreatesNewObject() {
@@ -337,7 +339,9 @@ class CoreDataPersistentStorageTests: XCTestCase {
         
         wait(for: [expectation], timeout: 1)
         
-        XCTAssertTrue(coreDataStack.container.attemptedBatchDelete)
+        let fetchRequest = TestEntity.fetchRequest()
+        let result = try! coreDataStack.container.viewContext.fetch(fetchRequest).compactMap { $0 as? TestEntity }
+        XCTAssertTrue(result.isEmpty)
     }
     
     func testSynchronousCreate_CreatesNewObject() {
@@ -576,7 +580,9 @@ class CoreDataPersistentStorageTests: XCTestCase {
         
         wait(for: [expectation], timeout: 1)
         
-        XCTAssertTrue(coreDataStack.container.attemptedBatchDelete)
+        let fetchRequest = TestEntity.fetchRequest()
+        let result = try! coreDataStack.container.viewContext.fetch(fetchRequest).compactMap { $0 as? TestEntity }
+        XCTAssertTrue(result.isEmpty)
     }
     
     func testBeginTransactionsCreate_CreatesNewObject() {
