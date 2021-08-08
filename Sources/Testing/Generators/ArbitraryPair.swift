@@ -4,8 +4,13 @@ import Foundation
 import SwiftCheck
 
 public struct ArbitraryPair<S, T> {
-    let first: S
-    let second: T
+    public let first: S
+    public let second: T
+    
+    public init(first: S, second: T) {
+        self.first = first
+        self.second = second
+    }
 }
 
 extension ArbitraryPair {
