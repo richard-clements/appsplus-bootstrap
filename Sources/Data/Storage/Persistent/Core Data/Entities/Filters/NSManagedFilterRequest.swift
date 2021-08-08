@@ -55,19 +55,19 @@ extension FilterRequest where Entity: NSManagedObject {
 
 extension FilterRequest where Entity: NSManagedObject {
     
-    public func suchThat<Value: CVarArgConvertible>(_ keyPath: KeyPath<Entity, Value?>, containedIn array: [Value]) -> Self {
+    public func suchThat<Value: CVarArgConvertible>(_ keyPath: KeyPath<Entity, Value?>, containedIn array: [Value?]) -> Self {
         suchThat(predicate: contained(in: array, for: keyPath))
     }
     
-    public func and<Value: CVarArgConvertible>(_ keyPath: KeyPath<Entity, Value?>, containedIn array: [Value]) -> Self {
+    public func and<Value: CVarArgConvertible>(_ keyPath: KeyPath<Entity, Value?>, containedIn array: [Value?]) -> Self {
         and(predicate: contained(in: array, for: keyPath))
     }
     
-    public func or<Value: CVarArgConvertible>(_ keyPath: KeyPath<Entity, Value?>, containedIn array: [Value]) -> Self {
+    public func or<Value: CVarArgConvertible>(_ keyPath: KeyPath<Entity, Value?>, containedIn array: [Value?]) -> Self {
         or(predicate: contained(in: array, for: keyPath))
     }
     
-    public func excluding<Value: CVarArgConvertible>(_ keyPath: KeyPath<Entity, Value?>, containedIn array: [Value]) -> Self {
+    public func excluding<Value: CVarArgConvertible>(_ keyPath: KeyPath<Entity, Value?>, containedIn array: [Value?]) -> Self {
         excluding(predicate: contained(in: array, for: keyPath))
     }
     
