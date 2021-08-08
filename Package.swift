@@ -55,6 +55,10 @@ let package = Package(
         .library(
             name: "AppsPlusUI",
             targets: ["AppsPlusUI"]
+        ),
+        .library(
+            name: "AppsPlusTesting",
+            targets: ["AppsPlusTesting"]
         )
     ],
     dependencies: [
@@ -73,6 +77,11 @@ let package = Package(
         .target(
             name: "AppsPlusUI",
             sources: ["UI"]
+        ),
+        .target(
+            name: "AppsPlusTesting",
+            sources: ["Testing"],
+            dependencies: ["SwiftCheck"]
         )
     ]
 )
