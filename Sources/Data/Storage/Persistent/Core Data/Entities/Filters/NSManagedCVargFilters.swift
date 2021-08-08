@@ -84,7 +84,7 @@ extension Bool: CVarArgConvertible {
 extension NSNumber: CVarArgConvertible {
     
     public func asCVarArg() -> CVarArg {
-        return self
+        self
     }
     
 }
