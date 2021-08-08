@@ -77,11 +77,11 @@ class SecureStorageTests: XCTestCase {
 
 extension SecureStorageKey: Arbitrary, Hashable {
     
-    static let testKey = SecureStorageKey(rawValue: "testKey")
+    static let testKey = SecureStorageKey(value: "testKey")
     
     public static var arbitrary: Gen<SecureStorageKey> {
         Gen.compose {
-            return SecureStorageKey(rawValue: $0.generate())
+            return SecureStorageKey(value: $0.generate())
         }
     }
     

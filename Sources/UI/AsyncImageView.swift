@@ -1,4 +1,4 @@
-#if canImport(UIKit) && canImport(Combine)
+#if canImport(UIKit) && canImport(Combine) && (os(iOS) || os(tvOS) || os(macOS))
 
 import UIKit
 import Combine

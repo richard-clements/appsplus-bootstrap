@@ -1,3 +1,6 @@
+#if canImport(Foundation)
+
+import Foundation
 @testable import AppsPlusData
 
 class MockSecureStorage: SecureStorage {
@@ -21,3 +24,5 @@ class MockSecureStorage: SecureStorage {
     }
     
 }
+
+#endif

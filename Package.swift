@@ -34,7 +34,8 @@ extension Target {
             name: name,
             dependencies: dependencies,
             path: "Tests",
-            exclude: [], sources: sources,
+            exclude: [],
+            sources: sources,
             resources: nil,
             cSettings: nil,
             cxxSettings: nil,
@@ -48,10 +49,6 @@ let package = Package(
     name: "AppsPlus",
     products: [
         .library(
-            name: "AppsPlus",
-            targets: ["AppsPlus"]
-        ),
-        .library(
             name: "AppsPlusData",
             targets: ["AppsPlusData"]
         ),
@@ -64,14 +61,6 @@ let package = Package(
         .package(url: "https://github.com/typelift/SwiftCheck", .exact("0.12.0"))
     ],
     targets: [
-        .target(
-            name: "AppsPlus",
-            sources: ["AppsPlus"],
-            dependencies: [
-                "AppsPlusData",
-                "AppsPlusUI"
-            ]
-        ),
         .target(
             name: "AppsPlusData",
             sources: ["Data"]
