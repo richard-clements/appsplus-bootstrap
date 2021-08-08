@@ -28,7 +28,7 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
     private let readContextsQueue = DispatchQueue(label: "PersistentContainer.\(UUID().uuidString).ReadContexts")
     private let readContextTimeOut: TimeInterval = 5 * 60
     
-    override func loadPersistentStores(completionHandler block: @escaping (NSPersistentStoreDescription, Error?) -> Void) {
+    public override func loadPersistentStores(completionHandler block: @escaping (NSPersistentStoreDescription, Error?) -> Void) {
         super.loadPersistentStores { [weak self] in
             self?.writeContext = self?.newBackgroundContext()
             self?.handleSave()
@@ -55,7 +55,7 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
             .store(in: &cancellables)
     }
     
-    func contextForWriting() -> AnyPublisher<NSManagedObjectContext, Error> {
+    public func contextForWriting() -> AnyPublisher<NSManagedObjectContext, Error> {
         Future { [weak self] promise in
             guard let writeContext = self?.writeContext else {
                 promise(.failure(PersistentContainerError.writeUnavailable))
@@ -83,7 +83,7 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
         }
     }
     
-    func contextForReading(inBackgroundScope scope: AsynchronousFetchRequestBackgroundScope?) -> AnyPublisher<NSManagedObjectContext, Error> {
+    public func contextForReading(inBackgroundScope scope: AsynchronousFetchRequestBackgroundScope?) -> AnyPublisher<NSManagedObjectContext, Error> {
         let context = self.context(for: scope)
         return Future { promise in
             context.perform {
