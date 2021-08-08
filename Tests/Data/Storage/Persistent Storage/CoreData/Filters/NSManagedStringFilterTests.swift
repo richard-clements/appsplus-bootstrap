@@ -20,8 +20,24 @@ class NSManagedStringFilterTests: XCTestCase {
         XCTAssertEqual(NSPredicate(format: "optionalString == %@", "Test"), (\Object.optionalString == "Test").predicate)
     }
     
-    func testOptionalUUIDNotEqualsUUID() {
+    func testOptionalStringNotEqualsString() {
         XCTAssertEqual(NSPredicate(format: "optionalString != %@", "Test"), (\Object.optionalString != "Test").predicate)
+    }
+    
+    func testOptionalStringLessThanString() {
+        XCTAssertEqual(NSPredicate(format: "optionalString < %@", "Test"), (\Object.optionalString < "Test").predicate)
+    }
+    
+    func testOptionalStringLessThanOrEqualString() {
+        XCTAssertEqual(NSPredicate(format: "optionalString <= %@", "Test"), (\Object.optionalString <= "Test").predicate)
+    }
+    
+    func testOptionalStringGreaterThanString() {
+        XCTAssertEqual(NSPredicate(format: "optionalString > %@", "Test"), (\Object.optionalString > "Test").predicate)
+    }
+    
+    func testOptionalStringGreaterThanOrEqualString() {
+        XCTAssertEqual(NSPredicate(format: "optionalString >= %@", "Test"), (\Object.optionalString >= "Test").predicate)
     }
     
     func testNonOptionalStringEqualsNil() {
@@ -36,8 +52,24 @@ class NSManagedStringFilterTests: XCTestCase {
         XCTAssertEqual(NSPredicate(format: "string == %@", "Test"), (\Object.string == "Test").predicate)
     }
     
-    func testNonOptionalUUIDNotEqualsUUID() {
+    func testNonOptionalStringNotEqualsString() {
         XCTAssertEqual(NSPredicate(format: "string != %@", "Test"), (\Object.string != "Test").predicate)
+    }
+    
+    func testNonOptionalStringLessThanString() {
+        XCTAssertEqual(NSPredicate(format: "string < %@", "Test"), (\Object.string < "Test").predicate)
+    }
+    
+    func testNonOptionalStringLessThanOrEqualString() {
+        XCTAssertEqual(NSPredicate(format: "string <= %@", "Test"), (\Object.string <= "Test").predicate)
+    }
+    
+    func testNonOptionalStringGreaterThanString() {
+        XCTAssertEqual(NSPredicate(format: "string > %@", "Test"), (\Object.string > "Test").predicate)
+    }
+    
+    func testNonOptionalStringGreaterThanOrEqualString() {
+        XCTAssertEqual(NSPredicate(format: "string >= %@", "Test"), (\Object.string >= "Test").predicate)
     }
     
 }
