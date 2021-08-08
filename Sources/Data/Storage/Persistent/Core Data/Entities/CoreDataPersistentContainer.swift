@@ -13,16 +13,7 @@ public protocol CoreDataPersistentContainer {
 }
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
-public struct PersistentContainer {
-    
-    public static func container(for name: String) -> CoreDataPersistentContainer {
-        _CoreDataPersistentContainer(name: name)
-    }
-    
-}
-
-@available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
-class _CoreDataPersistentContainer: NSPersistentContainer, CoreDataPersistentContainer {
+class PersistentContainer: NSPersistentContainer, CoreDataPersistentContainer {
     
     enum PersistentContainerError: Error {
         case writeUnavailable
@@ -34,7 +25,7 @@ class _CoreDataPersistentContainer: NSPersistentContainer, CoreDataPersistentCon
     private var writeContext: NSManagedObjectContext?
     private var readContexts = [String: NSManagedObjectContext]()
     private var lastUsedContexts = [String: Date]()
-    private let readContextsQueue = DispatchQueue(label: "_CoreDataPersistentContainer.\(UUID().uuidString).ReadContexts")
+    private let readContextsQueue = DispatchQueue(label: "PersistentContainer.\(UUID().uuidString).ReadContexts")
     private let readContextTimeOut: TimeInterval = 5 * 60
     
     override func loadPersistentStores(completionHandler block: @escaping (NSPersistentStoreDescription, Error?) -> Void) {
