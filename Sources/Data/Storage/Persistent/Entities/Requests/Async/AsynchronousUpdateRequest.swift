@@ -102,4 +102,19 @@ extension AsynchronousUpdateRequest {
     
 }
 
+@available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
+extension AsynchronousUpdateRequest: Equatable {
+    
+    public static func == (lhs: AsynchronousUpdateRequest, rhs: AsynchronousUpdateRequest) -> Bool {
+        lhs.limit == rhs.limit &&
+            lhs.offset == rhs.offset &&
+            lhs.batchSize == rhs.batchSize &&
+            lhs.predicate == rhs.predicate &&
+            lhs.sortDescriptors == rhs.sortDescriptors &&
+            lhs.shouldUpdate == rhs.shouldUpdate &&
+            lhs.shouldCreate == rhs.shouldCreate
+    }
+    
+}
+
 #endif

@@ -81,4 +81,18 @@ extension SynchronousDeleteRequest {
     }
     
 }
+
+@available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
+extension SynchronousDeleteRequest: Equatable {
+    
+    public static func == (lhs: SynchronousDeleteRequest, rhs: SynchronousDeleteRequest) -> Bool {
+        lhs.limit == rhs.limit &&
+            lhs.offset == rhs.offset &&
+            lhs.batchSize == rhs.batchSize &&
+            lhs.predicate == rhs.predicate &&
+            lhs.sortDescriptors == rhs.sortDescriptors
+    }
+    
+}
+
 #endif
