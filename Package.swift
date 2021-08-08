@@ -13,7 +13,7 @@ extension Target {
             name: name,
             dependencies: dependencies,
             path: "Sources",
-            exclude: [],
+            exclude: Array(Set(["Data", "UI", "Testing"]).subtracting(sources)),
             sources: sources,
             publicHeadersPath: nil,
             cSettings: nil,
