@@ -13,7 +13,7 @@ public protocol CoreDataPersistentContainer {
 }
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
-class PersistentContainer: NSPersistentContainer, CoreDataPersistentContainer {
+public class PersistentContainer: NSPersistentContainer, CoreDataPersistentContainer {
     
     enum PersistentContainerError: Error {
         case writeUnavailable
