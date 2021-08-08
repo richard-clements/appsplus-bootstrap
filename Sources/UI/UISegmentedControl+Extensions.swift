@@ -4,7 +4,7 @@ import UIKit
 
 extension UISegmentedControl {
     
-    func setItems(_ items: [String]) {
+    public func setItems(_ items: [String]) {
         while numberOfSegments > items.count {
             removeSegment(at: 0, animated: false)
         }
@@ -16,7 +16,7 @@ extension UISegmentedControl {
         }
     }
     
-    func setItems(_ items: [UIImage]) {
+    public func setItems(_ items: [UIImage]) {
         while numberOfSegments > items.count {
             removeSegment(at: 0, animated: false)
         }

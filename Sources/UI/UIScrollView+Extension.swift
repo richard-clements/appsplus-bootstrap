@@ -5,11 +5,11 @@ import UIKit
 @available(iOS 13.0, tvOS 13.0, *)
 extension UIScrollView {
     
-    func isScrolledToBottom() -> Bool {
+    public func isScrolledToBottom() -> Bool {
         return distanceFromBottom() >= 0
     }
     
-    func distanceFromBottom() -> CGFloat {
+    public func distanceFromBottom() -> CGFloat {
         contentOffset.y + bounds.height - contentSize.height - adjustedContentInset.bottom
     }
     
@@ -34,11 +34,11 @@ extension UIView {
 
 extension UITableView {
     
-    func lastIndexPath() -> IndexPath? {
+    public func lastIndexPath() -> IndexPath? {
         lastIndexPath(numberOfSections: numberOfSections, numberOfItems: numberOfRows)
     }
     
-    func isLastItemVisible() -> Bool {
+    public func isLastItemVisible() -> Bool {
         lastIndexPath().map { indexPathsForVisibleRows?.contains($0) == true } ?? false
     }
     
@@ -46,11 +46,11 @@ extension UITableView {
 
 extension UICollectionView {
     
-    func lastIndexPath() -> IndexPath? {
+    public func lastIndexPath() -> IndexPath? {
         lastIndexPath(numberOfSections: numberOfSections, numberOfItems: numberOfItems)
     }
     
-    func isLastItemVisible() -> Bool {
+    public func isLastItemVisible() -> Bool {
         lastIndexPath().map { indexPathsForVisibleItems.contains($0) } ?? false
     }
     

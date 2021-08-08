@@ -1,6 +1,6 @@
 import Foundation
 
-struct TimeLock {
+public struct TimeLock {
     
     enum TimeLockError: Error {
         case tooEarly
@@ -9,15 +9,15 @@ struct TimeLock {
     let timeLockInterval: TimeInterval
     private var lastLock: Date?
     
-    init(timeLockInterval: TimeInterval) {
+    public init(timeLockInterval: TimeInterval) {
         self.timeLockInterval = timeLockInterval
     }
     
-    mutating func lock() {
+    public mutating func lock() {
         lastLock = Date()
     }
     
-    func unlock() throws {
+    public func unlock() throws {
         if let lastLock = lastLock {
             guard Date().timeIntervalSince(lastLock) >= timeLockInterval else {
                 throw TimeLockError.tooEarly

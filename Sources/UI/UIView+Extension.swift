@@ -4,7 +4,7 @@ import UIKit
 
 extension UIView {
     
-    func pinConstraints(to view: UIView, margin: UIEdgeInsets = .zero) {
+    public func pinConstraints(to view: UIView, margin: UIEdgeInsets = .zero) {
         translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
@@ -15,7 +15,7 @@ extension UIView {
         ])
     }
     
-    func pinConstraints(to layoutGuide: UILayoutGuide, margin: UIEdgeInsets = .zero) {
+    public func pinConstraints(to layoutGuide: UILayoutGuide, margin: UIEdgeInsets = .zero) {
         translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
@@ -26,7 +26,7 @@ extension UIView {
         ])
     }
     
-    func intersection(withWindowFrame frame: CGRect, offset: CGPoint = .zero) -> CGRect? {
+    public func intersection(withWindowFrame frame: CGRect, offset: CGPoint = .zero) -> CGRect? {
         window?.convert(self.frame.offsetBy(dx: offset.x, dy: offset.y), from: superview).intersection(frame)
     }
 }
