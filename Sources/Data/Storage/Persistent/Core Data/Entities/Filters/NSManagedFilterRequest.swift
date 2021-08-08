@@ -25,22 +25,50 @@ extension FilterRequest where Entity: NSManagedObject {
     
 }
 
+private func contained<Root: NSManagedObject, Value: CVarArgConvertible>(in array: [Value], for keyPath: KeyPath<Root, Value>) -> NSPredicate {
+    NSPredicate(format: "\(keyPath.keyPath) IN %@", array.map { $0.asCVarArg() })
+}
+
+private func contained<Root: NSManagedObject, Value: CVarArgConvertible>(in array: [Value?], for keyPath: KeyPath<Root, Value?>) -> NSPredicate {
+    NSPredicate(format: "\(keyPath.keyPath) IN %@", array.map { $0?.asCVarArg() })
+}
+
 extension FilterRequest where Entity: NSManagedObject {
     
-    public func suchThat<Value>(_ keyPath: KeyPath<Entity, Value>, containedIn array: [Any]) -> Self {
-        suchThat(predicate: NSPredicate(format: "\(keyPath.keyPath) IN %@", array))
+    public func suchThat<Value: CVarArgConvertible>(_ keyPath: KeyPath<Entity, Value>, containedIn array: [Value]) -> Self {
+        suchThat(predicate: contained(in: array, for: keyPath))
     }
     
-    public func and<Value>(_ keyPath: KeyPath<Entity, Value>, containedIn array: [Any]) -> Self {
-        and(predicate: NSPredicate(format: "\(keyPath.keyPath) IN %@", array))
+    public func and<Value: CVarArgConvertible>(_ keyPath: KeyPath<Entity, Value>, containedIn array: [Value]) -> Self {
+        and(predicate: contained(in: array, for: keyPath))
     }
     
-    public func or<Value>(_ keyPath: KeyPath<Entity, Value>, containedIn array: [Any]) -> Self {
-        or(predicate: NSPredicate(format: "\(keyPath.keyPath) IN %@", array))
+    public func or<Value: CVarArgConvertible>(_ keyPath: KeyPath<Entity, Value>, containedIn array: [Value]) -> Self {
+        or(predicate: contained(in: array, for: keyPath))
     }
     
-    public func excluding<Value>(_ keyPath: KeyPath<Entity, Value>, containedIn array: [Any]) -> Self {
-        excluding(predicate: NSPredicate(format: "\(keyPath.keyPath) IN %@", array))
+    public func excluding<Value: CVarArgConvertible>(_ keyPath: KeyPath<Entity, Value>, containedIn array: [Value]) -> Self {
+        excluding(predicate: contained(in: array, for: keyPath))
+    }
+    
+}
+
+extension FilterRequest where Entity: NSManagedObject {
+    
+    public func suchThat<Value: CVarArgConvertible>(_ keyPath: KeyPath<Entity, Value?>, containedIn array: [Value]) -> Self {
+        suchThat(predicate: contained(in: array, for: keyPath))
+    }
+    
+    public func and<Value: CVarArgConvertible>(_ keyPath: KeyPath<Entity, Value?>, containedIn array: [Value]) -> Self {
+        and(predicate: contained(in: array, for: keyPath))
+    }
+    
+    public func or<Value: CVarArgConvertible>(_ keyPath: KeyPath<Entity, Value?>, containedIn array: [Value]) -> Self {
+        or(predicate: contained(in: array, for: keyPath))
+    }
+    
+    public func excluding<Value: CVarArgConvertible>(_ keyPath: KeyPath<Entity, Value?>, containedIn array: [Value]) -> Self {
+        excluding(predicate: contained(in: array, for: keyPath))
     }
     
 }

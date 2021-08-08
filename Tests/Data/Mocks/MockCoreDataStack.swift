@@ -32,8 +32,10 @@ class MockPersistentContainer: NSPersistentContainer, CoreDataPersistentContaine
         super.loadPersistentStores { [weak self] in
             if let self = self {
                 NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave)
-                    .sink { [unowned self] in
-                        self.viewContext.mergeChanges(fromContextDidSave: $0)
+                    .sink { [weak self] note in
+                        self?.viewContext.perform {
+                            self?.viewContext.mergeChanges(fromContextDidSave: note)
+                        }
                     }
                     .store(in: &self.cancellables)
             }
