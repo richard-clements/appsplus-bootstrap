@@ -32,6 +32,7 @@ extension CoreDataFetchResultsPublisher {
     class Subscription<S>: NSObject, NSFetchedResultsControllerDelegate where S: Subscriber, Failure == S.Failure, Output == S.Input {
         private var subscriber: S?
         private var controller: NSFetchedResultsController<NSFetchRequestResult>?
+        private var currentDemand: Subscribers.Demand = .none
 
         init(subscriber: S?, request: NSFetchRequest<NSFetchRequestResult>, context: NSManagedObjectContext) {
             if request.sortDescriptors == nil {
@@ -45,7 +46,7 @@ extension CoreDataFetchResultsPublisher {
 
         func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
             let results = controller.fetchedObjects?.compactMap { $0 as? Entity } ?? []
-            guard let subscriber = subscriber else {
+            guard let subscriber = subscriber, currentDemand > 0 else {
                 return
             }
             _ = subscriber.receive(results)
@@ -58,12 +59,14 @@ extension CoreDataFetchResultsPublisher {
 extension CoreDataFetchResultsPublisher.Subscription: Subscription {
 
     func request(_ demand: Subscribers.Demand) {
-        guard let subscriber = subscriber else { return }
+        currentDemand = demand
+        guard let subscriber = subscriber, currentDemand > 0 else { return }
         controller?.managedObjectContext.perform { [weak self] in
             do {
                 try self?.controller?.performFetch()
                 let results = self?.controller?.fetchedObjects?.compactMap { $0 as? Entity } ?? []
-                _ = subscriber.receive(results)
+                self?.currentDemand -= 1
+                self?.currentDemand += subscriber.receive(results)
             } catch {
                 subscriber.receive(completion: .failure(error))
             }
@@ -73,6 +76,7 @@ extension CoreDataFetchResultsPublisher.Subscription: Subscription {
     func cancel() {
         subscriber = nil
         controller = nil
+        currentDemand = .none
     }
 
 }
