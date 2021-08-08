@@ -15,7 +15,6 @@ extension Target {
             path: "Sources",
             exclude: [],
             sources: sources,
-            resources: nil,
             publicHeadersPath: nil,
             cSettings: nil,
             cxxSettings: nil,
