@@ -2,7 +2,7 @@
 
 import Foundation
 
-public struct KeyValueStorageKey {
+public struct KeyValueStorageKey: Hashable {
     let rawValue: String
     
     public init(value: String) {
