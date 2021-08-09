@@ -1,4 +1,4 @@
-#if canImport(Foundation) && canImport(Combine)
+#if canImport(Foundation)
 
 import Foundation
 @testable import AppsPlusData

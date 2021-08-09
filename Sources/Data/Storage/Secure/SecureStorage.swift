@@ -2,7 +2,7 @@
 
 import Foundation
 
-public struct SecureStorageKey {
+public struct SecureStorageKey: Hashable {
     let rawValue: String
     
     public init(value: String) {
@@ -19,11 +19,11 @@ extension SecureStorageKey: ExpressibleByStringLiteral {
 }
 
 public protocol SecureStorage {
-    func setString(_ item: String?, with key: SecureStorageKey) throws
-    func setValue<Item: Codable>(_ item: Item?, with key: SecureStorageKey) throws
+    func setString(_ item: String?, forKey key: SecureStorageKey) throws
+    func setValue<Item: Codable>(_ item: Item?, forKey key: SecureStorageKey) throws
     
-    func string(for key: SecureStorageKey) -> String?
-    func value<Item: Codable>(for key: SecureStorageKey) -> Item?
+    func string(forKey key: SecureStorageKey) -> String?
+    func value<Item: Codable>(forKey key: SecureStorageKey) -> Item?
 }
 
 #endif

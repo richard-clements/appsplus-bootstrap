@@ -14,7 +14,7 @@ public struct SecureStorageImpl: SecureStorage {
         self.decoder = decoder
     }
     
-    public func setString(_ item: String?, with key: SecureStorageKey) throws {
+    public func setString(_ item: String?, forKey key: SecureStorageKey) throws {
         if let item = item {
             try keychain.set(item, key: key.rawValue, ignoringAttributeSynchronizable: true)
         } else {
@@ -22,7 +22,7 @@ public struct SecureStorageImpl: SecureStorage {
         }
     }
     
-    public func setValue<Item: Codable>(_ item: Item?, with key: SecureStorageKey) throws {
+    public func setValue<Item: Codable>(_ item: Item?, forKey key: SecureStorageKey) throws {
         if let item = item {
             let encodedValue = try encoder.encode(item)
             try keychain.set(encodedValue, key: key.rawValue, ignoringAttributeSynchronizable: true)
@@ -31,11 +31,11 @@ public struct SecureStorageImpl: SecureStorage {
         }
     }
     
-    public func string(for key: SecureStorageKey) -> String? {
+    public func string(forKey key: SecureStorageKey) -> String? {
         return try? keychain.get(key.rawValue, ignoringAttributeSynchronizable: true)
     }
     
-    public func value<Item: Codable>(for key: SecureStorageKey) -> Item? {
+    public func value<Item: Codable>(forKey key: SecureStorageKey) -> Item? {
         guard let data = try? keychain.getData(key.rawValue, ignoringAttributeSynchronizable: true) else {
             return nil
         }
