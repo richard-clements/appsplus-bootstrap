@@ -25,7 +25,11 @@ public class MockPersistentStorage: PersistentStorage {
     fileprivate var fetchRequests = [Any]()
     fileprivate var updateRequests = [Any]()
     fileprivate var deleteRequests = [Any]()
-    var transactions = [PersistentStoreTransaction]()
+    public var transactions = [PersistentStoreTransaction]()
+    
+    public init() {
+        
+    }
     
     public func entity<T>(_ type: T.Type) -> AnyAsynchronousEntity<T> {
         MockAsynchronousEntity(parent: self).eraseToAnyEntity()
