@@ -14,25 +14,25 @@ public struct KeyValueStorageImpl: KeyValueStorage {
         self.decoder = decoder
     }
     
-    func set(_ value: String?, forKey key: KeyValueStorageKey) {
+    public func set(_ value: String?, forKey key: KeyValueStorageKey) {
         keyValueStore.set(value, forKey: key.rawValue)
     }
     
-    func string(forKey key: KeyValueStorageKey) -> String? {
+    public func string(forKey key: KeyValueStorageKey) -> String? {
         keyValueStore.string(forKey: key.rawValue)
     }
     
-    func setValue<E>(_ value: E, forKey key: KeyValueStorageKey) where E : Encodable {
+    public func setValue<E>(_ value: E, forKey key: KeyValueStorageKey) where E : Encodable {
         keyValueStore.set(try? encoder.encode(value), forKey: key.rawValue)
     }
     
-    func value<D>(forKey key: KeyValueStorageKey) -> D? where D : Decodable {
+    public func value<D>(forKey key: KeyValueStorageKey) -> D? where D : Decodable {
         keyValueStore.data(forKey: key.rawValue).flatMap {
             try? decoder.decode(D.self, from: $0)
         }
     }
     
-    func remove(key: KeyValueStorageKey) {
+    public func remove(key: KeyValueStorageKey) {
         keyValueStore.removeObject(forKey: key.rawValue)
     }
 }

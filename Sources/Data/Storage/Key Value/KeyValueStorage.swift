@@ -18,7 +18,7 @@ extension KeyValueStorageKey: ExpressibleByStringLiteral {
     
 }
 
-protocol KeyValueStorage {
+public protocol KeyValueStorage {
     func setValue<E: Encodable>(_ value: E, forKey key: KeyValueStorageKey)
     func value<D: Decodable>(forKey key: KeyValueStorageKey) -> D?
     
