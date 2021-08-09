@@ -124,7 +124,6 @@ extension AsynchronousFetchRequest: Equatable {
             lhs.batchSize == rhs.batchSize &&
             lhs.predicate == rhs.predicate &&
             lhs.sortDescriptors == rhs.sortDescriptors &&
-            lhs.shouldSubscribe == rhs.shouldSubscribe &&
             lhs.backgroundScope == rhs.backgroundScope
     }
     
