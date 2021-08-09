@@ -12,6 +12,11 @@ public struct AsynchronousUpdateRequest<T>: AsynchronousPersistentStoreRequest {
     let publisher: PublisherType
     let fetchRequest: UpdateRequest<T>
     
+    public init(publisher: @escaping (Self) -> AnyPublisher<Output, Error>, fetchRequest: UpdateRequest<T>) {
+        self.publisher = publisher
+        self.fetchRequest = fetchRequest
+    }
+    
     var shouldUpdate: Bool {
         fetchRequest.shouldUpdate
     }

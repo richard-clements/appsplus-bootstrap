@@ -12,6 +12,11 @@ public struct AsynchronousDeleteRequest<T>: AsynchronousPersistentStoreRequest {
     let publisher: PublisherType
     let fetchRequest: DeleteRequest<T>
     
+    public init(publisher: @escaping (Self) -> AnyPublisher<Output, Error>, fetchRequest: DeleteRequest<T>) {
+        self.publisher = publisher
+        self.fetchRequest = fetchRequest
+    }
+    
     public func sorted<Value>(by keyPath: KeyPath<T, Value>, ascending: Bool) -> AsynchronousDeleteRequest<T> {
         AsynchronousDeleteRequest(publisher: publisher, fetchRequest: fetchRequest.sorted(by: keyPath, ascending: ascending))
     }

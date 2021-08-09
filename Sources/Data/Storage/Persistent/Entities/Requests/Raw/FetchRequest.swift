@@ -3,9 +3,9 @@
 import Foundation
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
-struct FetchRequest<T> {
+public struct FetchRequest<T> {
     
-    static func empty() -> FetchRequest {
+    public static func empty() -> FetchRequest {
         FetchRequest(predicate: nil, sortDescriptors: nil, limit: nil, offset: nil, batchSize: nil)
     }
     

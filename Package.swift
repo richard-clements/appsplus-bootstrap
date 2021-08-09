@@ -81,7 +81,7 @@ let package = Package(
         .target(
             name: "AppsPlusTesting",
             sources: ["Testing"],
-            dependencies: ["SwiftCheck"]
+            dependencies: ["AppsPlusData", "SwiftCheck"]
         )
     ]
 )

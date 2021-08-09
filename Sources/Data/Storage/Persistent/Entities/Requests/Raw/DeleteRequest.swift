@@ -3,9 +3,9 @@
 import Foundation
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
-struct DeleteRequest<T> {
+public struct DeleteRequest<T> {
     
-    static func empty() -> DeleteRequest {
+    public static func empty() -> DeleteRequest {
         DeleteRequest(predicate: nil, sortDescriptors: nil, limit: nil, offset: nil, batchSize: nil)
     }
     

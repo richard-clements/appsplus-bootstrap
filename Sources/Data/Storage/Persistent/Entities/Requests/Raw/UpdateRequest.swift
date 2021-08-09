@@ -3,13 +3,13 @@
 import Foundation
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
-struct UpdateRequest<T> {
+public struct UpdateRequest<T> {
     
-    static func create() -> UpdateRequest {
+    public static func create() -> UpdateRequest {
         return UpdateRequest(predicate: nil, limit: nil, offset: nil, batchSize: nil, sortDescriptors: nil, shouldCreate: true, shouldUpdate: false, modifier: nil)
     }
     
-    static func update(orCreate: Bool) -> UpdateRequest {
+    public static func update(orCreate: Bool) -> UpdateRequest {
         return UpdateRequest(predicate: nil, limit: nil, offset: nil, batchSize: nil, sortDescriptors: nil, shouldCreate: orCreate, shouldUpdate: true, modifier: nil)
     }
     

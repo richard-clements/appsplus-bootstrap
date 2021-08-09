@@ -29,7 +29,7 @@ public struct AsynchronousFetchRequest<T>: AsynchronousPersistentStoreRequest {
     let shouldSubscribe: Bool
     let backgroundScope: AsynchronousFetchRequestBackgroundScope?
     
-    init(publisher: @escaping PublisherType, fetchRequest: FetchRequest<T>) {
+    public init(publisher: @escaping (Self) -> AnyPublisher<Output, Error>, fetchRequest: FetchRequest<T>) {
         self.init(publisher: publisher, fetchRequest: fetchRequest, shouldSubscribe: false, backgroundScope: nil)
     }
     
