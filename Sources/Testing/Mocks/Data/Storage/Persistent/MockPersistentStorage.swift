@@ -25,6 +25,8 @@ public class MockPersistentStorage: PersistentStorage {
     fileprivate var fetchRequests = [Any]()
     fileprivate var updateRequests = [Any]()
     fileprivate var deleteRequests = [Any]()
+    fileprivate var storedEntities = [Any]()
+    fileprivate var storedTransactions = [Any]()
     public var transactions = [PersistentStoreTransaction]()
     
     public init() {
@@ -32,11 +34,13 @@ public class MockPersistentStorage: PersistentStorage {
     }
     
     public func entity<T>(_ type: T.Type) -> AnyAsynchronousEntity<T> {
-        MockAsynchronousEntity(parent: self).eraseToAnyEntity()
+        let entity = MockAsynchronousEntity<T>(parent: self).eraseToAnyEntity()
+        storedEntities.append(entity)
+        return entity
     }
     
     public func beginTransactions() -> PersistentStoreTransaction {
-        PersistentStoreTransaction { [weak self] in
+        let transaction = PersistentStoreTransaction { [weak self] in
             self?.transactions.append($0)
             return self?
                 .updateResult
@@ -48,6 +52,8 @@ public class MockPersistentStorage: PersistentStorage {
                 }
                 .eraseToAnyPublisher() ?? Fail(error: StorageError.failedToUpdate).eraseToAnyPublisher()
         }
+        storedTransactions.append(transaction)
+        return transaction
     }
     
     public func fetchRequests<Entity>(for entity: Entity.Type) -> [AsynchronousFetchRequest<Entity>] {
