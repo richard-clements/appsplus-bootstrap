@@ -3,7 +3,7 @@
 import Foundation
 
 public struct SecureStorageKey: Hashable {
-    let rawValue: String
+    public let rawValue: String
     
     public init(value: String) {
         self.rawValue = value
