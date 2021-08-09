@@ -10,6 +10,10 @@ public class MockKeyValueStorage: KeyValueStorage {
     public var returnCodables = [KeyValueStorageKey: Any]()
     private var setCodables = [KeyValueStorageKey: Any]()
     
+    public init() {
+        
+    }
+    
     public func setCodable<E: Encodable>(for key: KeyValueStorageKey) -> E? {
         setCodables[key] as? E
     }

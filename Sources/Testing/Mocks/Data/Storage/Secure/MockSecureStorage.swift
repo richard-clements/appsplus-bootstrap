@@ -10,6 +10,10 @@ public class MockSecureStorage: SecureStorage {
     public var returnCodables = [SecureStorageKey: Any]()
     private var setCodables = [SecureStorageKey: Any]()
     
+    public init() {
+        
+    }
+    
     public func setString(_ item: String?, forKey key: SecureStorageKey) throws {
         setStrings[key] = item
     }
