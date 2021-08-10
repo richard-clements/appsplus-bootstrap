@@ -1,4 +1,4 @@
-#if canImport(Foundation) && canImport(CoreData)
+#if canImport(Foundation) && canImport(CoreData) && canImport(Combine)
 
 import XCTest
 import Foundation

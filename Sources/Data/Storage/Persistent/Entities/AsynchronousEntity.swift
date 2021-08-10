@@ -1,4 +1,4 @@
-#if canImport(Foundation)
+#if canImport(Foundation) && canImport(Combine)
 
 import Foundation
 
