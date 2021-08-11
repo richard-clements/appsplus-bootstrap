@@ -67,13 +67,19 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
         }.eraseToAnyPublisher()
     }
     
+    private func backgroundContext() -> NSManagedObjectContext {
+        let context = newBackgroundContext()
+        context.automaticallyMergesChangesFromParent = true
+        return context
+    }
+    
     private func context(for scope: AsynchronousFetchRequestBackgroundScope?) -> NSManagedObjectContext {
         if scope == .new {
-            return newBackgroundContext()
+            return backgroundContext()
         } else if let scope = scope {
             return readContextsQueue.sync {
                 if readContexts[scope.rawValue] == nil {
-                    readContexts[scope.rawValue] = newBackgroundContext()
+                    readContexts[scope.rawValue] = backgroundContext()
                 }
                 lastUsedContexts[scope.rawValue] = Date()
                 return readContexts[scope.rawValue]!
