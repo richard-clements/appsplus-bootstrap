@@ -39,9 +39,17 @@ public class CoreDataPersistentStorage: PersistentStorage {
             }
             let identifier = self.identifier
             return self.container.contextForWriting()
-                .tryMap { context in
-                    try transaction.transactions?(SynchronousCoreDataStorage(identifier: identifier, context: context))
-                    return CoreDataUpdate(identifier: identifier, context: context)
+                .flatMap { context in
+                    Future { promise in
+                        context.perform {
+                            do {
+                                try transaction.transactions?(SynchronousCoreDataStorage(identifier: identifier, context: context))
+                                promise(.success(CoreDataUpdate(identifier: identifier, context: context)))
+                            } catch {
+                                promise(.failure(error))
+                            }
+                        }
+                    }
                 }
                 .eraseToAnyPublisher()
         }

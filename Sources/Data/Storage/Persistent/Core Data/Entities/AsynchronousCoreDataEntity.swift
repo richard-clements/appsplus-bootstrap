@@ -30,9 +30,11 @@ struct AsynchronousCoreDataEntity<EntityType>: AsynchronousEntity {
                         return CoreDataFetchResultsPublisher(context: context, fetchRequest: request.asFetchRequest())
                             .eraseToAnyPublisher()
                     } else {
-                        return Just(CoreDataEntity(identifier: identifier, context: context).fetch(request: request.asFetchRequest()))
-                            .setFailureType(to: Error.self)
-                            .eraseToAnyPublisher()
+                        return Future { promise in
+                            context.perform {
+                                promise(.success(CoreDataEntity(identifier: identifier, context: context).fetch(request: request.asFetchRequest())))
+                            }
+                        }.eraseToAnyPublisher()
                     }
                 }
                 .eraseToAnyPublisher()
@@ -42,8 +44,12 @@ struct AsynchronousCoreDataEntity<EntityType>: AsynchronousEntity {
     func delete() -> AsynchronousDeleteRequest<EntityType> {
         AsynchronousDeleteRequest(publisher: { request in
             writePublisher()
-                .map { context -> PersistentStoreUpdate in
-                    CoreDataEntity(identifier: identifier, context: context).delete(request: request.asFetchRequest())
+                .flatMap { context in
+                    Future { promise in
+                        context.perform {
+                            promise(.success(CoreDataEntity(identifier: identifier, context: context).delete(request: request.asFetchRequest())))
+                        }
+                    }
                 }
                 .eraseToAnyPublisher()
         }, fetchRequest: .empty())
@@ -56,8 +62,12 @@ extension AsynchronousCoreDataEntity {
     
     func createOrUpdatePublisher<EntityType>(for request: AsynchronousUpdateRequest<EntityType>) -> AnyPublisher<PersistentStoreUpdate, Error> {
         writePublisher()
-            .map {
-                CoreDataEntity(identifier: identifier, context: $0).update(entityName: request.entityName, shouldCreate: request.shouldCreate, shouldUpdate: request.shouldUpdate, fetchRequest: request.asFetchRequest(), modifier: request.modifier)
+            .flatMap { context in
+                Future { promise in
+                    context.perform {
+                        promise(.success(CoreDataEntity(identifier: identifier, context: context).update(entityName: request.entityName, shouldCreate: request.shouldCreate, shouldUpdate: request.shouldUpdate, fetchRequest: request.asFetchRequest(), modifier: request.modifier)))
+                    }
+                }
             }
             .eraseToAnyPublisher()
     }
