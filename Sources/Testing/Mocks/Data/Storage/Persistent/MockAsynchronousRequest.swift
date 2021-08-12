@@ -14,7 +14,7 @@ extension AsynchronousFetchRequest {
     }
     
     public func evaluate(_ entity: Entity) -> Bool {
-        predicate?.evaluate(with: entity)
+        predicate?.evaluate(with: entity) ?? true
     }
     
     public func sortResult(of entities: [Entity]) -> [Entity] {
