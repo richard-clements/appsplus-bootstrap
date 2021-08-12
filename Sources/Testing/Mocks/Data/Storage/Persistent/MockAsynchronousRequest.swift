@@ -31,6 +31,13 @@ extension AsynchronousUpdateRequest {
         }, fetchRequest: fetchRequest)
     }
     
+    public func evaluate(_ entity: Entity) -> Bool {
+        predicate?.evaluate(with: entity) ?? true
+    }
+    
+    public func sortResult(of entities: [Entity]) -> [Entity] {
+        (entities as NSArray).sortedArray(using: sortDescriptors ?? []) as! [Entity]
+    }
 }
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
@@ -42,6 +49,13 @@ extension AsynchronousDeleteRequest {
         }, fetchRequest: fetchRequest)
     }
     
+    public func evaluate(_ entity: Entity) -> Bool {
+        predicate?.evaluate(with: entity) ?? true
+    }
+    
+    public func sortResult(of entities: [Entity]) -> [Entity] {
+        (entities as NSArray).sortedArray(using: sortDescriptors ?? []) as! [Entity]
+    }
 }
 
 #endif
