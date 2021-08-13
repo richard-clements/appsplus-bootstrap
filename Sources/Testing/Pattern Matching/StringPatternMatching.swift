@@ -2,7 +2,7 @@ import Foundation
 
 extension String {
     
-    func matches(regex: String) -> Bool {
+    public func matches(regex: String) -> Bool {
         guard let regex = try? NSRegularExpression(pattern: regex) else {
             return false
         }
