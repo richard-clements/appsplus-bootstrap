@@ -143,7 +143,7 @@ public class MockAsynchronousEntity<EntityType>: AsynchronousEntity {
             guard let self = self else {
                 return Fail(error: MockPersistentStorage.StorageError.failedToDelete).eraseToAnyPublisher()
             }
-            self.parent.updateRequests.append(request)
+            self.parent.deleteRequests.append(request)
             return self.parent.updateResult
                 .map { MockPersistentStoreUpdate(parent: self.parent) }
                 .eraseToAnyPublisher()
