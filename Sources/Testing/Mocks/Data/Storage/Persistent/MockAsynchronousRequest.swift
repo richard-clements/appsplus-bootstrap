@@ -38,7 +38,7 @@ extension AsynchronousUpdateRequest {
             }
             
             func fetch() -> SynchronousFetchRequest<EntityType> {
-                SynchronousFetchRequest(executor: { _ in }, fetchRequest: .empty())
+                SynchronousFetchRequest(executor: { _ in [] }, fetchRequest: .empty())
             }
             
             func delete() -> SynchronousDeleteRequest<EntityType> {
@@ -63,7 +63,7 @@ extension AsynchronousUpdateRequest {
     }
     
     public func modifying(_ value: Entity) {
-        modifier(value, EmptySynchronousStorage())
+        modifier?(value, EmptySynchronousStorage())
     }
     
     public func sortResult(of entities: [Entity]) -> [Entity] {
