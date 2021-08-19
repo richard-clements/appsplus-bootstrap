@@ -25,6 +25,33 @@ extension AsynchronousFetchRequest {
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 extension AsynchronousUpdateRequest {
     
+    struct EmptySynchronousStorage: SynchronousStorage {
+        
+        struct Entity<EntityType>: SynchronousEntity {
+            
+            func create() -> SynchronousUpdateRequest<EntityType> {
+                SynchronousUpdateRequest(executor: { _ in }, fetchRequest: .create())
+            }
+            
+            func update(orCreate: Bool) -> SynchronousUpdateRequest<EntityType> {
+                SynchronousUpdateRequest(executor: { _ in }, fetchRequest: .update(orCreate: orCreate))
+            }
+            
+            func fetch() -> SynchronousFetchRequest<EntityType> {
+                SynchronousFetchRequest(executor: { _ in }, fetchRequest: .empty())
+            }
+            
+            func delete() -> SynchronousDeleteRequest<EntityType> {
+                SynchronousDeleteRequest(executor: { _ in }, fetchRequest: .empty())
+            }
+        }
+        
+        func entity<EntityType>(_ type: EntityType.Type) -> AnySynchronousEntity<EntityType> {
+            AnySynchronousEntity(entity: Entity())
+        }
+        
+    }
+    
     public init(fetchRequest: UpdateRequest<Entity>) {
         self.init(publisher: { _ in
             Fail(error: MockPersistentStorage.StorageError.failedToUpdate).eraseToAnyPublisher()
@@ -33,6 +60,10 @@ extension AsynchronousUpdateRequest {
     
     public func evaluate(_ entity: Entity) -> Bool {
         predicate?.evaluate(with: entity) ?? true
+    }
+    
+    public func modifying(_ value: Entity) {
+        modifier(value, EmptySynchronousStorage())
     }
     
     public func sortResult(of entities: [Entity]) -> [Entity] {
