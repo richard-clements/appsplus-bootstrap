@@ -38,7 +38,7 @@ extension Optional where Wrapped: NSManagedObject {
 }
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
-extension Array where Element == NSManagedObject {
+extension Array where Element: NSManagedObject {
     
     public func future<Output>(_ closure: @escaping () throws -> Output) -> AnyPublisher<Output, Error> {
         first.future(closure)
