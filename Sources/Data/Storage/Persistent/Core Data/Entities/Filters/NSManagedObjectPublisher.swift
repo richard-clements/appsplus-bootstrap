@@ -45,3 +45,16 @@ extension Array where Element: NSManagedObject {
     }
     
 }
+
+@available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
+extension Array where Element: NSManagedObject {
+    
+    public func futureMap<Output>(_ transform: @escaping (Element) -> Output) -> AnyPublisher<[Output], Never> {
+        future {
+            self.map(transform)
+        }
+        .replaceError(with: [])
+        .eraseToAnyPublisher()
+    }
+    
+}
