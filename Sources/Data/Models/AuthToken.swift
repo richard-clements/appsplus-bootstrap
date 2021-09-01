@@ -23,8 +23,8 @@ public struct AnyAuthToken: AuthTokenProtocol, Equatable, Codable {
     }
     
     enum CodingKeys: CodingKey {
-        case accessToken
-        case refreshToken
+        case accessToken = "token"
+        case refreshToken = "refresh_token"
     }
     
     public static func == (lhs: AnyAuthToken, rhs: AnyAuthToken) -> Bool {
