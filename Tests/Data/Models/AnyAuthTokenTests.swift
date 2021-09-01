@@ -54,6 +54,12 @@ extension AnyAuthTokenTests {
             }
         }
         
+        enum CodingKeys: String, CodingKey {
+            case accessToken = "token"
+            case refreshToken = "refresh_token"
+            case addedField = "added_field"
+        }
+        
         let accessToken: String
         let refreshToken: String
         let addedField: String
