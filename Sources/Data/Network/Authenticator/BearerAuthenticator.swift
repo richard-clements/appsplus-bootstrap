@@ -66,7 +66,7 @@ public class BearerAuthenticator<AuthToken: AuthTokenProtocol>: Authenticator {
                 .eraseToAnyPublisher()
         }
         
-        guard let authSession: AuthToken = authSessionProvider.current() else {
+        guard let authSession = authSessionProvider.current(as: AuthToken.self) else {
             return Fail(error: .noAuthSession)
                 .eraseToAnyPublisher()
         }

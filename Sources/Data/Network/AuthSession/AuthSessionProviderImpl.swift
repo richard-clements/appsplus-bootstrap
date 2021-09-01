@@ -28,8 +28,12 @@ public struct AuthSessionProviderImpl: AuthSessionProvider {
         self.secureStorage = secureStorage
     }
     
-    public func current<T: AuthTokenProtocol>() -> T? {
-        return secureStorage.value(forKey: .authToken)
+    public func current<T: AuthTokenProtocol>(as type: T.Type) -> T? {
+        secureStorage.value(forKey: .authToken)
+    }
+    
+    public func current() -> AnyAuthToken? {
+        secureStorage.value(forKey: .authToken)
     }
     
     public func replace<T: AuthTokenProtocol>(with authToken: T?) -> Bool {

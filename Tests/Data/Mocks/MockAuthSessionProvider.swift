@@ -31,7 +31,11 @@ class MockAuthSessionProvider: AuthSessionProvider {
     var currentDeviceName: String?
     var authSessionPublisherPassthroughSubject = PassthroughSubject<MockAuthToken?, Never>()
     
-    func current<T>() -> T? where T : AuthTokenProtocol {
+    func current() -> AnyAuthToken? {
+        currentAuthSession?.toAnyAuthToken()
+    }
+    
+    func current<T>(as type: T.Type) -> T? where T : AuthTokenProtocol {
         currentAuthSession as? T
     }
     
