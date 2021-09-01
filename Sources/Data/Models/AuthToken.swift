@@ -9,7 +9,7 @@ public protocol AuthTokenProtocol: Codable, Equatable {
 
 extension AuthTokenProtocol {
     
-    func toAnyAuthToken() -> AnyAuthToken {
+    public func toAnyAuthToken() -> AnyAuthToken {
         AnyAuthToken(token: self)
     }
     
