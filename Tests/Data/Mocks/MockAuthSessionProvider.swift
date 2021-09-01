@@ -49,7 +49,14 @@ class MockAuthSessionProvider: AuthSessionProvider {
         return currentDeviceName!
     }
     
-    func authSessionPublisher<T>() -> AnyPublisher<T?, Never> where T : AuthTokenProtocol {
+    func authSessionPublisher() -> AnyPublisher<AnyAuthToken?, Never> {
+        authSessionPublisherPassthroughSubject
+            .share()
+            .map { $0?.toAnyAuthToken() }
+            .eraseToAnyPublisher()
+    }
+    
+    func authSessionPublisher<T>(for type: T.Type) -> AnyPublisher<T?, Never> where T : AuthTokenProtocol {
         authSessionPublisherPassthroughSubject
             .share()
             .map { $0 as? T }

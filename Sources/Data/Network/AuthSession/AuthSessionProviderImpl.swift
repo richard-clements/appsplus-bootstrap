@@ -42,9 +42,14 @@ public struct AuthSessionProviderImpl: AuthSessionProvider {
         return replaced
     }
     
-    public func authSessionPublisher<T: AuthTokenProtocol>() -> AnyPublisher<T?, Never> {
+    public func authSessionPublisher() -> AnyPublisher<AnyAuthToken?, Never> {
         authSessionPassthroughSubject
             .share()
+            .eraseToAnyPublisher()
+    }
+    
+    public func authSessionPublisher<T>(for type: T.Type) -> AnyPublisher<T?, Never> where T : AuthTokenProtocol {
+        authSessionPublisher()
             .map { $0?.value as? T }
             .eraseToAnyPublisher()
     }

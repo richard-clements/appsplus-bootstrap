@@ -89,11 +89,27 @@ class AuthSessionProviderTests: XCTestCase {
         XCTAssertNotNil(secureStorage.items["deviceName"])
     }
     
+    func test_authSessionPublisher_AnyAuthToken() {
+        property("Auth session emits value for each replacement") <- forAll(MockAuthToken.arbitrary) { [unowned self] in
+            let expectation = XCTestExpectation()
+            var authToken: AnyAuthToken? = nil
+            authSession.authSessionPublisher()
+                .sink { token in
+                    authToken = token
+                    expectation.fulfill()
+                }
+                .store(in: &cancellables)
+            _ = authSession.replace(with: $0)
+            return authToken?.accessToken == $0.accessToken &&
+                authToken?.refreshToken == $0.refreshToken
+        }
+    }
+    
     func test_authSessionPublisher() {
         property("Auth session emits value for each replacement") <- forAll(MockAuthToken.arbitrary) { [unowned self] in
             let expectation = XCTestExpectation()
             var authToken: MockAuthToken? = nil
-            authSession.authSessionPublisher()
+            authSession.authSessionPublisher(for: MockAuthToken.self)
                 .sink { (token: MockAuthToken?) in
                     authToken = token
                     expectation.fulfill()
