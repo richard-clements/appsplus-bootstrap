@@ -22,7 +22,7 @@ public struct AnyAuthToken: AuthTokenProtocol, Equatable, Codable {
         let refreshToken: String
     }
     
-    enum CodingKeys: CodingKey {
+    enum CodingKeys: String, CodingKey {
         case accessToken = "token"
         case refreshToken = "refresh_token"
     }
