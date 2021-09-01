@@ -9,6 +9,10 @@ public class MockNetwork: Network {
     public var requestResponse: (Data, URLResponse)?
     public var networkError: NetworkError?
     
+    public init() {
+        
+    }
+    
     public func publisher(for request: Request) -> AnyPublisher<(data: Data, response: URLResponse), NetworkError> {
         if let enqueuedResponse = enqueuedResponses.compactMap({ $0(request) }).first {
             return enqueuedResponse

@@ -12,6 +12,10 @@ public class MockAuthSessionProvider<AuthToken: AuthTokenProtocol>: AuthSessionP
     public var currentDeviceName: String?
     public var authSessionPublisherPassthroughSubject = PassthroughSubject<AuthToken?, Never>()
     
+    public init() {
+        
+    }
+    
     public func current() -> AnyAuthToken? {
         currentAuthSession?.toAnyAuthToken()
     }
