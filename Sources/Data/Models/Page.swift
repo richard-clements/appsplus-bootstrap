@@ -11,6 +11,11 @@ public struct Page<T> {
     
     public let data: [T]
     public let meta: Meta
+    
+    public init(data: [T], meta: Meta) {
+        self.data = data
+        self.meta = meta
+    }
 }
 
 extension Page: Codable where T: Codable {}
