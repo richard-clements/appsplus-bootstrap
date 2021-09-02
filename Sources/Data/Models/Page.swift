@@ -7,6 +7,11 @@ public struct Page<T> {
     public struct Meta: Equatable, Codable {
         public let currentPage: Int
         public let to: Int?
+        
+        public init(currentPage: Int, to: Int?) {
+            self.currentPage = currentPage
+            self.to = to
+        }
     }
     
     public let data: [T]
