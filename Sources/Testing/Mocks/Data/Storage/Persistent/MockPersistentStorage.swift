@@ -109,7 +109,7 @@ public class MockAsynchronousEntity<EntityType>: AsynchronousEntity {
             }
             self.parent.fetchRequests.append(request)
             return self.parent.fetchResults
-                .compactMap { $0 as? [EntityType] }
+                .compactMap { ($0 as? [Any])?.compactMap { $0 as? EntityType } }
                 .eraseToAnyPublisher()
         }, fetchRequest: .empty())
     }
