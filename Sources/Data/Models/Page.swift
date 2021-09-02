@@ -4,7 +4,7 @@ import Foundation
 
 public struct Page<T> {
     
-    public struct Meta: Codable {
+    public struct Meta: Equatable, Codable {
         public let currentPage: Int
         public let to: Int?
     }
@@ -14,6 +14,7 @@ public struct Page<T> {
 }
 
 extension Page: Codable where T: Codable {}
+extension Page: Equatable where T: Equatable {}
 
 extension Page {
     
