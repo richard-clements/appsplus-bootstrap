@@ -2,15 +2,15 @@
 
 import Foundation
 
-enum ValidationParseError: Error {
+public enum ValidationParseError: Error {
     case failedToParse
 }
 
-struct ValidationError<Field: Hashable & CaseIterable & RawRepresentable>: Equatable where Field.RawValue == String {
-    let errors: [Field: [String]]
+public struct ValidationError<Field: Hashable & CaseIterable & RawRepresentable>: Equatable where Field.RawValue == String {
+    public let errors: [Field: [String]]
 }
 
-extension ValidationError {
+public extension ValidationError {
     
     init(data: Data) throws {
         guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
