@@ -8,6 +8,10 @@ public enum ValidationParseError: Error {
 
 public struct ValidationError<Field: Hashable & CaseIterable & RawRepresentable>: Equatable where Field.RawValue == String {
     public let errors: [Field: [String]]
+    
+    public init(errors: [Field: [String]]) {
+        self.errors = errors
+    }
 }
 
 public extension ValidationError {
