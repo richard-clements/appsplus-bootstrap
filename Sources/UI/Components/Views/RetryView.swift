@@ -8,6 +8,7 @@ class RetryView<Control: UIControl>: UIView {
     
     private let titleLabel = UILabel()
     let button = Control()
+    private var verticalMarginConstraint: NSLayoutConstraint!
     
     var title: String? {
         get {
@@ -24,7 +25,15 @@ class RetryView<Control: UIControl>: UIView {
         }
     }
     
-    var verticalMargin: CGFloat = 20
+    var verticalMargin: CGFloat {
+        get {
+            verticalMarginConstraint.constant
+        }
+        set {
+            verticalMarginConstraint.constant = newValue
+            setNeedsUpdateConstraints()
+        }
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -52,11 +61,12 @@ class RetryView<Control: UIControl>: UIView {
     }
     
     private func setUpConstraints() {
+        verticalMarginConstraint = button.topAnchor.constraint(equalTo: titleLabel.bottomAnchor)
+        verticalMarginConstraint.isActive = true
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: topAnchor),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
             trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
-            button.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: verticalMargin),
             button.centerXAnchor.constraint(equalTo: centerXAnchor),
             bottomAnchor.constraint(equalTo: button.bottomAnchor)
         ])

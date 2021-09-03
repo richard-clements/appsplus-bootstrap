@@ -1,7 +1,6 @@
-#if canImport(UIKit) && canImport(Combine)
+#if canImport(UIKit)
 
 import UIKit
-import Combine
 
 @available(iOS 13.0, tvOS 13.0, *)
 public class RetryCell<Control: UIControl>: UICollectionViewCell {
@@ -27,13 +26,25 @@ public class RetryCell<Control: UIControl>: UICollectionViewCell {
         }
         set {
             retryView.verticalMargin = newValue
+            topAnchorConstraint.constant = newValue
+            bottomAnchorConstraint.constant = newValue
         }
     }
+    
+    var topAnchorConstraint: NSLayoutConstraint!
+    var bottomAnchorConstraint: NSLayoutConstraint!
+    var leadingAnchorConstraint: NSLayoutConstraint!
+    var trailingAnchorConstraint: NSLayoutConstraint!
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.addSubview(retryView)
-        retryView.pinConstraints(to: contentView)
+        
+        retryView.translatesAutoresizingMaskIntoConstraints = false
+        leadingAnchorConstraint = retryView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: margin.left),
+        trailingAnchorConstraint = retryView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: margin.right),
+        topAnchorConstraint = retryView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: margin.top),
+        bottomAnchorConstraint = retryView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: margin.bottom)
     }
     
     public required init?(coder: NSCoder) {
