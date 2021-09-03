@@ -41,10 +41,17 @@ public class RetryCell<Control: UIControl>: UICollectionViewCell {
         contentView.addSubview(retryView)
         
         retryView.translatesAutoresizingMaskIntoConstraints = false
-        leadingAnchorConstraint = retryView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: margin.left),
-        trailingAnchorConstraint = retryView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: margin.right),
-        topAnchorConstraint = retryView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: margin.top),
-        bottomAnchorConstraint = retryView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: margin.bottom)
+        leadingAnchorConstraint = retryView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 0)
+        trailingAnchorConstraint = retryView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 0)
+        topAnchorConstraint = retryView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20)
+        bottomAnchorConstraint = retryView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 20)
+        
+        NSLayoutConstraint.activate([
+            leadingAnchorConstraint,
+            trailingAnchorConstraint,
+            topAnchorConstraint,
+            bottomAnchorConstraint
+        ])
     }
     
     public required init?(coder: NSCoder) {
