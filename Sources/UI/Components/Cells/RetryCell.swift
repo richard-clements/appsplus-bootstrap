@@ -4,7 +4,7 @@ import UIKit
 import Combine
 
 @available(iOS 13.0, tvOS 13.0, *)
-public class RetryCollectionCell<Control: UIControl>: UICollectionViewCell {
+public class RetryCell<Control: UIControl>: UICollectionViewCell {
     
     private let retryView = RetryView<Control>()
     
