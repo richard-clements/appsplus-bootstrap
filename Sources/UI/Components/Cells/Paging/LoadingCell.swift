@@ -3,14 +3,14 @@
 import UIKit
 
 @available(iOS 13.0, tvOS 13.0, *)
-class LoadingCell: UICollectionViewCell {
+public class LoadingCell: UICollectionViewCell {
     
-    static var fontProvider: (UIFont.TextStyle) -> UIFont = UIFont.preferredFont
+    public static var fontProvider: (UIFont.TextStyle) -> UIFont = UIFont.preferredFont
     
     private let activityIndicator = UIActivityIndicatorView(style: .medium)
     private let titleLabel = UILabel()
 
-    var title: String? {
+    public var title: String? {
         get {
             titleLabel.text
         }
@@ -19,7 +19,7 @@ class LoadingCell: UICollectionViewCell {
         }
     }
     
-    var titleColor: UIColor! {
+    public var titleColor: UIColor! {
         get {
             titleLabel.textColor
         }
@@ -28,7 +28,7 @@ class LoadingCell: UICollectionViewCell {
         }
     }
     
-    var activityIndicatorColor: UIColor! {
+    public var activityIndicatorColor: UIColor! {
         get {
             activityIndicator.color
         }
@@ -37,9 +37,9 @@ class LoadingCell: UICollectionViewCell {
         }
     }
     
-    var verticalMargin: CGFloat = 20
+    public var verticalMargin: CGFloat = 20
     
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
         setUp(activityIndicator: activityIndicator)
         setUp(titleLabel: titleLabel)
@@ -48,7 +48,7 @@ class LoadingCell: UICollectionViewCell {
         setUpConstraints()
     }
     
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -74,14 +74,14 @@ class LoadingCell: UICollectionViewCell {
         ])
     }
     
-    override func prepareForReuse() {
+    public override func prepareForReuse() {
         super.prepareForReuse()
         if !activityIndicator.isAnimating {
             activityIndicator.startAnimating()
         }
     }
     
-    override func willMove(toWindow newWindow: UIWindow?) {
+    public override func willMove(toWindow newWindow: UIWindow?) {
         if newWindow == nil {
             activityIndicator.stopAnimating()
         }
