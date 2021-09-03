@@ -4,11 +4,11 @@ import UIKit
 import Combine
 
 @available(iOS 13.0, tvOS 13.0, *)
-class RetryCollectionCell<Control: UIControl>: UICollectionViewCell {
+public class RetryCollectionCell<Control: UIControl>: UICollectionViewCell {
     
     private let retryView = RetryView<Control>()
     
-    var title: String? {
+    public var title: String? {
         get {
             retryView.title
         }
@@ -17,21 +17,30 @@ class RetryCollectionCell<Control: UIControl>: UICollectionViewCell {
         }
     }
     
-    var button: Control {
+    public var button: Control {
         retryView.button
     }
     
-    override init(frame: CGRect) {
+    public var verticalMargin: CGFloat {
+        get {
+            retryView.verticalMargin
+        }
+        set {
+            retryView.verticalMargin = newValue
+        }
+    }
+    
+    public override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.addSubview(retryView)
         retryView.pinConstraints(to: contentView)
     }
     
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func prepareForReuse() {
+    public override func prepareForReuse() {
         retryView.removeTargets()
     }
 }
