@@ -5,8 +5,6 @@ import UIKit
 @available(iOS 13.0, tvOS 13.0, *)
 public class LoadingCell: UICollectionViewCell {
     
-    public static var fontProvider: (UIFont.TextStyle) -> UIFont = UIFont.preferredFont
-    
     private let activityIndicator = UIActivityIndicatorView(style: .medium)
     private let titleLabel = UILabel()
 
@@ -59,7 +57,7 @@ public class LoadingCell: UICollectionViewCell {
     private func setUp(titleLabel: UILabel) {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.numberOfLines = 0
-        titleLabel.font = Self.fontProvider(.headline)
+        titleLabel.font = UIFont.appFontProvider(.headline)
         titleLabel.textAlignment = .center
     }
     
