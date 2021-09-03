@@ -28,6 +28,7 @@ public class RetryCell<Control: UIControl>: UICollectionViewCell {
             retryView.verticalMargin = newValue
             topAnchorConstraint.constant = newValue
             bottomAnchorConstraint.constant = newValue
+            setNeedsUpdateConstraints()
         }
     }
     

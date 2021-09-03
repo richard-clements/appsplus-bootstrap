@@ -61,14 +61,14 @@ class RetryView<Control: UIControl>: UIView {
     }
     
     private func setUpConstraints() {
-        verticalMarginConstraint = button.topAnchor.constraint(equalTo: titleLabel.bottomAnchor)
-        verticalMarginConstraint.isActive = true
+        verticalMarginConstraint = button.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20)
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: topAnchor),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
             trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
             button.centerXAnchor.constraint(equalTo: centerXAnchor),
-            bottomAnchor.constraint(equalTo: button.bottomAnchor)
+            bottomAnchor.constraint(equalTo: button.bottomAnchor),
+            verticalMarginConstraint
         ])
     }
     
