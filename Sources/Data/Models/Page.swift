@@ -6,11 +6,11 @@ public struct Page<T> {
     
     public struct Meta: Equatable, Codable {
         public let currentPage: Int
-        public let to: Int?
+        public let lastPage: Int
         
-        public init(currentPage: Int, to: Int?) {
+        public init(currentPage: Int, lastPage: Int) {
             self.currentPage = currentPage
-            self.to = to
+            self.lastPage = lastPage
         }
     }
     
@@ -30,7 +30,7 @@ extension Page {
     
     public func map<S>(_ transform: (T) throws -> S) rethrows -> Page<S> {
         let transformedData = try data.map(transform)
-        return Page<S>(data: transformedData, meta: .init(currentPage: meta.currentPage, to: meta.to))
+        return Page<S>(data: transformedData, meta: .init(currentPage: meta.currentPage, lastPage: meta.lastPage))
     }
     
 }
