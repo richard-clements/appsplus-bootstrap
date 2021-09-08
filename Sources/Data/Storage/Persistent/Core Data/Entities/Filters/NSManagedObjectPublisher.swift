@@ -1,3 +1,5 @@
+#if canImport(CoreData) && canImport(Combine)
+
 import CoreData
 import Combine
 
@@ -58,3 +60,5 @@ extension Array where Element: NSManagedObject {
     }
     
 }
+
+#endif
