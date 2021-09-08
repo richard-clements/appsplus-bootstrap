@@ -33,6 +33,15 @@ extension Page {
         return Page<S>(data: transformedData, meta: .init(currentPage: meta.currentPage, lastPage: meta.lastPage))
     }
     
+    public func compactMap<S>(_ transform: (T) throws -> S?) rethrows -> Page<S> {
+        let transformedData = try data.compactMap(transform)
+        return Page<S>(data: transformedData, meta: .init(currentPage: meta.currentPage, lastPage: meta.lastPage))
+    }
+    
+    public func flatMap<N, S>(_ transform: ([N]) throws -> [S]) rethrows -> Page<S> where T == [N] {
+        let transformedData = try data.flatMap(transform)
+        return Page<S>(data: transformedData, meta: .init(currentPage: meta.currentPage, lastPage: meta.lastPage))
+    }
 }
 
 #endif

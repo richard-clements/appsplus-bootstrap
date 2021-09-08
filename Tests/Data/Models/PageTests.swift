@@ -11,4 +11,24 @@ class PageTests: XCTestCase {
         XCTAssertEqual(3, page.meta.lastPage)
     }
     
+    func testCompactMap() {
+        let page = Page(data: [1, 2, 3, 4, 5], meta: .init(currentPage: 1, lastPage: 3))
+        let newPage = page.compactMap { (value) -> String? in
+            if value % 2 == 0 {
+                return value.description
+            }
+            return nil
+        }
+        XCTAssertEqual(["2", "4"], newPage.data)
+        XCTAssertEqual(1, page.meta.currentPage)
+        XCTAssertEqual(3, page.meta.lastPage)
+    }
+    
+    func testFlatMap() {
+        let page = Page(data: [[1], [2, 2], [3, 3, 3], [4, 4, 4, 4], [5, 5, 5, 5, 5]], meta: .init(currentPage: 1, lastPage: 3))
+        let newPage = page.flatMap { $0.map { $0 + 1 } }
+        XCTAssertEqual([2, 3, 3, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 6], newPage.data)
+        XCTAssertEqual(1, page.meta.currentPage)
+        XCTAssertEqual(3, page.meta.lastPage)
+    }
 }
