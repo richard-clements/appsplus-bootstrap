@@ -144,7 +144,7 @@ public class MockAsynchronousEntity<EntityType>: AsynchronousEntity {
                 return Fail(error: MockPersistentStorage.StorageError.failedToDelete).eraseToAnyPublisher()
             }
             self.parent.deleteRequests.append(request)
-            return self.parent.updateResult
+            return self.parent.deleteResult
                 .map { MockPersistentStoreUpdate(parent: self.parent) }
                 .eraseToAnyPublisher()
         }, fetchRequest: .empty())
