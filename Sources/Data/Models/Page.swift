@@ -44,4 +44,16 @@ extension Page {
     }
 }
 
+extension Page {
+    
+    var isLastPage: Bool {
+        meta.currentPage >= meta.lastPage
+    }
+    
+    var hasNextPage: Bool {
+        meta.currentPage < meta.lastPage
+    }
+    
+}
+
 #endif

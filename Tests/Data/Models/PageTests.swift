@@ -31,4 +31,17 @@ class PageTests: XCTestCase {
         XCTAssertEqual(1, page.meta.currentPage)
         XCTAssertEqual(3, page.meta.lastPage)
     }
+    
+    func testIsLastPage() {
+        XCTAssertTrue(Page(data: [String](), meta: .init(currentPage: 2, lastPage: 2)).isLastPage)
+        XCTAssertTrue(Page(data: [String](), meta: .init(currentPage: 3, lastPage: 2)).isLastPage)
+        XCTAssertFalse(Page(data: [String](), meta: .init(currentPage: 1, lastPage: 2)).isLastPage)
+    }
+    
+    func testHasNextPage() {
+        XCTAssertTrue(Page(data: [String](), meta: .init(currentPage: 1, lastPage: 2)).hasNextPage)
+        XCTAssertFalse(Page(data: [String](), meta: .init(currentPage: 2, lastPage: 2)).hasNextPage)
+    }
+    
+    
 }
