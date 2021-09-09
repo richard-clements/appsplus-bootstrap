@@ -46,11 +46,11 @@ extension Page {
 
 extension Page {
     
-    var isLastPage: Bool {
+    public var isLastPage: Bool {
         meta.currentPage >= meta.lastPage
     }
     
-    var hasNextPage: Bool {
+    public var hasNextPage: Bool {
         meta.currentPage < meta.lastPage
     }
     
