@@ -67,6 +67,10 @@ public struct SynchronousUpdateRequest<T>: SynchronousPersistentStoreRequest {
         SynchronousUpdateRequest(executor: executor, fetchRequest: fetchRequest.prevalidate(validation))
     }
     
+    public func prevalidate(_ validation: @escaping () -> Bool) -> SynchronousUpdateRequest<T> {
+        SynchronousUpdateRequest(executor: executor, fetchRequest: fetchRequest.prevalidate(validation))
+    }
+    
     public func modify(_ modifier: @escaping (T, SynchronousStorage) -> Void) -> SynchronousUpdateRequest<T> {
         SynchronousUpdateRequest(executor: executor, fetchRequest: fetchRequest.modify(modifier))
     }

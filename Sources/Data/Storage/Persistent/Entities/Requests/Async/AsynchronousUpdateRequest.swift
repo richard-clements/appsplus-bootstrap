@@ -73,6 +73,10 @@ public struct AsynchronousUpdateRequest<T>: AsynchronousPersistentStoreRequest {
         AsynchronousUpdateRequest(publisher: publisher, fetchRequest: fetchRequest.prevalidate(validation))
     }
     
+    public func prevalidate(_ validation: @escaping () -> Bool) -> AsynchronousUpdateRequest<T> {
+        AsynchronousUpdateRequest(publisher: publisher, fetchRequest: fetchRequest.prevalidate(validation))
+    }
+    
     public func modify(_ modifier: @escaping (T, SynchronousStorage) -> Void) -> AsynchronousUpdateRequest<T> {
         AsynchronousUpdateRequest(publisher: publisher, fetchRequest: fetchRequest.modify(modifier))
     }

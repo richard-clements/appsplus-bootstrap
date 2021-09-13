@@ -34,8 +34,12 @@ struct CoreDataEntity {
                     modifier: modifier
                 )
             } else {
+                let storage = SynchronousCoreDataStorage(identifier: identifier, context: context)
                 fetchResults.forEach {
-                    modifier?($0, SynchronousCoreDataStorage(identifier: identifier, context: context))
+                    guard prevalidation?($0, storage) != false else {
+                        return
+                    }
+                    modifier?($0, storage)
                 }
                 return CoreDataUpdate(identifier: identifier, context: context)
             }
@@ -60,8 +64,13 @@ struct CoreDataEntity {
         modifier: ((EntityType, SynchronousStorage) -> Void)?
     ) -> PersistentStoreUpdate {
         let storage = SynchronousCoreDataStorage(identifier: identifier, context: context)
-        guard let entity = NSEntityDescription.insertNewObject(forEntityName: entityName, into: context) as? EntityType,
-              prevalidation?(entity, storage) != false else {
+        guard let entity = NSEntityDescription.insertNewObject(forEntityName: entityName, into: context) as? EntityType else {
+            return CoreDataUpdate(identifier: identifier, context: context)
+        }
+        guard prevalidation?(entity, storage) != false else {
+            if let entity = entity as? NSManagedObject {
+                context.delete(entity)
+            }
             return CoreDataUpdate(identifier: identifier, context: context)
         }
         modifier?(entity, storage)

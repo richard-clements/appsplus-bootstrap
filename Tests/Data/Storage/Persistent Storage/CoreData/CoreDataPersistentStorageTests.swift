@@ -281,6 +281,123 @@ class CoreDataPersistentStorageTests: XCTestCase {
         XCTAssertEqual(["Name 1"], result.map(\.name))
     }
     
+    func testUpdate_AfterPrevalidatorPasses_UpdatesObject() {
+        let object = TestEntity(context: coreDataStack.container.writingContext)
+        object.id = 1
+        object.name = "Name 1"
+        try! coreDataStack.container.writingContext.save()
+        
+        let expectation = XCTestExpectation()
+        
+        storage.entity(TestEntity.self)
+            .update()
+            .suchThat(predicate: NSPredicate(format: "id == 1"))
+            .prevalidate { 1 + 1 == 2 }
+            .modify {
+                $0.id = 1
+                $0.name = "Name 2"
+            }
+            .perform()
+            .save()
+            .sink(receiveCompletion: { _ in
+                expectation.fulfill()
+            }, receiveValue: { _ in })
+            .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 1)
+        
+        let fetchRequest = TestEntity.fetchRequest()
+        let result = try! coreDataStack.container.viewContext.fetch(fetchRequest).compactMap { $0 as? TestEntity }
+        
+        XCTAssertEqual([1], result.map(\.id))
+        XCTAssertEqual(["Name 2"], result.map(\.name))
+    }
+
+    func testUpdate_AfterPrevalidatorFails_DoesNotUpdateObject() {
+        let object = TestEntity(context: coreDataStack.container.writingContext)
+        object.id = 1
+        object.name = "Name 1"
+        try! coreDataStack.container.writingContext.save()
+        
+        let expectation = XCTestExpectation()
+        
+        storage.entity(TestEntity.self)
+            .update()
+            .suchThat(predicate: NSPredicate(format: "id == 1"))
+            .prevalidate { 1 + 1 == 0 }
+            .modify {
+                $0.id = 1
+                $0.name = "Name 2"
+            }
+            .perform()
+            .save()
+            .sink(receiveCompletion: { _ in
+                expectation.fulfill()
+            }, receiveValue: { _ in })
+            .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 1)
+        
+        let fetchRequest = TestEntity.fetchRequest()
+        let result = try! coreDataStack.container.viewContext.fetch(fetchRequest).compactMap { $0 as? TestEntity }
+        
+        XCTAssertEqual([1], result.map(\.id))
+        XCTAssertEqual(["Name 1"], result.map(\.name))
+    }
+    
+    func testCreate_AfterPrevalidatorPasses_CreatesObject() {
+        let expectation = XCTestExpectation()
+        
+        storage.entity(TestEntity.self)
+            .update(orCreate: true)
+            .suchThat(predicate: NSPredicate(format: "id == 1"))
+            .prevalidate { 1 + 1 == 2 }
+            .modify {
+                $0.id = 1
+                $0.name = "Name 1"
+            }
+            .perform()
+            .save()
+            .sink(receiveCompletion: { _ in
+                expectation.fulfill()
+            }, receiveValue: { _ in })
+            .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 1)
+        
+        let fetchRequest = TestEntity.fetchRequest()
+        let result = try! coreDataStack.container.viewContext.fetch(fetchRequest).compactMap { $0 as? TestEntity }
+        
+        XCTAssertEqual([1], result.map(\.id))
+        XCTAssertEqual(["Name 1"], result.map(\.name))
+    }
+    
+    func testCreate_AfterPrevalidatorFailes_DoesNotCreateObject() {
+        let expectation = XCTestExpectation()
+        
+        storage.entity(TestEntity.self)
+            .update(orCreate: true)
+            .suchThat(predicate: NSPredicate(format: "id == 1"))
+            .prevalidate { 1 + 1 == 0 }
+            .modify {
+                $0.id = 1
+                $0.name = "Name 1"
+            }
+            .perform()
+            .save()
+            .sink(receiveCompletion: { _ in
+                expectation.fulfill()
+            }, receiveValue: { _ in })
+            .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 1)
+        
+        let fetchRequest = TestEntity.fetchRequest()
+        let result = try! coreDataStack.container.viewContext.fetch(fetchRequest).compactMap { $0 as? TestEntity }
+        
+        XCTAssertTrue(result.isEmpty)
+    }
+    
     func testSynchronousFetch() {
         let object = TestEntity(context: coreDataStack.container.writingContext)
         object.id = 1
@@ -742,6 +859,141 @@ class CoreDataPersistentStorageTests: XCTestCase {
         
         XCTAssertEqual([1], result.map(\.id))
         XCTAssertEqual(["Name 1"], result.map(\.name))
+    }
+    
+    func testBeginTransactionsUpdate_AfterPrevalidatorPasses_UpdatesObject() {
+        let object = TestEntity(context: coreDataStack.container.writingContext)
+        object.id = 1
+        object.name = "Name 1"
+        try! coreDataStack.container.writingContext.save()
+        
+        let expectation = XCTestExpectation()
+        
+        storage.beginTransactions()
+            .addTransaction { db in
+                db.entity(TestEntity.self)
+                    .update()
+                    .suchThat(predicate: NSPredicate(format: "id == 1"))
+                    .prevalidate { 1 + 1 == 2 }
+                    .modify {
+                        $0.id = 1
+                        $0.name = "Name 2"
+                    }
+                    .perform()
+            }
+            .perform()
+            .save()
+            .sink(receiveCompletion: { _ in
+                expectation.fulfill()
+            }, receiveValue: { _ in })
+            .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 1)
+        
+        let fetchRequest = TestEntity.fetchRequest()
+        let result = try! coreDataStack.container.viewContext.fetch(fetchRequest).compactMap { $0 as? TestEntity }
+        
+        XCTAssertEqual([1], result.map(\.id))
+        XCTAssertEqual(["Name 2"], result.map(\.name))
+    }
+    
+    func testBeginTransactionsUpdate_AfterPrevalidatorFails_DoesNotUpdateObject() {
+        let object = TestEntity(context: coreDataStack.container.writingContext)
+        object.id = 1
+        object.name = "Name 1"
+        try! coreDataStack.container.writingContext.save()
+        
+        let expectation = XCTestExpectation()
+        
+        storage.beginTransactions()
+            .addTransaction { db in
+                db.entity(TestEntity.self)
+                    .update()
+                    .suchThat(predicate: NSPredicate(format: "id == 1"))
+                    .prevalidate { 1 + 1 == 0 }
+                    .modify {
+                        $0.id = 1
+                        $0.name = "Name 2"
+                    }
+                    .perform()
+            }
+            .perform()
+            .save()
+            .sink(receiveCompletion: { _ in
+                expectation.fulfill()
+            }, receiveValue: { _ in })
+            .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 1)
+        
+        let fetchRequest = TestEntity.fetchRequest()
+        let result = try! coreDataStack.container.viewContext.fetch(fetchRequest).compactMap { $0 as? TestEntity }
+        
+        XCTAssertEqual([1], result.map(\.id))
+        XCTAssertEqual(["Name 1"], result.map(\.name))
+    }
+    
+    func testBeginTransactionsCreate_AfterPrevalidatorPasses_CreatesObject() {
+        let expectation = XCTestExpectation()
+        
+        storage.beginTransactions()
+            .addTransaction { db in
+                db.entity(TestEntity.self)
+                    .update(orCreate: true)
+                    .suchThat(predicate: NSPredicate(format: "id == 1"))
+                    .prevalidate { 1 + 1 == 2 }
+                    .modify {
+                        $0.id = 1
+                        $0.name = "Name 1"
+                    }
+                    .perform()
+            }
+            .perform()
+            .save()
+            .sink(receiveCompletion: { _ in
+                expectation.fulfill()
+            }, receiveValue: { _ in })
+            .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 1)
+        
+        let fetchRequest = TestEntity.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \TestEntity.id, ascending: true)]
+        let result = try! coreDataStack.container.viewContext.fetch(fetchRequest).compactMap { $0 as? TestEntity }
+        
+        XCTAssertEqual([1], result.map(\.id))
+        XCTAssertEqual(["Name 1"], result.map(\.name))
+    }
+    
+    func testBeginTransactionsCreate_AfterPrevalidatorFails_DoesNotCreateObject() {
+        let expectation = XCTestExpectation()
+        
+        storage.beginTransactions()
+            .addTransaction { db in
+                db.entity(TestEntity.self)
+                    .update(orCreate: true)
+                    .suchThat(predicate: NSPredicate(format: "id == 1"))
+                    .prevalidate { 1 + 1 == 0 }
+                    .modify {
+                        $0.id = 1
+                        $0.name = "Name 1"
+                    }
+                    .perform()
+            }
+            .perform()
+            .save()
+            .sink(receiveCompletion: { _ in
+                expectation.fulfill()
+            }, receiveValue: { _ in })
+            .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 1)
+        
+        let fetchRequest = TestEntity.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \TestEntity.id, ascending: true)]
+        let result = try! coreDataStack.container.viewContext.fetch(fetchRequest).compactMap { $0 as? TestEntity }
+        
+        XCTAssertTrue(result.isEmpty)
     }
 }
 

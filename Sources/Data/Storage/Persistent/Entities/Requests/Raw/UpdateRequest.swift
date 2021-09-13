@@ -176,6 +176,10 @@ public struct UpdateRequest<T> {
         prevalidate { item, _ in validation(item) }
     }
     
+    func prevalidate(_ validation: @escaping () -> Bool) -> UpdateRequest {
+        prevalidate { _ in validation() }
+    }
+    
     func modify(_ modifier: @escaping ((T, SynchronousStorage) -> Void)) -> UpdateRequest {
         join(
             UpdateRequest(
