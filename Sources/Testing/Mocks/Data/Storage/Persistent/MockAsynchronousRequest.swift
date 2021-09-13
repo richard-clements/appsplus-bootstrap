@@ -62,6 +62,10 @@ extension AsynchronousUpdateRequest {
         predicate?.evaluate(with: entity) ?? true
     }
     
+    public func prevalidating(_ value: Entity) -> Bool {
+        prevalidator?(value, EmptySynchronousStorage()) != false
+    }
+    
     public func modifying(_ value: Entity) {
         modifier?(value, EmptySynchronousStorage())
     }
