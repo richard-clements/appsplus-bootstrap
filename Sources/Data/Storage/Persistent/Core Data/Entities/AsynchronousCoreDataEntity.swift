@@ -65,7 +65,21 @@ extension AsynchronousCoreDataEntity {
             .flatMap { context in
                 Future { promise in
                     context.perform {
-                        promise(.success(CoreDataEntity(identifier: identifier, context: context).update(entityName: request.entityName, shouldCreate: request.shouldCreate, shouldUpdate: request.shouldUpdate, fetchRequest: request.asFetchRequest(), modifier: request.modifier)))
+                        promise(
+                            .success(
+                                CoreDataEntity(
+                                    identifier: identifier,
+                                    context: context
+                                ).update(
+                                    entityName: request.entityName,
+                                    shouldCreate: request.shouldCreate,
+                                    shouldUpdate: request.shouldUpdate,
+                                    fetchRequest: request.asFetchRequest(),
+                                    prevalidation: request.prevalidator,
+                                    modifier: request.modifier
+                                )
+                            )
+                        )
                     }
                 }
             }

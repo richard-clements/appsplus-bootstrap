@@ -39,7 +39,17 @@ struct SynchronousCoreDataEntity<EntityType>: SynchronousEntity {
 extension SynchronousCoreDataEntity {
     
     func createOrUpdateExecutor<EntityType>(for request: SynchronousUpdateRequest<EntityType>) {
-        _ = CoreDataEntity(identifier: identifier, context: context).update(entityName: request.entityName, shouldCreate: request.shouldCreate, shouldUpdate: request.shouldUpdate, fetchRequest: request.asFetchRequest(), modifier: request.modifier)
+        _ = CoreDataEntity(
+            identifier: identifier,
+            context: context
+        ).update(
+            entityName: request.entityName,
+            shouldCreate: request.shouldCreate,
+            shouldUpdate: request.shouldUpdate,
+            fetchRequest: request.asFetchRequest(),
+            prevalidation: request.prevalidator,
+            modifier: request.modifier
+        )
     }
     
 }

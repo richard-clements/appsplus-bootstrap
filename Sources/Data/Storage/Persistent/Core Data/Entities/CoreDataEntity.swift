@@ -15,13 +15,24 @@ struct CoreDataEntity {
         return CoreDataUpdate(identifier: identifier, context: context)
     }
     
-    func update<EntityType>(entityName: String, shouldCreate: Bool, shouldUpdate: Bool, fetchRequest: NSFetchRequest<NSFetchRequestResult>, modifier: ((EntityType, SynchronousStorage) -> Void)?) -> PersistentStoreUpdate {
+    func update<EntityType>(
+        entityName: String,
+        shouldCreate: Bool,
+        shouldUpdate: Bool,
+        fetchRequest: NSFetchRequest<NSFetchRequestResult>,
+        prevalidation: ((EntityType, SynchronousStorage) -> Bool)?,
+        modifier: ((EntityType, SynchronousStorage) -> Void)?
+    ) -> PersistentStoreUpdate {
         if shouldUpdate {
             let fetchResults = (try? context.fetch(fetchRequest))?.compactMap { $0 as? EntityType } ?? []
             if fetchResults.isEmpty && !shouldCreate {
                 return CoreDataUpdate(identifier: identifier, context: context)
             } else if fetchResults.isEmpty && shouldCreate {
-                return create(entityName: entityName, modifier: modifier)
+                return create(
+                    entityName: entityName,
+                    prevalidation: prevalidation,
+                    modifier: modifier
+                )
             } else {
                 fetchResults.forEach {
                     modifier?($0, SynchronousCoreDataStorage(identifier: identifier, context: context))
@@ -29,7 +40,11 @@ struct CoreDataEntity {
                 return CoreDataUpdate(identifier: identifier, context: context)
             }
         } else if shouldCreate {
-            return create(entityName: entityName, modifier: modifier)
+            return create(
+                entityName: entityName,
+                prevalidation: prevalidation,
+                modifier: modifier
+            )
         } else {
             return CoreDataUpdate(identifier: identifier, context: context)
         }
@@ -39,11 +54,17 @@ struct CoreDataEntity {
         (try? context.fetch(request))?.compactMap { $0 as? EntityType } ?? []
     }
     
-    private func create<EntityType>(entityName: String, modifier: ((EntityType, SynchronousStorage) -> Void)?) -> PersistentStoreUpdate {
-        guard let entity = NSEntityDescription.insertNewObject(forEntityName: entityName, into: context) as? EntityType else {
+    private func create<EntityType>(
+        entityName: String,
+        prevalidation: ((EntityType, SynchronousStorage) -> Bool)?,
+        modifier: ((EntityType, SynchronousStorage) -> Void)?
+    ) -> PersistentStoreUpdate {
+        let storage = SynchronousCoreDataStorage(identifier: identifier, context: context)
+        guard let entity = NSEntityDescription.insertNewObject(forEntityName: entityName, into: context) as? EntityType,
+              prevalidation?(entity, storage) != false else {
             return CoreDataUpdate(identifier: identifier, context: context)
         }
-        modifier?(entity, SynchronousCoreDataStorage(identifier: identifier, context: context))
+        modifier?(entity, storage)
         return CoreDataUpdate(identifier: identifier, context: context)
     }
     

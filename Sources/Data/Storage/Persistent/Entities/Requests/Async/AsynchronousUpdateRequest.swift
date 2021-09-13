@@ -25,6 +25,10 @@ public struct AsynchronousUpdateRequest<T>: AsynchronousPersistentStoreRequest {
         fetchRequest.shouldCreate
     }
     
+    var prevalidator: ((T, SynchronousStorage) -> Bool)? {
+        fetchRequest.prevalidator
+    }
+    
     var modifier: ((T, SynchronousStorage) -> Void)? {
         fetchRequest.modifier
     }
@@ -59,6 +63,14 @@ public struct AsynchronousUpdateRequest<T>: AsynchronousPersistentStoreRequest {
     
     public func excluding(predicate: NSPredicate) -> AsynchronousUpdateRequest<T> {
         AsynchronousUpdateRequest(publisher: publisher, fetchRequest: fetchRequest.excluding(predicate: predicate))
+    }
+    
+    public func prevalidate(_ validation: @escaping (T, SynchronousStorage) -> Bool) -> AsynchronousUpdateRequest<T> {
+        AsynchronousUpdateRequest(publisher: publisher, fetchRequest: fetchRequest.prevalidate(validation))
+    }
+    
+    public func prevalidate(_ validation: @escaping (T) -> Bool) -> AsynchronousUpdateRequest<T> {
+        AsynchronousUpdateRequest(publisher: publisher, fetchRequest: fetchRequest.prevalidate(validation))
     }
     
     public func modify(_ modifier: @escaping (T, SynchronousStorage) -> Void) -> AsynchronousUpdateRequest<T> {

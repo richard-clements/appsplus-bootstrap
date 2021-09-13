@@ -6,11 +6,31 @@ import Foundation
 public struct UpdateRequest<T> {
     
     public static func create() -> UpdateRequest {
-        return UpdateRequest(predicate: nil, limit: nil, offset: nil, batchSize: nil, sortDescriptors: nil, shouldCreate: true, shouldUpdate: false, modifier: nil)
+        UpdateRequest(
+            predicate: nil,
+            limit: nil,
+            offset: nil,
+            batchSize: nil,
+            sortDescriptors: nil,
+            shouldCreate: true,
+            shouldUpdate: false,
+            prevalidator: nil,
+            modifier: nil
+        )
     }
     
     public static func update(orCreate: Bool) -> UpdateRequest {
-        return UpdateRequest(predicate: nil, limit: nil, offset: nil, batchSize: nil, sortDescriptors: nil, shouldCreate: orCreate, shouldUpdate: true, modifier: nil)
+        UpdateRequest(
+            predicate: nil,
+            limit: nil,
+            offset: nil,
+            batchSize: nil,
+            sortDescriptors: nil,
+            shouldCreate: orCreate,
+            shouldUpdate: true,
+            prevalidator: nil,
+            modifier: nil
+        )
     }
     
     let predicate: NSPredicate?
@@ -20,6 +40,7 @@ public struct UpdateRequest<T> {
     let sortDescriptors: [NSSortDescriptor]?
     let shouldCreate: Bool
     let shouldUpdate: Bool
+    let prevalidator: ((T, SynchronousStorage) -> Bool)?
     let modifier: ((T, SynchronousStorage) -> Void)?
     
     func sorted<Value>(by keyPath: KeyPath<T, Value>, ascending: Bool) -> UpdateRequest {
@@ -39,6 +60,7 @@ public struct UpdateRequest<T> {
                 sortDescriptors: sortDescriptors,
                 shouldCreate: false,
                 shouldUpdate: false,
+                prevalidator: nil,
                 modifier: nil
             )
         )
@@ -57,6 +79,7 @@ public struct UpdateRequest<T> {
                 sortDescriptors: nil,
                 shouldCreate: false,
                 shouldUpdate: false,
+                prevalidator: nil,
                 modifier: nil
             )
         )
@@ -72,6 +95,7 @@ public struct UpdateRequest<T> {
                 sortDescriptors: nil,
                 shouldCreate: false,
                 shouldUpdate: false,
+                prevalidator: nil,
                 modifier: nil
             )
         )
@@ -87,6 +111,7 @@ public struct UpdateRequest<T> {
                 sortDescriptors: nil,
                 shouldCreate: false,
                 shouldUpdate: false,
+                prevalidator: nil,
                 modifier: nil
             )
         )
@@ -102,6 +127,7 @@ public struct UpdateRequest<T> {
                 sortDescriptors: nil,
                 shouldCreate: false,
                 shouldUpdate: false,
+                prevalidator: nil,
                 modifier: nil
             )
         )
@@ -123,6 +149,33 @@ public struct UpdateRequest<T> {
         setPredicate(PredicateHelper.excluding(predicate: predicate, from: self.predicate))
     }
     
+    func prevalidate(_ validation: @escaping ((T, SynchronousStorage) -> Bool)) -> UpdateRequest {
+        join(
+            UpdateRequest(
+                predicate: nil,
+                limit: nil,
+                offset: nil,
+                batchSize: nil,
+                sortDescriptors: nil,
+                shouldCreate: false,
+                shouldUpdate: false,
+                prevalidator: { item, storage in
+                    [
+                        prevalidator,
+                        validation
+                    ]
+                    .compactMap { $0?(item, storage) }
+                    .allSatisfy { $0 }
+                },
+                modifier: nil
+            )
+        )
+    }
+    
+    func prevalidate(_ validation: @escaping (T) -> Bool) -> UpdateRequest {
+        prevalidate { item, _ in validation(item) }
+    }
+    
     func modify(_ modifier: @escaping ((T, SynchronousStorage) -> Void)) -> UpdateRequest {
         join(
             UpdateRequest(
@@ -133,6 +186,7 @@ public struct UpdateRequest<T> {
                 sortDescriptors: nil,
                 shouldCreate: false,
                 shouldUpdate: false,
+                prevalidator: nil,
                 modifier: {
                     self.modifier?($0, $1)
                     modifier($0, $1)
@@ -154,6 +208,7 @@ public struct UpdateRequest<T> {
             sortDescriptors: request.sortDescriptors ?? sortDescriptors,
             shouldCreate: request.shouldCreate || shouldCreate,
             shouldUpdate: request.shouldUpdate || shouldUpdate,
+            prevalidator: request.prevalidator ?? prevalidator,
             modifier: request.modifier ?? modifier
         )
     }
