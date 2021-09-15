@@ -21,8 +21,11 @@ public extension ValidationError {
               let errors = json["errors"] as? [String: [String]]  else {
             throw ValidationParseError.failedToParse
         }
-        let validationErrors: [Field: [String]] = Field.allCases.reduce(into: [Field: [String]]()) {
-            $0[$1] = errors[$1.rawValue]
+        let validationErrors: [Field: [String]] = Field.allCases.reduce(into: [Field: [String]]()) { dictionary, field in
+            let arrayValues = errors.keys.filter { $0.hasPrefix("\(field.rawValue).") }
+                .flatMap { errors[$0] ?? [] }
+            
+            dictionary[field] = errors[field.rawValue, default: []] + arrayValues
         }.filter { !$0.value.isEmpty }
         guard !validationErrors.isEmpty else {
             throw ValidationParseError.failedToParse
