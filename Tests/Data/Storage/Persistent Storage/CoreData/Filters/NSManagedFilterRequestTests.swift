@@ -503,6 +503,54 @@ class NSManagedFilterRequestTests: XCTestCase {
             .or(isNotNil: \.string)
         XCTAssertEqual([NSPredicate(format: "string != nil")], request.orPredicates)
     }
+    
+    func testExludingIsEmptyOrNil() {
+        let request = MockFilterRequest<Object>()
+            .excluding(isNilOrEmpty: \.nullableSet)
+        XCTAssertEqual([NSPredicate(format: "nullableSet == nil OR nullableSet.@count == 0")], request.excludingPredicates)
+    }
+    
+    func testExludingIsEmpty() {
+        let request = MockFilterRequest<Object>()
+            .excluding(isEmpty: \.nonNullableSet)
+        XCTAssertEqual([NSPredicate(format: "nonNullableSet.@count == 0")], request.excludingPredicates)
+    }
+    
+    func testSuchThatIsEmptyOrNil() {
+        let request = MockFilterRequest<Object>()
+            .suchThat(isNilOrEmpty: \.nullableSet)
+        XCTAssertEqual([NSPredicate(format: "nullableSet == nil OR nullableSet.@count == 0")], request.suchThatPredicates)
+    }
+    
+    func testSuchThatIsEmpty() {
+        let request = MockFilterRequest<Object>()
+            .suchThat(isEmpty: \.nonNullableSet)
+        XCTAssertEqual([NSPredicate(format: "nonNullableSet.@count == 0")], request.suchThatPredicates)
+    }
+    
+    func testAndIsEmptyOrNil() {
+        let request = MockFilterRequest<Object>()
+            .and(isNilOrEmpty: \.nullableSet)
+        XCTAssertEqual([NSPredicate(format: "nullableSet == nil OR nullableSet.@count == 0")], request.andPredicates)
+    }
+    
+    func testAndIsEmpty() {
+        let request = MockFilterRequest<Object>()
+            .and(isEmpty: \.nonNullableSet)
+        XCTAssertEqual([NSPredicate(format: "nonNullableSet.@count == 0")], request.andPredicates)
+    }
+    
+    func testOrIsEmptyOrNil() {
+        let request = MockFilterRequest<Object>()
+            .or(isNilOrEmpty: \.nullableSet)
+        XCTAssertEqual([NSPredicate(format: "nullableSet == nil OR nullableSet.@count == 0")], request.orPredicates)
+    }
+    
+    func testOrIsEmpty() {
+        let request = MockFilterRequest<Object>()
+            .or(isEmpty: \.nonNullableSet)
+        XCTAssertEqual([NSPredicate(format: "nonNullableSet.@count == 0")], request.orPredicates)
+    }
 }
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
@@ -511,6 +559,8 @@ extension NSManagedFilterRequestTests {
     class Object: NSManagedObject {
         @NSManaged var integer: Int32
         @NSManaged var string: String?
+        @NSManaged var nullableSet: NSSet?
+        @NSManaged var nonNullableSet: NSSet
     }
     
 }

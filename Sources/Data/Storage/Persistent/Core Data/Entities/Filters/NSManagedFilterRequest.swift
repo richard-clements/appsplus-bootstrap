@@ -259,5 +259,48 @@ extension FilterRequest where Entity: NSManagedObject {
     
 }
 
+private func predicate<Entity: NSManagedObject>(keyPathIsNilOrEmpty keyPath: KeyPath<Entity, NSSet?>) -> NSPredicate {
+    NSPredicate(format: "\(keyPath.keyPath) == nil OR \(keyPath.keyPath).@count == 0")
+}
+
+private func predicate<Entity: NSManagedObject>(keyPathIsEmpty keyPath: KeyPath<Entity, NSSet>) -> NSPredicate {
+    NSPredicate(format: "\(keyPath.keyPath).@count == 0")
+}
+
+extension FilterRequest where Entity: NSManagedObject {
+    
+    public func excluding(isNilOrEmpty keyPath: KeyPath<Entity, NSSet?>) -> Self {
+        excluding(predicate: predicate(keyPathIsNilOrEmpty: keyPath))
+    }
+    
+    public func excluding(isEmpty keyPath: KeyPath<Entity, NSSet>) -> Self {
+        excluding(predicate: predicate(keyPathIsEmpty: keyPath))
+    }
+    
+    public func suchThat(isNilOrEmpty keyPath: KeyPath<Entity, NSSet?>) -> Self {
+        suchThat(predicate: predicate(keyPathIsNilOrEmpty: keyPath))
+    }
+    
+    public func suchThat(isEmpty keyPath: KeyPath<Entity, NSSet>) -> Self {
+        suchThat(predicate: predicate(keyPathIsEmpty: keyPath))
+    }
+    
+    public func and(isNilOrEmpty keyPath: KeyPath<Entity, NSSet?>) -> Self {
+        and(predicate: predicate(keyPathIsNilOrEmpty: keyPath))
+    }
+    
+    public func and(isEmpty keyPath: KeyPath<Entity, NSSet>) -> Self {
+        and(predicate: predicate(keyPathIsEmpty: keyPath))
+    }
+    
+    public func or(isNilOrEmpty keyPath: KeyPath<Entity, NSSet?>) -> Self {
+        or(predicate: predicate(keyPathIsNilOrEmpty: keyPath))
+    }
+    
+    public func or(isEmpty keyPath: KeyPath<Entity, NSSet>) -> Self {
+        or(predicate: predicate(keyPathIsEmpty: keyPath))
+    }
+    
+}
 
 #endif
