@@ -506,8 +506,8 @@ class NSManagedFilterRequestTests: XCTestCase {
     
     func testExludingIsEmptyOrNil() {
         let request = MockFilterRequest<Object>()
-            .excluding(isNilOrEmpty: \.nullableSet)
-        XCTAssertEqual([NSPredicate(format: "nullableSet == nil OR nullableSet.@count == 0")], request.excludingPredicates)
+            .excluding(isEmpty: \.nullableSet)
+        XCTAssertEqual([NSPredicate(format: "nullableSet.@count == 0")], request.excludingPredicates)
     }
     
     func testExludingIsEmpty() {
@@ -518,8 +518,8 @@ class NSManagedFilterRequestTests: XCTestCase {
     
     func testSuchThatIsEmptyOrNil() {
         let request = MockFilterRequest<Object>()
-            .suchThat(isNilOrEmpty: \.nullableSet)
-        XCTAssertEqual([NSPredicate(format: "nullableSet == nil OR nullableSet.@count == 0")], request.suchThatPredicates)
+            .suchThat(isEmpty: \.nullableSet)
+        XCTAssertEqual([NSPredicate(format: "nullableSet.@count == 0")], request.suchThatPredicates)
     }
     
     func testSuchThatIsEmpty() {
@@ -530,8 +530,8 @@ class NSManagedFilterRequestTests: XCTestCase {
     
     func testAndIsEmptyOrNil() {
         let request = MockFilterRequest<Object>()
-            .and(isNilOrEmpty: \.nullableSet)
-        XCTAssertEqual([NSPredicate(format: "nullableSet == nil OR nullableSet.@count == 0")], request.andPredicates)
+            .and(isEmpty: \.nullableSet)
+        XCTAssertEqual([NSPredicate(format: "nullableSet.@count == 0")], request.andPredicates)
     }
     
     func testAndIsEmpty() {
@@ -542,8 +542,8 @@ class NSManagedFilterRequestTests: XCTestCase {
     
     func testOrIsEmptyOrNil() {
         let request = MockFilterRequest<Object>()
-            .or(isNilOrEmpty: \.nullableSet)
-        XCTAssertEqual([NSPredicate(format: "nullableSet == nil OR nullableSet.@count == 0")], request.orPredicates)
+            .or(isEmpty: \.nullableSet)
+        XCTAssertEqual([NSPredicate(format: "nullableSet.@count == 0")], request.orPredicates)
     }
     
     func testOrIsEmpty() {
