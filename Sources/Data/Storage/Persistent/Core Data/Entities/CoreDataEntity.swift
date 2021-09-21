@@ -11,7 +11,11 @@ struct CoreDataEntity {
     
     func delete(request: NSFetchRequest<NSFetchRequestResult>) -> PersistentStoreUpdate {
         (try? context.fetch(request))?.compactMap { $0 as? NSManagedObject }
-            .forEach { context.delete($0) }
+            .forEach {
+                if (try? $0.validateForDelete()) != nil {
+                    context.delete($0)
+                }
+            }
         return CoreDataUpdate(identifier: identifier, context: context)
     }
     
