@@ -455,6 +455,54 @@ class NSManagedFilterRequestTests: XCTestCase {
             request.excludingPredicates
         )
     }
+    
+    func testExcludingIsNil() {
+        let request = MockFilterRequest<Object>()
+            .excluding(isNil: \.string)
+        XCTAssertEqual([NSPredicate(format: "string == nil")], request.excludingPredicates)
+    }
+    
+    func testExcludingIsNotNil() {
+        let request = MockFilterRequest<Object>()
+            .excluding(isNotNil: \.string)
+        XCTAssertEqual([NSPredicate(format: "string != nil")], request.excludingPredicates)
+    }
+    
+    func testSuchThatIsNil() {
+        let request = MockFilterRequest<Object>()
+            .suchThat(isNil: \.string)
+        XCTAssertEqual([NSPredicate(format: "string == nil")], request.suchThatPredicates)
+    }
+    
+    func testSuchThatIsNotNil() {
+        let request = MockFilterRequest<Object>()
+            .suchThat(isNotNil: \.string)
+        XCTAssertEqual([NSPredicate(format: "string != nil")], request.suchThatPredicates)
+    }
+    
+    func testAndIsNil() {
+        let request = MockFilterRequest<Object>()
+            .and(isNil: \.string)
+        XCTAssertEqual([NSPredicate(format: "string == nil")], request.andPredicates)
+    }
+    
+    func testAndIsNotNil() {
+        let request = MockFilterRequest<Object>()
+            .and(isNotNil: \.string)
+        XCTAssertEqual([NSPredicate(format: "string != nil")], request.andPredicates)
+    }
+    
+    func testOrIsNil() {
+        let request = MockFilterRequest<Object>()
+            .or(isNil: \.string)
+        XCTAssertEqual([NSPredicate(format: "string == nil")], request.orPredicates)
+    }
+    
+    func testOrIsNotNil() {
+        let request = MockFilterRequest<Object>()
+            .or(isNotNil: \.string)
+        XCTAssertEqual([NSPredicate(format: "string != nil")], request.orPredicates)
+    }
 }
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)

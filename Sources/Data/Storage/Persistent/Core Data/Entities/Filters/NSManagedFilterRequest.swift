@@ -215,5 +215,49 @@ extension FilterRequest where Entity: NSManagedObject {
     
 }
 
+private func predicate<Entity: NSManagedObject, Value>(keyPathIsNil keyPath: KeyPath<Entity, Value>) -> NSPredicate {
+    NSPredicate(format: "\(keyPath.keyPath) == nil")
+}
+
+private func predicate<Entity: NSManagedObject, Value>(keyPathIsNotNil keyPath: KeyPath<Entity, Value>) -> NSPredicate {
+    NSPredicate(format: "\(keyPath.keyPath) != nil")
+}
+
+extension FilterRequest where Entity: NSManagedObject {
+    
+    public func excluding<Value>(isNil keyPath: KeyPath<Entity, Value>) -> Self {
+        excluding(predicate: predicate(keyPathIsNil: keyPath))
+    }
+    
+    public func excluding<Value>(isNotNil keyPath: KeyPath<Entity, Value>) -> Self {
+        excluding(predicate: predicate(keyPathIsNotNil: keyPath))
+    }
+    
+    public func suchThat<Value>(isNil keyPath: KeyPath<Entity, Value>) -> Self {
+        suchThat(predicate: predicate(keyPathIsNil: keyPath))
+    }
+    
+    public func suchThat<Value>(isNotNil keyPath: KeyPath<Entity, Value>) -> Self {
+        suchThat(predicate: predicate(keyPathIsNotNil: keyPath))
+    }
+    
+    public func and<Value>(isNil keyPath: KeyPath<Entity, Value>) -> Self {
+        and(predicate: predicate(keyPathIsNil: keyPath))
+    }
+    
+    public func and<Value>(isNotNil keyPath: KeyPath<Entity, Value>) -> Self {
+        and(predicate: predicate(keyPathIsNotNil: keyPath))
+    }
+    
+    public func or<Value>(isNil keyPath: KeyPath<Entity, Value>) -> Self {
+        or(predicate: predicate(keyPathIsNil: keyPath))
+    }
+    
+    public func or<Value>(isNotNil keyPath: KeyPath<Entity, Value>) -> Self {
+        or(predicate: predicate(keyPathIsNotNil: keyPath))
+    }
+    
+}
+
 
 #endif
