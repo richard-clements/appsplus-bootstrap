@@ -8,7 +8,7 @@ public struct SynchronousDeleteRequest<T>: SynchronousPersistentStoreRequest {
     public typealias Entity = T
     public typealias Output = Void
     
-    let executor: Executor
+    let executor: ExecutorFunction
     let fetchRequest: DeleteRequest<T>
     
     public func sorted<Value>(by keyPath: KeyPath<T, Value>, ascending: Bool) -> SynchronousDeleteRequest<T> {

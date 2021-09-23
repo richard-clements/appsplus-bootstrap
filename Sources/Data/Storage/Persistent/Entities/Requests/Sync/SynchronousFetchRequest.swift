@@ -8,7 +8,7 @@ public struct SynchronousFetchRequest<T>: SynchronousPersistentStoreRequest {
     public typealias Entity = T
     public typealias Output = [T]
     
-    let executor: Executor
+    let executor: ExecutorFunction
     let fetchRequest: FetchRequest<T>
     
     public var predicate: NSPredicate? {

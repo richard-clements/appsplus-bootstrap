@@ -6,9 +6,9 @@ import Foundation
 protocol SynchronousPersistentStoreRequest {
     
     associatedtype Output
-    typealias Executor = (Self) -> Output
+    typealias ExecutorFunction = (Self) -> Output
     
-    var executor: Executor { get }
+    var executor: ExecutorFunction { get }
     
 }
 

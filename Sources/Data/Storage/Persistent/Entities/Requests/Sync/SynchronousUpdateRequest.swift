@@ -8,7 +8,7 @@ public struct SynchronousUpdateRequest<T>: SynchronousPersistentStoreRequest {
     public typealias Entity = T
     public typealias Output = Void
     
-    let executor: Executor
+    let executor: ExecutorFunction
     let fetchRequest: UpdateRequest<T>
     
     var shouldUpdate: Bool {
