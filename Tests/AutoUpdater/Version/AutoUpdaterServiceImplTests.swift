@@ -95,7 +95,7 @@ class AutoUpdaterServiceImplTests: XCTestCase {
             return ((value, 200), nil)
         }
         
-        var update: Update?
+        var update: UpdateStatus?
         let expectation = XCTestExpectation()
         autoUpdaterService.availableUpdate()
             .sink { _ in
@@ -162,7 +162,7 @@ class AutoUpdaterServiceImplTests: XCTestCase {
             return ((value, 200), nil)
         }
         
-        var update: Update?
+        var update: UpdateStatus?
         let expectation = XCTestExpectation()
         autoUpdaterService.availableUpdate()
             .sink { _ in
@@ -172,8 +172,9 @@ class AutoUpdaterServiceImplTests: XCTestCase {
             }
             .store(in: &cancellables)
         wait(for: [expectation], timeout: 1)
-        if case .available(let manifest) = update {
-            XCTAssertEqual(Version(major: 1, minor: 0, patch: 1, build: 1), manifest.items.first?.metadata.version)
+        if case .available(let update) = update {
+            XCTAssertEqual(URL(string: "https://www.test.com")!, update.url)
+            XCTAssertEqual(Version(major: 1, minor: 0, patch: 1, build: 1), update.version)
         } else {
             XCTFail("Should be manifest update")
         }

@@ -16,7 +16,7 @@ public class AutoUpdaterServiceImpl: AutoUpdaterService {
         self.manifestUrl = manifestUrl
     }
     
-    public func availableUpdate() -> AnyPublisher<Update, AutoUpdaterError> {
+    public func availableUpdate() -> AnyPublisher<UpdateStatus, AutoUpdaterError> {
         guard let manifestUrl = manifestUrl else {
             return Just(.latest)
                 .setFailureType(to: AutoUpdaterError.self)
@@ -28,9 +28,9 @@ public class AutoUpdaterServiceImpl: AutoUpdaterService {
             .decode(type: Manifest.self, decoder: PropertyListDecoder())
             .map {
                 guard let item = $0.items.first, item.metadata.version > currentVersion else {
-                    return Update.latest
+                    return UpdateStatus.latest
                 }
-                return .available($0)
+                return .available(.init(manifest: $0, url: manifestUrl, version: item.metadata.version))
             }
             .mapError { _ in AutoUpdaterError.failed }
             .eraseToAnyPublisher()
