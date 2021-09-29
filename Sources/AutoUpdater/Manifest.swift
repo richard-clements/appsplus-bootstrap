@@ -20,7 +20,7 @@ public struct Manifest: Codable, Equatable {
         
         public let bundleIdentifier: String
         let bundleVersion: String
-        public let bundleBuild: String
+        let bundleBuild: String
         public let kind: String
         public let title: String
         public let expirationDate: Date
