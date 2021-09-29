@@ -30,7 +30,7 @@ public class AutoUpdaterServiceImpl: AutoUpdaterService {
                 guard let item = $0.items.first, item.metadata.version > currentVersion else {
                     return UpdateStatus.latest
                 }
-                return .available(.init(manifest: $0, url: manifestUrl, version: item.metadata.version))
+                return .available(.init(manifest: $0, url: URL(string: "itms-services://?action=download-manifest&url=\(manifestUrl.absoluteString)")!, version: item.metadata.version))
             }
             .mapError { _ in AutoUpdaterError.failed }
             .eraseToAnyPublisher()
