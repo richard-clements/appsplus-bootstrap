@@ -12,6 +12,10 @@ extension Bundle {
         return Version(string: versionNumber, buildName: buildNumber)
     }
     
+    public var manifestUrl: URL? {
+        (infoDictionary?["ManifestURL"] as? String).flatMap(URL.init)
+    }
+    
 }
 
 #endif

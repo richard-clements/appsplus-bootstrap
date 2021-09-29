@@ -8,15 +8,20 @@ public class AutoUpdaterServiceImpl: AutoUpdaterService {
     
     private let session: URLSession
     private let currentVersion: Version
-    private let manifestUrl: URL
+    private let manifestUrl: URL?
     
-    public init(session: URLSession, currentVersion: Version, manifestUrl: URL) {
+    public init(session: URLSession, currentVersion: Version, manifestUrl: URL?) {
         self.session = session
         self.currentVersion = currentVersion
         self.manifestUrl = manifestUrl
     }
     
     public func availableUpdate() -> AnyPublisher<Update, AutoUpdaterError> {
+        guard let manifestUrl = manifestUrl else {
+            return Just(.latest)
+                .setFailureType(to: AutoUpdaterError.self)
+                .eraseToAnyPublisher()
+        }
         let currentVersion = self.currentVersion
         return session.dataTaskPublisher(for: manifestUrl)
             .map(\.data)
