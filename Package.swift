@@ -59,6 +59,10 @@ let package = Package(
         .library(
             name: "AppsPlusTesting",
             targets: ["AppsPlusTesting"]
+        ),
+        .library(
+            name: "AutoUpdater",
+            targets: ["AutoUpdater"]
         )
     ],
     dependencies: [
@@ -82,6 +86,15 @@ let package = Package(
             name: "AppsPlusTesting",
             sources: ["Testing"],
             dependencies: ["AppsPlusData", "SwiftCheck"]
+        ),
+        .target(
+            name: "AutoUpdater",
+            sources: ["AutoUpdater"]
+        ),
+        .testTarget(
+            name: "AutoUpdaterTests",
+            sources: ["AutoUpdater"],
+            dependencies: ["AutoUpdater"]
         )
     ]
 )
