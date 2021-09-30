@@ -37,14 +37,14 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
             self?.writeContext = self?.newBackgroundContext()
             self?.handleSave()
             self?.startDestroyTimer()
-            self?.viewContext.userInfo[String.contextProvider] = self
+            self?.viewContext.userInfo[String.contextProvider] = { [weak self] in self as NSManagedContextProvider?}
             block($0, $1)
         }
     }
     
     public override func newBackgroundContext() -> NSManagedObjectContext {
         let context = super.newBackgroundContext()
-        context.userInfo[String.contextProvider] = self
+        context.userInfo[String.contextProvider] = { [weak self] in self as NSManagedContextProvider? }
         return context
     }
     
@@ -107,7 +107,7 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
 
 extension PersistentContainer: NSManagedContextProvider {
     
-    public func context(for scope: NSManagedContextScope) -> NSManagedObjectContext? {
+    func context(for scope: NSManagedContextScope) -> NSManagedObjectContext? {
         switch scope {
         case .main:
             return viewContext
@@ -127,7 +127,7 @@ extension PersistentContainer: NSManagedContextProvider {
 
 extension NSManagedObjectContext {
     func context(for scope: NSManagedContextScope) -> NSManagedObjectContext? {
-        (userInfo[String.contextProvider] as? NSManagedContextProvider)?.context(for: scope)
+        (userInfo[String.contextProvider] as? (() -> NSManagedContextProvider?))?()?.context(for: scope)
     }
 }
 

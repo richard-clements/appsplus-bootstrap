@@ -16,6 +16,12 @@ class MockPersistentContainer: NSPersistentContainer, CoreDataPersistentContaine
         newBackgroundContext()
     }()
     
+    override func newBackgroundContext() -> NSManagedObjectContext {
+        let context = super.newBackgroundContext()
+        context.userInfo["ContextProvider"] = { [weak self] in self as NSManagedContextProvider? }
+        return context
+    }
+    
     func contextForWriting() -> AnyPublisher<NSManagedObjectContext, Error> {
         Future { [unowned self] promise in
             writingContext.perform {
@@ -40,9 +46,18 @@ class MockPersistentContainer: NSPersistentContainer, CoreDataPersistentContaine
                     .store(in: &self.cancellables)
             }
             self?.expectation.fulfill()
+            self?.viewContext.userInfo["ContextProvider"] = { [weak self] in self as NSManagedContextProvider? }
             block($0, $1)
         }
     }
+}
+
+extension MockPersistentContainer: NSManagedContextProvider {
+    
+    func context(for scope: NSManagedContextScope) -> NSManagedObjectContext? {
+        viewContext
+    }
+    
 }
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)

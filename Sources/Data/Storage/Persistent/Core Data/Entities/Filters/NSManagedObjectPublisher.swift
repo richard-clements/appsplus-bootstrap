@@ -18,7 +18,7 @@ public struct NSManagedContextScope: Hashable, ExpressibleByStringLiteral {
     }
 }
 
-public protocol NSManagedContextProvider {
+protocol NSManagedContextProvider {
     func context(for scope: NSManagedContextScope) -> NSManagedObjectContext?
 }
 
