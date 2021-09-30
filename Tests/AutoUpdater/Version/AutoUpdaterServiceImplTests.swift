@@ -1,5 +1,4 @@
 import XCTest
-import AppsPlusTesting
 import Combine
 @testable import AutoUpdater
 
