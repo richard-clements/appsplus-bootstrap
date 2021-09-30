@@ -27,7 +27,7 @@ public class CoreDataPersistentStorage: PersistentStorage {
         AsynchronousCoreDataEntity(identifier: identifier) { [weak self] in
             self?.container.contextForWriting() ?? Fail(error: CoreDataPersistentStorageError.storeUnavailable).eraseToAnyPublisher()
         } readPublisher: { [weak self] in
-            self?.container.contextForReading(inBackgroundScope: $0) ?? Fail(error: CoreDataPersistentStorageError.storeUnavailable).eraseToAnyPublisher()
+            self?.container.contextForReading() ?? Fail(error: CoreDataPersistentStorageError.storeUnavailable).eraseToAnyPublisher()
         }
         .eraseToAnyEntity()
     }

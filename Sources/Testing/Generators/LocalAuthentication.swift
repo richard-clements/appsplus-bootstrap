@@ -11,11 +11,7 @@ extension LAError.Code: Arbitrary {
         if #available(iOS 11.0, tvOS 11.0, macOS 10.13, *) {
             return Gen.fromElements(of: [.appCancel, .authenticationFailed, .biometryLockout, .biometryNotAvailable, .biometryNotEnrolled])
         } else {
-            if #available(macOS 10.11, *) {
-                return Gen.fromElements(of: [.appCancel, .authenticationFailed])
-            } else {
-                return Gen.fromElements(of: [.authenticationFailed])
-            }
+            return Gen.fromElements(of: [.appCancel, .authenticationFailed])
         }
     }
     

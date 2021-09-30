@@ -12,7 +12,7 @@ struct AsynchronousCoreDataEntity<EntityType>: AsynchronousEntity {
     
     let identifier: String
     let writePublisher: () -> OutputPublisher
-    let readPublisher: PublisherType<AsynchronousFetchRequestBackgroundScope?>
+    let readPublisher: () -> OutputPublisher
     
     func create() -> AsynchronousUpdateRequest<EntityType> {
         AsynchronousUpdateRequest(publisher: createOrUpdatePublisher, fetchRequest: .create())
@@ -24,7 +24,7 @@ struct AsynchronousCoreDataEntity<EntityType>: AsynchronousEntity {
     
     func fetch() -> AsynchronousFetchRequest<EntityType> {
         AsynchronousFetchRequest(publisher: { request in
-            readPublisher(request.backgroundScope)
+            readPublisher()
                 .flatMap { context -> AnyPublisher<[EntityType], Error> in
                     if request.shouldSubscribe {
                         return CoreDataFetchResultsPublisher(context: context, fetchRequest: request.asFetchRequest())

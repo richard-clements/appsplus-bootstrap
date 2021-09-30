@@ -24,7 +24,7 @@ class MockPersistentContainer: NSPersistentContainer, CoreDataPersistentContaine
         }.eraseToAnyPublisher()
     }
     
-    func contextForReading(inBackgroundScope scope: AsynchronousFetchRequestBackgroundScope?) -> AnyPublisher<NSManagedObjectContext, Error> {
+    func contextForReading() -> AnyPublisher<NSManagedObjectContext, Error> {
         Just(viewContext).setFailureType(to: Error.self).eraseToAnyPublisher()
     }
     

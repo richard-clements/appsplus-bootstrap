@@ -12,7 +12,6 @@ class AsynchronousFetchRequestTest: XCTestCase {
     var result: [MockEntity]!
     var failRequest: Bool!
     var observedShouldSubscribe: Bool?
-    var observedBackgroundScope: AsynchronousFetchRequestBackgroundScope?
     
     override func setUpWithError() throws {
         initialRequest = AsynchronousFetchRequest<MockEntity>(publisher: publisher, fetchRequest: .empty())
@@ -138,22 +137,6 @@ class AsynchronousFetchRequestTest: XCTestCase {
         XCTAssertEqual(false, observedShouldSubscribe)
     }
     
-    func testPerform_setBackgroundScope_nil() {
-        let _ = initialRequest
-            .perform()
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
-        
-        XCTAssertNil(observedBackgroundScope)
-    }
-    
-    func testPerform_setBackgroundScope_value() {
-        let _ = initialRequest
-            .perform(inBackgroundScope: "Scope")
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
-        
-        XCTAssertEqual("Scope", observedBackgroundScope)
-    }
-    
     func testSubscribeSucceeds() {
         let expectation = XCTestExpectation()
         
@@ -201,22 +184,6 @@ class AsynchronousFetchRequestTest: XCTestCase {
         XCTAssertEqual(true, observedShouldSubscribe)
     }
     
-    func testSubscribe_setBackgroundScope_nil() {
-        let _ = initialRequest
-            .subscribe()
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
-        
-        XCTAssertNil(observedBackgroundScope)
-    }
-    
-    func testSubscribe_setBackgroundScope_value() {
-        let _ = initialRequest
-            .subscribe(inBackgroundScope: "Scope")
-            .sink(receiveCompletion: { _ in }, receiveValue: { _ in })
-        
-        XCTAssertEqual("Scope", observedBackgroundScope)
-    }
-    
 }
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
@@ -224,7 +191,6 @@ extension AsynchronousFetchRequestTest {
     
     func publisher(request: AsynchronousFetchRequest<MockEntity>) -> AnyPublisher<[MockEntity], Error> {
         observedShouldSubscribe = request.shouldSubscribe
-        observedBackgroundScope = request.backgroundScope
         if failRequest {
             return Fail(error: MockError.error).eraseToAnyPublisher()
         } else {

@@ -4,21 +4,6 @@ import Foundation
 import Combine
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
-public struct AsynchronousFetchRequestBackgroundScope: ExpressibleByStringLiteral, Hashable {
-    let rawValue: String
-    
-    public static let new: Self = "BackgroundScope.new::always"
-    
-    public init(value: String) {
-        self.rawValue = value
-    }
-    
-    public init(stringLiteral value: String) {
-        self.rawValue = value
-    }
-}
-
-@available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 public struct AsynchronousFetchRequest<T>: AsynchronousPersistentStoreRequest {
     
     public typealias Entity = T
@@ -27,17 +12,15 @@ public struct AsynchronousFetchRequest<T>: AsynchronousPersistentStoreRequest {
     let publisher: PublisherType
     let fetchRequest: FetchRequest<T>
     let shouldSubscribe: Bool
-    let backgroundScope: AsynchronousFetchRequestBackgroundScope?
     
     public init(publisher: @escaping (Self) -> AnyPublisher<Output, Error>, fetchRequest: FetchRequest<T>) {
-        self.init(publisher: publisher, fetchRequest: fetchRequest, shouldSubscribe: false, backgroundScope: nil)
+        self.init(publisher: publisher, fetchRequest: fetchRequest, shouldSubscribe: false)
     }
     
-    private init(publisher: @escaping PublisherType, fetchRequest: FetchRequest<T>, shouldSubscribe: Bool, backgroundScope: AsynchronousFetchRequestBackgroundScope?) {
+    private init(publisher: @escaping PublisherType, fetchRequest: FetchRequest<T>, shouldSubscribe: Bool) {
         self.publisher = publisher
         self.fetchRequest = fetchRequest
         self.shouldSubscribe = shouldSubscribe
-        self.backgroundScope = backgroundScope
     }
     
     public func sorted<Value>(by keyPath: KeyPath<T, Value>, ascending: Bool) -> AsynchronousFetchRequest {
@@ -105,12 +88,12 @@ extension AsynchronousFetchRequest: FilterRequest { }
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 extension AsynchronousFetchRequest {
     
-    public func perform(inBackgroundScope scope: AsynchronousFetchRequestBackgroundScope? = nil) -> AnyPublisher<Output, Error> {
-        publisher(AsynchronousFetchRequest(publisher: publisher, fetchRequest: fetchRequest, shouldSubscribe: false, backgroundScope: scope))
+    public func perform() -> AnyPublisher<Output, Error> {
+        publisher(AsynchronousFetchRequest(publisher: publisher, fetchRequest: fetchRequest, shouldSubscribe: false))
     }
     
-    public func subscribe(inBackgroundScope scope: AsynchronousFetchRequestBackgroundScope? = nil) -> AnyPublisher<Output, Error> {
-        publisher(AsynchronousFetchRequest(publisher: publisher, fetchRequest: fetchRequest, shouldSubscribe: true, backgroundScope: scope))
+    public func subscribe() -> AnyPublisher<Output, Error> {
+        publisher(AsynchronousFetchRequest(publisher: publisher, fetchRequest: fetchRequest, shouldSubscribe: true))
     }
     
 }
@@ -123,8 +106,7 @@ extension AsynchronousFetchRequest: Equatable {
             lhs.offset == rhs.offset &&
             lhs.batchSize == rhs.batchSize &&
             lhs.predicate == rhs.predicate &&
-            lhs.sortDescriptors == rhs.sortDescriptors &&
-            lhs.backgroundScope == rhs.backgroundScope
+            lhs.sortDescriptors == rhs.sortDescriptors
     }
     
 }

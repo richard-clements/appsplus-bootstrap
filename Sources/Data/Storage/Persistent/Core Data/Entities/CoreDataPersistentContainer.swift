@@ -9,7 +9,7 @@ public protocol CoreDataPersistentContainer {
     
     func loadPersistentStores(completionHandler block: @escaping (NSPersistentStoreDescription, Error?) -> Void)
     func contextForWriting() -> AnyPublisher<NSManagedObjectContext, Error>
-    func contextForReading(inBackgroundScope scope: AsynchronousFetchRequestBackgroundScope?) -> AnyPublisher<NSManagedObjectContext, Error>
+    func contextForReading() -> AnyPublisher<NSManagedObjectContext, Error>
 }
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
@@ -73,24 +73,24 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
         return context
     }
     
-    private func context(for scope: AsynchronousFetchRequestBackgroundScope?) -> NSManagedObjectContext {
-        if scope == .new {
+    private func context(for scope: String?) -> NSManagedObjectContext {
+        if scope == "new" {
             return backgroundContext()
         } else if let scope = scope {
             return readContextsQueue.sync {
-                if readContexts[scope.rawValue] == nil {
-                    readContexts[scope.rawValue] = backgroundContext()
+                if readContexts[scope] == nil {
+                    readContexts[scope] = backgroundContext()
                 }
-                lastUsedContexts[scope.rawValue] = Date()
-                return readContexts[scope.rawValue]!
+                lastUsedContexts[scope] = Date()
+                return readContexts[scope]!
             }
         } else {
             return viewContext
         }
     }
     
-    public func contextForReading(inBackgroundScope scope: AsynchronousFetchRequestBackgroundScope?) -> AnyPublisher<NSManagedObjectContext, Error> {
-        let context = self.context(for: scope)
+    public func contextForReading() -> AnyPublisher<NSManagedObjectContext, Error> {
+        let context = backgroundContext()
         return Future { promise in
             context.perform {
                 promise(.success(context))
