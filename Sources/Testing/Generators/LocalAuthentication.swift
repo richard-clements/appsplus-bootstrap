@@ -23,11 +23,7 @@ extension LAError.Code: Arbitrary {
 extension LABiometryType: Arbitrary {
     
     public static var arbitrary: Gen<LABiometryType> {
-        if #available(iOS 11.2, macOS 10.15, *) {
-            return Gen.fromElements(of: [.none, .touchID, .faceID])
-        } else {
-            return Gen.fromElements(of: [.touchID])
-        }
+        return Gen.fromElements(of: [.none, .touchID, .faceID])
     }
     
 }

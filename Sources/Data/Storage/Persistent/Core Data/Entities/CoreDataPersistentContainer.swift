@@ -4,6 +4,10 @@ import Foundation
 import CoreData
 import Combine
 
+extension String {
+    fileprivate static let contextProvider = "ContextProvider"
+}
+
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 public protocol CoreDataPersistentContainer {
     
@@ -23,8 +27,8 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
     
     private var cancellables = Set<AnyCancellable>()
     private var writeContext: NSManagedObjectContext?
-    private var readContexts = [String: NSManagedObjectContext]()
-    private var lastUsedContexts = [String: Date]()
+    private var readContexts = [NSManagedContextScope: NSManagedObjectContext]()
+    private var lastUsedContexts = [NSManagedContextScope: Date]()
     private let readContextsQueue = DispatchQueue(label: "PersistentContainer.\(UUID().uuidString).ReadContexts")
     private let readContextTimeOut: TimeInterval = 5 * 60
     
@@ -33,8 +37,15 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
             self?.writeContext = self?.newBackgroundContext()
             self?.handleSave()
             self?.startDestroyTimer()
+            self?.viewContext.userInfo[String.contextProvider] = self
             block($0, $1)
         }
+    }
+    
+    public override func newBackgroundContext() -> NSManagedObjectContext {
+        let context = super.newBackgroundContext()
+        context.userInfo[String.contextProvider] = self
+        return context
     }
     
     private func startDestroyTimer() {
@@ -73,22 +84,6 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
         return context
     }
     
-    private func context(for scope: String?) -> NSManagedObjectContext {
-        if scope == "new" {
-            return backgroundContext()
-        } else if let scope = scope {
-            return readContextsQueue.sync {
-                if readContexts[scope] == nil {
-                    readContexts[scope] = backgroundContext()
-                }
-                lastUsedContexts[scope] = Date()
-                return readContexts[scope]!
-            }
-        } else {
-            return viewContext
-        }
-    }
-    
     public func contextForReading() -> AnyPublisher<NSManagedObjectContext, Error> {
         let context = backgroundContext()
         return Future { promise in
@@ -107,6 +102,32 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
                 }
             }
             .store(in: &cancellables)
+    }
+}
+
+extension PersistentContainer: NSManagedContextProvider {
+    
+    public func context(for scope: NSManagedContextScope) -> NSManagedObjectContext? {
+        switch scope {
+        case .main:
+            return viewContext
+        case .write:
+            return writeContext
+        default:
+            return readContextsQueue.sync {
+                if readContexts[scope] == nil {
+                    readContexts[scope] = backgroundContext()
+                }
+                lastUsedContexts[scope] = Date()
+                return readContexts[scope]!
+            }
+        }
+    }
+}
+
+extension NSManagedObjectContext {
+    func context(for scope: NSManagedContextScope) -> NSManagedObjectContext? {
+        (userInfo[String.contextProvider] as? NSManagedContextProvider)?.context(for: scope)
     }
 }
 
