@@ -77,7 +77,7 @@ extension Publisher {
             
             return Future<Output, Error> { completion in
                 contextProvider.perform {
-                    guard let contextProvider = first.managedObjectContext else {
+                    guard let context = contextProvider.context(for: scope) else {
                         completion(.failure(NSManagedObjectContextScopeError.noContextScope))
                     }
                     context.perform {
