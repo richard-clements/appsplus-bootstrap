@@ -32,21 +32,26 @@ extension Publisher {
     public func receive<T: NSManagedObject>(in scope: NSManagedContextScope) -> AnyPublisher<T, Error> where Output == T {
         mapError { $0 as Error }
             .flatMap { (object: NSManagedObject) -> AnyPublisher<T, Error> in
-                guard let contextProvider = object.managedObjectContext,
-                      let context = contextProvider.context(for: scope) else {
+                guard let contextProvider = object.managedObjectContext else {
                     return Fail(error: NSManagedObjectContextScopeError.noContextScope)
                         .eraseToAnyPublisher()
                 }
                 
                 return Future<T, Error> { completion in
-                    context.perform {
-                        do {
-                            guard let value = try context.existingObject(with: object.objectID) as? T else {
-                                throw NSManagedObjectContextScopeError.noObjectsFound
+                    contextProvider.perform {
+                        guard let context = contextProvider.context(for: scope) else {
+                            completion(.failure(NSManagedObjectContextScopeError.noContextScope))
+                            return
+                        }
+                        context.perform {
+                            do {
+                                guard let value = try context.existingObject(with: object.objectID) as? T else {
+                                    throw NSManagedObjectContextScopeError.noObjectsFound
+                                }
+                                completion(.success(value))
+                            } catch {
+                                completion(.failure(error))
                             }
-                            completion(.success(value))
-                        } catch {
-                            completion(.failure(error))
                         }
                     }
                 }
@@ -65,17 +70,21 @@ extension Publisher {
                     .eraseToAnyPublisher()
             }
             
-            guard let contextProvider = first.managedObjectContext,
-                  let context = contextProvider.context(for: scope) else {
+            guard let contextProvider = first.managedObjectContext else {
                 return Fail(error: NSManagedObjectContextScopeError.noContextScope)
                     .eraseToAnyPublisher()
             }
             
             return Future<Output, Error> { completion in
-                context.perform {
-                    let value = objects.compactMap { try? context.existingObject(with: $0.objectID) }
-                        .compactMap { $0 as? T }
-                    completion(.success(value))
+                contextProvider.perform {
+                    guard let contextProvider = first.managedObjectContext else {
+                        completion(.failure(NSManagedObjectContextScopeError.noContextScope))
+                    }
+                    context.perform {
+                        let value = objects.compactMap { try? context.existingObject(with: $0.objectID) }
+                            .compactMap { $0 as? T }
+                        completion(.success(value))
+                    }
                 }
             }
             .eraseToAnyPublisher()
