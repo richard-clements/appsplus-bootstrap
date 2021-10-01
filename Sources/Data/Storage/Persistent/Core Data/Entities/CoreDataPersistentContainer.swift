@@ -37,14 +37,18 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
             self?.writeContext = self?.newBackgroundContext()
             self?.handleSave()
             self?.startDestroyTimer()
-            self?.viewContext.userInfo[String.contextProvider] = { [weak self] in self as NSManagedContextProvider?}
+            self?.viewContext.performAndWait { [weak self] in
+                self?.viewContext.userInfo[String.contextProvider] = { [weak self] in self as NSManagedContextProvider?}
+            }
             block($0, $1)
         }
     }
     
     public override func newBackgroundContext() -> NSManagedObjectContext {
         let context = super.newBackgroundContext()
-        context.userInfo[String.contextProvider] = { [weak self] in self as NSManagedContextProvider? }
+        context.performAndWait {
+            context.userInfo[String.contextProvider] = { [weak self] in self as NSManagedContextProvider? }
+        }
         return context
     }
     
