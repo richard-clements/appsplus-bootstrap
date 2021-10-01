@@ -79,6 +79,7 @@ extension Publisher {
                 contextProvider.perform {
                     guard let context = contextProvider.context(for: scope) else {
                         completion(.failure(NSManagedObjectContextScopeError.noContextScope))
+                        return
                     }
                     context.perform {
                         let value = objects.compactMap { try? context.existingObject(with: $0.objectID) }
