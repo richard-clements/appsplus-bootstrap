@@ -8,7 +8,7 @@ extension CGFloat {
         case large
     }
     
-    static func margin(_ x: Margin): CGFloat {
+    static func margin(_ x: Margin) -> CGFloat {
         switch x {
         case .xSmall:
             return 5
