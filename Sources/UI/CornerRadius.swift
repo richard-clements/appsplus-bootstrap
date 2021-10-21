@@ -8,6 +8,6 @@ public enum CornerRadius: Equatable {
 
 extension CornerRadius {
     
-    static let `default` = Self.value(8)
+    static let `default` = CornerRadius.value(8)
 }
 #endif
