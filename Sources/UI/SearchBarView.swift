@@ -235,11 +235,11 @@ public class SearchBarView: UIView {
         NSLayoutConstraint.activate([
             heightAnchor.constraint(greaterThanOrEqualToConstant: 44),
             textField.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: .margin(.small)),
-            textField.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor, constant: .margin(.xSmall)),
-            textField.trailingAnchor.constraint(equalTo: image.leadingAnchor, constant: -.margin(.xSmall)),
+            textField.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor, constant: .margin(.small)),
+            textField.trailingAnchor.constraint(equalTo: image.leadingAnchor, constant: -.margin(.small)),
             textField.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor, constant: -.margin(.small)),
             
-            image.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -.margin(.xSmall)),
+            image.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -.margin(.small)),
             image.centerYAnchor.constraint(equalTo: centerYAnchor),
             image.widthAnchor.constraint(equalTo: image.heightAnchor),
             
