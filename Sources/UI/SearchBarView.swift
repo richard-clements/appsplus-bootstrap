@@ -13,6 +13,8 @@ public class SearchBarView: UIView {
         public var placeholderColor: UIColor = .placeholderText
         public var imageTintColor: UIColor = .black
         public var cancelTintColor: UIColor = .black
+        
+        public init() { }
     }
     
     enum State {
@@ -39,6 +41,15 @@ public class SearchBarView: UIView {
                     .foregroundColor: style.placeholderColor
                 ]
             )
+        }
+    }
+    
+    public var returnKeyType: UIReturnKeyType {
+        get {
+            textField.returnKeyType
+        }
+        set {
+            textField.returnKeyType = newValue
         }
     }
     
