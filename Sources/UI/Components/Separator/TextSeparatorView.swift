@@ -25,9 +25,17 @@ public class TextSeparatorView: UIView {
         }
     }
     
+    public var textColor: UIColor! {
+        get {
+            textLabel.textColor
+        }
+        set {
+            textLabel.textColor = newValue
+        }
+    }
+    
     public override var tintColor: UIColor! {
         didSet {
-            textLabel.textColor = tintColor
             leftSeparator.tintColor = tintColor
             rightSeparator.tintColor = tintColor
         }
