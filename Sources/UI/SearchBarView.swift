@@ -228,6 +228,7 @@ public class SearchBarView: UIView {
             textField.trailingAnchor.constraint(equalTo: image.leadingAnchor, constant: -.margin(.xSmall)),
             textField.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor, constant: -.margin(.small)),
             
+            image.trailingAnchor.constraint(equalTo: trailingAnchor),
             image.centerYAnchor.constraint(equalTo: centerYAnchor),
             image.widthAnchor.constraint(equalTo: image.heightAnchor),
             
