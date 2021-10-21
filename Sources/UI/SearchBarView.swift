@@ -88,6 +88,15 @@ public class SearchBarView: UIView {
         }
     }
     
+    public var delegate: UITextFieldDelegate? {
+        get {
+            textField.delegate
+        }
+        set {
+            textField.delegate = newValue
+        }
+    }
+    
     // MARK: - init
     public init() {
         super.init(frame: .zero)
