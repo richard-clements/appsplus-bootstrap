@@ -69,7 +69,8 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/typelift/SwiftCheck", .exact("0.12.0"))
+        .package(url: "https://github.com/typelift/SwiftCheck", .exact("0.12.0")),
+        .package(url: "https://github.com/richard-clements/combine-extensions", .exact("0.0.5"))
     ],
     targets: [
         .target(
@@ -83,7 +84,8 @@ let package = Package(
         ),
         .target(
             name: "AppsPlusUI",
-            sources: ["UI"]
+            sources: ["UI"],
+            dependencies: [.product(name: "CombineExtensions", package: "combine-extensions")]
         ),
         .target(
             name: "AppsPlusTesting",

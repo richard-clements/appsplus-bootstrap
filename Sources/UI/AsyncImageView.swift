@@ -79,11 +79,6 @@ extension UIImage: AsyncImage {
 @available(iOS 13.0, tvOS 13.0, *)
 public class AsyncImageView: UIView {
     
-    public enum CornerRadius: Equatable {
-        case value(CGFloat)
-        case percentage(CGFloat)
-    }
-    
     public enum State {
         case idle
         case loading
