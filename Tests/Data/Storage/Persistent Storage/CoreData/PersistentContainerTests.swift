@@ -1,8 +1,9 @@
-#if canImport(Foundation) && canImport(Combine)
+#if canImport(Foundation) && canImport(Combine) && canImport(CoreData)
 
 import XCTest
 import Foundation
 import Combine
+import CoreData
 @testable import AppsPlusData
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
