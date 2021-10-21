@@ -1,4 +1,5 @@
-import Foundation
+#if canImport(UIKit)
+import UIKit
 
 extension CGFloat {
     enum Margin {
@@ -21,3 +22,4 @@ extension CGFloat {
         }
     }
 }
+#endif
