@@ -2,14 +2,14 @@
 import UIKit
 
 extension CGFloat {
-    enum Margin {
+    public enum Margin {
         case xSmall
         case small
         case medium
         case large
     }
     
-    static func margin(_ x: Margin) -> CGFloat {
+    public static func margin(_ x: Margin) -> CGFloat {
         switch x {
         case .xSmall:
             return 5
