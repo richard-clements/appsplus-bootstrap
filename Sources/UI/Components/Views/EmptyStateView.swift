@@ -55,7 +55,7 @@ public class EmptyStateView<Control: UIControl>: UIView {
             setNeedsUpdateConstraints()
         }
     }
-    override var tintColor: UIColor! {
+    public override var tintColor: UIColor! {
         didSet {
             titleLabel.textColor = tintColor
             messageLabel.textColor = tintColor
