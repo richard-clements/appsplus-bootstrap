@@ -3,7 +3,7 @@
 import UIKit
 
 @available(iOS 13.0, tvOS 13.0, *)
-class EmptyStateView<Control: UIControl>: UIView {
+public class EmptyStateView<Control: UIControl>: UIView {
     
     public var image: UIImage? {
         get {
