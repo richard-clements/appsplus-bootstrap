@@ -29,7 +29,7 @@ extension AsyncImage where Self: Equatable {
 @available(iOS 13.0, tvOS 13.0, *)
 extension Optional where Wrapped == AsyncImage {
     
-    fileprivate func equals(_ image: AsyncImage?) -> Bool {
+    public func equals(_ image: AsyncImage?) -> Bool {
         if case .none = self, case .none = image {
             return true
         } else if case .some(let lhs) = self,
