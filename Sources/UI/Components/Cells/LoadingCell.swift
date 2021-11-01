@@ -16,6 +16,7 @@ public class LoadingCell: UICollectionViewCell {
         set {
             titleLabel.text = newValue
             titleLabel.isHidden = newValue == nil
+            verticalConstraint.isActive = !titleLabel.isHidden
         }
     }
     
