@@ -26,8 +26,18 @@ extension UIView {
         ])
     }
     
-    public func intersection(withWindowFrame frame: CGRect, offset: CGPoint = .zero) -> CGRect? {
-        window?.convert(self.frame.offsetBy(dx: offset.x, dy: offset.y), from: superview).intersection(frame)
+    public func intersection(
+        withWindowFrame frame: CGRect,
+        offset: CGPoint = .zero,
+        topMargin: CGFloat = 0,
+        leftMargin: CGFloat = 0,
+        bottomMargin: CGFloat = 0,
+        rightMargin: CGFloat = 0
+    ) -> CGRect? {
+        window?
+            .convert(self.frame.offsetBy(dx: offset.x, dy: offset.y), from: superview)
+            .intersection(frame)
+            .inset(by: UIEdgeInsets(top: -topMargin, left: -leftMargin, bottom: -bottomMargin, right: -rightMargin))
     }
 }
 
