@@ -7,6 +7,7 @@ public class LoadingCell: UICollectionViewCell {
     
     private let activityIndicator = UIActivityIndicatorView(style: .medium)
     private let titleLabel = UILabel()
+    private var contentInset: UIEdgeInsets = .zero
 
     public var title: String? {
         get {
@@ -14,6 +15,7 @@ public class LoadingCell: UICollectionViewCell {
         }
         set {
             titleLabel.text = newValue
+            titleLabel.isHidden = newValue == nil
         }
     }
     
@@ -35,7 +37,35 @@ public class LoadingCell: UICollectionViewCell {
         }
     }
     
-    public var verticalMargin: CGFloat = 20
+    private var topConstraint: NSLayoutConstraint!
+    public var topMargin: CGFloat {
+        get {
+            topConstraint.constant
+        }
+        set {
+            topConstraint.constant = newValue
+        }
+    }
+    
+    private var bottomConstraint: NSLayoutConstraint!
+    public var bottomMargin: CGFloat {
+        get {
+            bottomConstraint.constant
+        }
+        set {
+            bottomConstraint.constant = newValue
+        }
+    }
+    
+    private var verticalConstraint: NSLayoutConstraint!
+    public var verticalMargin: CGFloat {
+        get {
+            verticalConstraint.constant
+        }
+        set {
+            verticalConstraint.constant = newValue
+        }
+    }
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -62,13 +92,17 @@ public class LoadingCell: UICollectionViewCell {
     }
     
     private func setUpConstraints() {
+        topConstraint = activityIndicator.topAnchor.constraint(equalTo: contentView.topAnchor, constant: .margin(.small))
+        verticalConstraint = titleLabel.topAnchor.constraint(equalTo: activityIndicator.bottomAnchor, constant: .margin(.medium))
+        bottomConstraint = contentView.bottomAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: .margin(.small))
+        
         NSLayoutConstraint.activate([
-            activityIndicator.topAnchor.constraint(equalTo: contentView.topAnchor),
+            topConstraint,
             activityIndicator.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            titleLabel.topAnchor.constraint(equalTo: activityIndicator.bottomAnchor, constant: verticalMargin),
+            verticalConstraint,
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: titleLabel.bottomAnchor)
+            bottomConstraint
         ])
     }
     
@@ -82,6 +116,8 @@ public class LoadingCell: UICollectionViewCell {
     public override func willMove(toWindow newWindow: UIWindow?) {
         if newWindow == nil {
             activityIndicator.stopAnimating()
+        } else {
+            activityIndicator.startAnimating()
         }
     }
 }
