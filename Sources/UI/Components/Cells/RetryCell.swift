@@ -37,6 +37,12 @@ public class RetryCell<Control: UIControl>: UICollectionViewCell {
     var leadingAnchorConstraint: NSLayoutConstraint!
     var trailingAnchorConstraint: NSLayoutConstraint!
     
+    public override var tintColor: UIColor! {
+        didSet {
+            retryView.tintColor = tintColor
+        }
+    }
+    
     public override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.pinConstraints(to: self)
