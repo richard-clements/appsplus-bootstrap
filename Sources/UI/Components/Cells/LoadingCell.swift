@@ -109,6 +109,7 @@ public class LoadingCell: UICollectionViewCell {
     
     public override func prepareForReuse() {
         super.prepareForReuse()
+        title = nil
         if !activityIndicator.isAnimating {
             activityIndicator.startAnimating()
         }
