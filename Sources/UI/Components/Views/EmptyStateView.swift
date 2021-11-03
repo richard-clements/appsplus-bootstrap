@@ -121,8 +121,8 @@ public class EmptyStateView<Control: UIControl>: UIView {
         stackView.addArrangedSubview(imageView)
         stackView.addArrangedSubview(textStackView)
         stackView.addArrangedSubview(button)
-        stackView.setCustomSpacing(20, after: imageView)
-        stackView.setCustomSpacing(10, after: textStackView)
+        stackView.setCustomSpacing(.margin(.medium), after: imageView)
+        stackView.setCustomSpacing(.margin(.small), after: textStackView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
     }
     
