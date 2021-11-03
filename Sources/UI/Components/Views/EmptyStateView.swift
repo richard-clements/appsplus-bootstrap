@@ -152,10 +152,10 @@ public class EmptyStateView<Control: UIControl>: UIView {
         translatesAutoresizingMaskIntoConstraints = false
         widthAnchorConstraint = widthAnchor.constraint(lessThanOrEqualToConstant: 200)
         
-        topAnchorConstraint = topAnchor.constraint(greaterThanOrEqualTo: view.topAnchor, constant: 10)
-        leadingAnchorConstraint = leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 20)
-        trailingAnchorConstraint = view.trailingAnchor.constraint(greaterThanOrEqualTo: trailingAnchor, constant: 20)
-        bottomAnchorConstraint = view.bottomAnchor.constraint(greaterThanOrEqualTo: bottomAnchor, constant: 10)
+        topAnchorConstraint = topAnchor.constraint(greaterThanOrEqualTo: view.topAnchor, constant: .margin(.small))
+        leadingAnchorConstraint = leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: .margin(.medium))
+        trailingAnchorConstraint = view.trailingAnchor.constraint(greaterThanOrEqualTo: trailingAnchor, constant: .margin(.medium))
+        bottomAnchorConstraint = view.bottomAnchor.constraint(greaterThanOrEqualTo: bottomAnchor, constant: .margin(.small))
         
         NSLayoutConstraint.activate([
             topAnchorConstraint,
