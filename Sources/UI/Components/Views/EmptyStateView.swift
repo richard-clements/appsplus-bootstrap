@@ -62,7 +62,6 @@ public class EmptyStateView<Control: UIControl>: UIView {
         }
     }
     public let button = Control()
-    public var shouldHideButton = false
     
     private let imageView = UIImageView(frame: CGRect())
     private let textStackView = UIStackView()
