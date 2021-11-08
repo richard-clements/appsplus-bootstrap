@@ -103,6 +103,7 @@ public class LoadingCell: UICollectionViewCell {
             verticalConstraint,
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
+            contentView.bottomAnchor.constraint(greaterThanOrEqualTo: activityIndicator.bottomAnchor, constant: .margin(.small)),
             bottomConstraint
         ])
     }
