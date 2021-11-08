@@ -258,23 +258,7 @@ public class AsyncImageView: UIView {
     }
     
     private func redrawImage(_ image: UIImage, toFit size: CGSize) -> UIImage {
-        guard size.width > 0 && size.height > 0 else {
-            return image
-        }
-        var newSize = image.size
-        if newSize.width > size.width {
-            let scaleFactor = size.width/newSize.width
-            newSize.width = size.width
-            newSize.height *= scaleFactor
-        }
-        if newSize.height > size.height {
-            let scaleFactor = size.height/newSize.height
-            newSize.height = size.height
-            newSize.width *= scaleFactor
-        }
-        return UIGraphicsImageRenderer(size: newSize).image { _ in
-            image.draw(in: CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height))
-        }
+        image.atSize(size)
     }
 }
 
