@@ -19,7 +19,7 @@ public enum PagingState: Hashable {
     }
     
     public func canRefresh() -> Bool {
-        [.idle, .paging, .pagingError].contains(self)
+        [.idle, .refreshingError, .paging, .pagingError].contains(self)
     }
     
     mutating public func failed() {
