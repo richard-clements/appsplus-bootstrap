@@ -7,7 +7,7 @@ extension Page {
     
     public static func generator(
         dataGenerator: Gen<[T]>,
-        pageGenerator: Gen<Int>.suchThat { $0 > 0},
+        pageGenerator: Gen<Int>,
         lastPageOffset: Gen<Int> = Gen.fromElements(in: 0...5)
     ) -> Gen<Page<T>> {
         Gen.compose {
@@ -28,7 +28,7 @@ extension Page {
 extension Page: Arbitrary where T: Arbitrary {
     
     public static var arbitrary: Gen<Page<T>> {
-        generator(dataGenerator: T.arbitrary.proliferate, pageGenerator: Int.arbitrary)
+        generator(dataGenerator: T.arbitrary.proliferate, pageGenerator: Int.arbitrary.suchThat { $0 > 0 })
     }
     
 }
