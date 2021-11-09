@@ -7,7 +7,7 @@ extension Page {
     
     public static func generator(
         dataGenerator: Gen<[T]>,
-        pageGenerator: Gen<Int>,
+        pageGenerator: Gen<Int> = Int.arbitrary.suchThat { $0 > 0 },
         lastPageOffset: Gen<Int> = Gen.fromElements(in: 0...5)
     ) -> Gen<Page<T>> {
         Gen.compose {
