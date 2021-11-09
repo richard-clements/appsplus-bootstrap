@@ -28,7 +28,10 @@ extension Page {
 extension Page: Arbitrary where T: Arbitrary {
     
     public static var arbitrary: Gen<Page<T>> {
-        generator(dataGenerator: T.arbitrary.proliferate, pageGenerator: Int.arbitrary.suchThat { $0 > 0 })
+        generator(
+            dataGenerator: T.arbitrary.proliferate(withSizeInRange: 0...10),
+            pageGenerator: Int.arbitrary.suchThat { $0 > 0 }
+        )
     }
     
 }
