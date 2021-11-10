@@ -23,15 +23,15 @@ extension Page {
         }
     }
     
-    public static func generator(
+    public static func hasNextPageGenerator(
         dataGenerator: Gen<[T]>,
         pageGenerator: Gen<Int> = Int.arbitrary.suchThat { $0 > 0 },
-        hasNextPageGenerator: Gen<Bool> = Bool.arbitrary
+        hasNextPage: Gen<Bool>
     ) -> Gen<Page<T>> {
         generator(
             dataGenerator: dataGenerator,
             pageGenerator: pageGenerator,
-            lastPageOffset: hasNextPageGenerator.flatMap {
+            lastPageOffset: hasNextPage.flatMap {
                 $0 ? .pure(1) : Gen.fromElements(in: 0...5)
             }
         )
@@ -54,12 +54,12 @@ extension Page: Arbitrary where T: Arbitrary {
     
     public static func hasNextPageGenerator(
         pageGenerator: Gen<Int> = Int.arbitrary.suchThat { $0 > 0 },
-        hasNextPageGenerator: Gen<Bool>
+        hasNextPage: Gen<Bool>
     ) -> Gen<Page<T>> {
-        generator(
+        hasNextPageGenerator(
             dataGenerator: T.arbitrary.proliferate(withSizeInRange: 0...10),
             pageGenerator: pageGenerator,
-            hasNextPageGenerator: hasNextPageGenerator
+            hasNextPage: hasNextPage
         )
     }
     
