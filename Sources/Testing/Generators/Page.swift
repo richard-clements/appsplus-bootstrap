@@ -41,7 +41,7 @@ extension Page {
 
 extension Page: Arbitrary where T: Arbitrary {
     
-    public static func generator(
+    public static func arbitraryGenerator(
         pageGenerator: Gen<Int> = Int.arbitrary.suchThat { $0 > 0 },
         lastPageOffset: Gen<Int> = Gen.fromElements(in: 0...5)
     ) -> Gen<Page<T>> {
@@ -52,7 +52,7 @@ extension Page: Arbitrary where T: Arbitrary {
         )
     }
     
-    public static func hasNextPageGenerator(
+    public static func arbitraryHasNextPageGenerator(
         pageGenerator: Gen<Int> = Int.arbitrary.suchThat { $0 > 0 },
         hasNextPage: Gen<Bool>
     ) -> Gen<Page<T>> {
@@ -64,7 +64,7 @@ extension Page: Arbitrary where T: Arbitrary {
     }
     
     public static var arbitrary: Gen<Page<T>> {
-        generator()
+        arbitraryGenerator()
     }
     
 }
