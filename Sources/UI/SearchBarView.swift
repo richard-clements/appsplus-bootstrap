@@ -26,7 +26,7 @@ public class SearchBarView: UIView {
     private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Declarations
-    private let textField = UITextField()
+    public let textField = UITextField()
     private let backgroundView = UIView()
     private let cancelButton = UIButton()
     private let image = UIImageView(image: UIImage(systemName: "magnifyingglass"))
