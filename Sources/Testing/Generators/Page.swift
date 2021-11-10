@@ -27,11 +27,19 @@ extension Page {
 
 extension Page: Arbitrary where T: Arbitrary {
     
-    public static var arbitrary: Gen<Page<T>> {
+    public static func generator(
+        pageGenerator: Gen<Int> = Int.arbitrary.suchThat { $0 > 0 },
+        lastPageOffset: Gen<Int> = Gen.fromElements(in: 0...5)
+    ) -> Gen<Page<T>> {
         generator(
             dataGenerator: T.arbitrary.proliferate(withSizeInRange: 0...10),
-            pageGenerator: Int.arbitrary.suchThat { $0 > 0 }
+            pageGenerator: pageGenerator,
+            lastPageOffset: lastPageOffset
         )
+    }
+    
+    public static var arbitrary: Gen<Page<T>> {
+        generator()
     }
     
 }
