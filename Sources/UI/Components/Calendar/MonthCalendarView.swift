@@ -20,7 +20,9 @@ public class MonthCalendarView: UIView {
                 heightConstraint.isActive = false
                 updateHeightConstraint()
                 collectionView.collectionViewLayout = createLayout()
-                (collectionView.collectionViewLayout as? MonthCalendarLayout)?.initialised()
+                if isInitialised {
+                    (collectionView.collectionViewLayout as? MonthCalendarLayout)?.initialised()
+                }
             }
         }
     }
