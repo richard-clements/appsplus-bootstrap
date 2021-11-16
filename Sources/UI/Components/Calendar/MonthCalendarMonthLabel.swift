@@ -35,7 +35,7 @@ public class MonthCalendarMonthLabel: UIView {
     }
     public var monthNameFormatter: ((MonthCalendarView.Month, MonthFormat, String) -> String?)?
     public var yearNameFormatter: ((MonthCalendarView.Month, Int, YearFormat, YearVisibility, String) -> String?)?
-    public var font: UIFont = .preferredFont(forTextStyle: .title3) {
+    public var font: UIFont = .appFontProvider(.title3) {
         didSet {
             guard oldValue != font else { return }
             labelOne.font = font

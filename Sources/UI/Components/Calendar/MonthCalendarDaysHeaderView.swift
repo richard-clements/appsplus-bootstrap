@@ -11,7 +11,7 @@ public class MonthCalendarDaysHeaderView: UIView {
         }
     }
     public var dayNameFormatter: ((MonthCalendarView.Weekday, Format, String) -> String?)?
-    public var font: UIFont = .preferredFont(forTextStyle: .caption1) {
+    public var font: UIFont = .appFontProvider(.caption1) {
         didSet {
             guard oldValue != font else { return }
             labels.forEach { $0.font = font }
