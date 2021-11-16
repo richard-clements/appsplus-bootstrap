@@ -427,6 +427,10 @@ extension MonthCalendarView {
         }
     }
     
+    public func reload() {
+        collectionView.reloadData()
+    }
+    
 }
 
 // MARK: Publishers
