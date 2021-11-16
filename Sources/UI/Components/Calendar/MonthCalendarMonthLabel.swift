@@ -45,8 +45,8 @@ public class MonthCalendarMonthLabel: UIView {
     public override var tintColor: UIColor! {
         didSet {
             guard oldValue != tintColor else { return }
-            labelOne.tintColor = tintColor
-            labelTwo.tintColor = tintColor
+            labelOne.textColor = tintColor
+            labelTwo.textColor = tintColor
         }
     }
     private weak var connectedCalendarView: MonthCalendarView? {
