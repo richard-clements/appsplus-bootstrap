@@ -70,9 +70,12 @@ public class MonthCalendarDaysHeaderView: UIView {
     public override func layoutSubviews() {
         super.layoutSubviews()
         if let connectedCalendarView = connectedCalendarView,
-           connectedCalendarView.superview === superview {
+           connectedCalendarView.window.map({ isDescendant(of: $0) }) ?? false {
             stackViewLeadingConstraint = stackView.leadingAnchor.constraint(equalTo: connectedCalendarView.layoutMarginsGuide.leadingAnchor)
             stackViewTrailingConstraint = stackView.trailingAnchor.constraint(equalTo: connectedCalendarView.layoutMarginsGuide.trailingAnchor)
+        } else {
+            stackViewLeadingConstraint = stackView.leadingAnchor.constraint(equalTo: leadingAnchor)
+            stackViewTrailingConstraint = stackView.trailingAnchor.constraint(equalTo: trailingAnchor)
         }
     }
 }
