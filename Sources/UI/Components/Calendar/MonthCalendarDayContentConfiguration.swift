@@ -244,15 +244,25 @@ extension MonthCalendarDayContentConfiguration {
     }
 }
 
+public protocol MonthCalendarDayContentConfigurationDefaultProperties {
+    
+    static func defaultProperties() -> Self
+    
+}
+
 @available(iOS 14.0, tvOS 14.0, *)
 extension MonthCalendarDayContentConfiguration {
     
-    public struct TextProperties: Hashable {
+    public struct TextProperties: Hashable, MonthCalendarDayContentConfigurationDefaultProperties {
         var textColor: UIColor
         var font: UIFont
         var maxFontSize: CGFloat
         var backgroundColor: UIColor
         var backgroundCornerRadius: CornerRadius
+        
+        public static func defaultProperties() -> MonthCalendarDayContentConfiguration.TextProperties {
+            TextProperties()
+        }
         
         public init(
             textColor: UIColor = .black,
@@ -269,9 +279,13 @@ extension MonthCalendarDayContentConfiguration {
         }
     }
     
-    public struct IndicatorProperties: Hashable {
+    public struct IndicatorProperties: Hashable, MonthCalendarDayContentConfigurationDefaultProperties {
         var color: UIColor
         var cornerRadius: CornerRadius
+        
+        public static func defaultProperties() -> MonthCalendarDayContentConfiguration.IndicatorProperties {
+            IndicatorProperties()
+        }
         
         public init(
             color: UIColor = .gray,
@@ -282,13 +296,13 @@ extension MonthCalendarDayContentConfiguration {
         }
     }
     
-    public struct DayConfiguration<Item: Hashable>: Hashable {
+    public struct DayConfiguration<Item: Hashable & MonthCalendarDayContentConfigurationDefaultProperties>: Hashable {
         public var `default`: EventConfiguration<Item>
         public var today: EventConfiguration<Item>?
         public var weekend: EventConfiguration<Item>?
         
         public init(
-            `default`: MonthCalendarDayContentConfiguration.EventConfiguration<Item>,
+            `default`: MonthCalendarDayContentConfiguration.EventConfiguration<Item> = .init(),
             today: MonthCalendarDayContentConfiguration.EventConfiguration<Item>? = nil,
             weekend: MonthCalendarDayContentConfiguration.EventConfiguration<Item>? = nil
         ) {
@@ -315,12 +329,12 @@ extension MonthCalendarDayContentConfiguration {
         }
     }
     
-    public struct EventConfiguration<Item: Hashable>: Hashable {
+    public struct EventConfiguration<Item: Hashable & MonthCalendarDayContentConfigurationDefaultProperties>: Hashable {
         public var `default`: TraitConfiguration<Item>
         public var selected: TraitConfiguration<Item>?
         
         public init(
-            `default`: MonthCalendarDayContentConfiguration.TraitConfiguration<Item>,
+            `default`: MonthCalendarDayContentConfiguration.TraitConfiguration<Item> = .init(),
             selected: MonthCalendarDayContentConfiguration.TraitConfiguration<Item>? = nil
         ) {
             self.default = `default`
@@ -333,13 +347,13 @@ extension MonthCalendarDayContentConfiguration {
         }
     }
     
-    public struct TraitConfiguration<Item: Hashable>: Hashable {
+    public struct TraitConfiguration<Item: Hashable & MonthCalendarDayContentConfigurationDefaultProperties>: Hashable {
         public var `default`: Item
         public var lightMode: Item?
         public var darkMode: Item?
         
         public init(
-            `default`: Item,
+            `default`: Item = Item.defaultProperties(),
             lightMode: Item? = nil,
             darkMode: Item? = nil
         ) {
