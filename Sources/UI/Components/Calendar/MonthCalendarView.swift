@@ -430,7 +430,11 @@ extension MonthCalendarView {
     }
     
     public func reload() {
+        let selectedItems = collectionView.indexPathsForSelectedItems
         collectionView.reloadData()
+        selectedItems?.forEach {
+            collectionView.selectItem(at: $0, animated: false, scrollPosition: .centeredHorizontally)
+        }
     }
     
 }
