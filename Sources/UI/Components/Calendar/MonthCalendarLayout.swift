@@ -24,10 +24,10 @@ public class MonthCalendarLayout: UICollectionViewCompositionalLayout {
         
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: groupHeight)
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-        group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: layoutMargins.left, bottom: 0, trailing: layoutMargins.right)
         
         let layoutConfiguration = UICollectionViewCompositionalLayoutConfiguration()
         let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: layoutMargins.left, bottom: 0, trailing: layoutMargins.right)
         if axis == .horizontal {
             section.orthogonalScrollingBehavior = .groupPaging
             layoutConfiguration.scrollDirection = .horizontal
