@@ -383,6 +383,7 @@ extension MonthCalendarView {
         
         func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
             collectionView.deselectItem(at: indexPath, animated: false)
+            selectionPassthroughSubject.send(())
         }
         
         func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
