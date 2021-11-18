@@ -439,7 +439,6 @@ extension MonthCalendarView {
         let selectedIndexPaths = collectionView.indexPathsForSelectedItems ?? []
         collectionView.reloadData()
         selectedIndexPaths
-            .filter { collectionView.indexPathsForVisibleItems.contains($0) }
             .forEach { collectionView.selectItem(at: $0, animated: false, scrollPosition: []) }
         selectionPassthroughSubject.send(())
     }
