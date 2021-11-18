@@ -132,46 +132,11 @@ public class MonthCalendarView: UIView {
             .store(in: &cancellables)
     }
     
-    public override func willMove(toSuperview newSuperview: UIView?) {
-        super.willMove(toSuperview: newSuperview)
-        if !isInitialised {
-            var snapshot = NSDiffableDataSourceSnapshot<Month, Day>()
-            
-            let months = [
-                months(for: -2),
-                months(for: -1),
-                months(for: 0),
-                months(for: 1)
-            ].flatMap { $0 }
-            snapshot.appendSections(months)
-            months.forEach {
-                snapshot.appendItems(days(for: $0), toSection: $0)
-            }
-            
-            dataSource.apply(snapshot) { [weak self] in
-                guard let self = self else { return }
-                
-                let today = self.calendar.dateComponents([.day, .month, .year], from: Date())
-                if let indexPath = self.dataSource.indexPath(for: Day(day: today.day!, month: .init(month: today.month!, year: today.year!), isAccessory: false)) {
-                    self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
-                    self.selectionPassthroughSubject.send(())
-                }
-                
-                self.skipToToday(animated: false)
-                (self.collectionView.collectionViewLayout as? MonthCalendarLayout)?.initialised()
-            }
-            isInitialised = true
+    public override func didMoveToWindow() {
+        super.didMoveToWindow()
+        if window != nil {
+            initialise()
         }
-    }
-    
-    private func updateHeightConstraint() {
-        switch itemHeight {
-        case .fixed(let height):
-            heightConstraint = heightAnchor.constraint(equalToConstant: height * CGFloat(Self.maximumWeeksInMonth))
-        case .fractionalWidth(let fraction):
-            heightConstraint = heightAnchor.constraint(equalTo: widthAnchor, multiplier: CGFloat(Self.maximumWeeksInMonth) * (fraction / CGFloat(Self.daysInWeek)))
-        }
-        heightConstraint.isActive = true
     }
     
     public override func layoutSubviews() {
@@ -260,6 +225,47 @@ extension MonthCalendarView {
         }
         return layout
     }
+    
+    private func initialise() {
+        guard !isInitialised else { return }
+        var snapshot = NSDiffableDataSourceSnapshot<Month, Day>()
+        
+        let months = [
+            months(for: -2),
+            months(for: -1),
+            months(for: 0),
+            months(for: 1)
+        ].flatMap { $0 }
+        snapshot.appendSections(months)
+        months.forEach {
+            snapshot.appendItems(days(for: $0), toSection: $0)
+        }
+        
+        dataSource.apply(snapshot) { [weak self] in
+            guard let self = self else { return }
+            
+            let today = self.calendar.dateComponents([.day, .month, .year], from: Date())
+            if let indexPath = self.dataSource.indexPath(for: Day(day: today.day!, month: .init(month: today.month!, year: today.year!), isAccessory: false)) {
+                self.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .centeredHorizontally)
+                self.selectionPassthroughSubject.send(())
+            }
+            
+            self.skipToToday(animated: false)
+            (self.collectionView.collectionViewLayout as? MonthCalendarLayout)?.initialised()
+        }
+        isInitialised = true
+    }
+    
+    private func updateHeightConstraint() {
+        switch itemHeight {
+        case .fixed(let height):
+            heightConstraint = heightAnchor.constraint(equalToConstant: height * CGFloat(Self.maximumWeeksInMonth))
+        case .fractionalWidth(let fraction):
+            heightConstraint = heightAnchor.constraint(equalTo: widthAnchor, multiplier: CGFloat(Self.maximumWeeksInMonth) * (fraction / CGFloat(Self.daysInWeek)))
+        }
+        heightConstraint.isActive = true
+    }
+    
 }
 
 // MARK: Help Functions
