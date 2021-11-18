@@ -381,11 +381,6 @@ extension MonthCalendarView {
             shouldSelectItemHandler(indexPath)
         }
         
-        func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-            collectionView.deselectItem(at: indexPath, animated: false)
-            selectionPassthroughSubject.send(())
-        }
-        
         func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
             false
         }
@@ -446,6 +441,7 @@ extension MonthCalendarView {
         selectedIndexPaths
             .filter { collectionView.indexPathsForVisibleItems.contains($0) }
             .forEach { collectionView.selectItem(at: $0, animated: false, scrollPosition: []) }
+        selectionPassthroughSubject.send(())
     }
     
 }
