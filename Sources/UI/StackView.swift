@@ -143,6 +143,7 @@ extension StackView {
             initialiser(viewModels[$0])
         }, configuration: {
             configuration(viewModels[$0], $1)
+            stackView.bringSubviewToFront($1)
         })
     }
 }
