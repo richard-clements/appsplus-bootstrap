@@ -74,6 +74,7 @@ public class StackView<View: UIView>: UIView {
     }
     
     private func commonInit() {
+        addSubview(stackView)
         stackView.pinConstraints(to: self)
     }
     
