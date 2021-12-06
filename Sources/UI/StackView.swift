@@ -82,7 +82,7 @@ public class StackView<View: UIView>: UIView {
     }
     
     public func addArrangedSubviews(_ views: View...) {
-        stackView.addArrangedSubviews(views)
+        views.forEach(stackView.addArrangedSubview)
     }
     
     public func insertArrangedSubview(_ view: View, at index: Int) {
