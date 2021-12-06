@@ -100,17 +100,13 @@ public class StackView<View: UIView>: UIView {
     public func setCustomSpacing(_ spacing: CGFloat, after view: View) {
         stackView.setCustomSpacing(spacing, after: view)
     }
-    
-    public func setCustomSpacing(_ spacing: CGFloat, after views: View...) {
-        stackView.setCustomSpacing(spacing, after: views)
-    }
 }
 
 extension StackView {
     
     public func updateList(
         toCount count: Int,
-        initialiser: () -> View = View.init,
+        initialiser: (Int) -> View = { _ in View() },
         configuration: (Int, View) -> Void
     ) {
         guard count > 0 else {
@@ -121,15 +117,17 @@ extension StackView {
             return
         }
         
-        while count > arrangedSubviews.count {
+        while count < arrangedSubviews.count {
             if let last = arrangedSubviews.last {
                 removeArrangedSubview(last)
                 last.removeFromSuperview()
             }
         }
         
-        while count < arrangedSubviews.count {
-            addArrangedSubviews(initialiser())
+        if count > arrangedSubviews.count {
+            (arrangedSubviews.count ..< count).forEach {
+                addArrangedSubview(initialiser($0))
+            }
         }
         
         arrangedSubviews.enumerated().forEach(configuration)
@@ -137,12 +135,14 @@ extension StackView {
     
     public func updateList<ViewModel>(
         viewModels: [ViewModel],
-        initialiser: () -> View = View.init,
+        initialiser: (ViewModel) -> View = { _ in View() },
         configuration: (ViewModel, View) -> Void
     ) {
-        updateList(toCount: viewModels.count, initialiser: initialiser) {
+        updateList(toCount: viewModels.count, initialiser: {
+            initialiser(viewModels[$0])
+        }, configuration: {
             configuration(viewModels[$0], $1)
-        }
+        })
     }
 }
 
