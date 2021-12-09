@@ -10,7 +10,7 @@ extension UICollectionViewDiffableDataSource {
         apply(snapshot, animatingDifferences: animated, completion: completionHandler)
     }
     
-    public func removeItems(_ item: ItemIdentifierType, animated: Bool, completionHandler: @escaping () -> Void) {
+    public func removeItem(_ item: ItemIdentifierType, animated: Bool, completionHandler: @escaping () -> Void) {
         removeItems([item], animated: animated, completionHandler: completionHandler)
     }
 }
