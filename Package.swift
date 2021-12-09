@@ -70,7 +70,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/typelift/SwiftCheck", .exact("0.12.0")),
-        .package(url: "https://github.com/richard-clements/combine-extensions", .exact("0.0.5"))
+        .package(url: "https://github.com/richard-clements/combine-extensions", .exact("0.0.6"))
     ],
     targets: [
         .target(
