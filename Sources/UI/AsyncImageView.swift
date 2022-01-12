@@ -195,6 +195,7 @@ public class AsyncImageView: UIView {
                 case .failure:
                     state = .failed
                 }
+                imageCancellable = nil
             }, receiveValue: { [unowned self] result in
                 imageView.image = result.image
                 if result.isCached {
