@@ -87,6 +87,7 @@ public class AsyncImageView: UIView {
         case failed
     }
     
+    private var setNeedsFetchImage = false
     /**
      Setting this to true will show the loading animation
      when an image is being fetched to display.
@@ -96,6 +97,7 @@ public class AsyncImageView: UIView {
     public var image: AsyncImage? {
         didSet {
             if oldValue.equals(image) != true {
+                setNeedsFetchImage = true
                 fetchImage()
             }
         }
@@ -176,9 +178,10 @@ public class AsyncImageView: UIView {
      */
     private func fetchImage() {
         cancel()
-        guard let image = image else {
+        guard let image = image, window != nil else {
             return
         }
+        setNeedsFetchImage = false
         state = .loading
         imageCancellable = image.imagePublisher()
             .flatMap { [unowned self] in
@@ -208,6 +211,14 @@ public class AsyncImageView: UIView {
         fetchImage()
     }
     
+    public override func willMove(toWindow newWindow: UIWindow?) {
+        super.willMove(toWindow: newWindow)
+        if newWindow == nil {
+            cancel()
+            setNeedsFetchImage = true
+        }
+    }
+    
     private func cancel() {
         imageCancellable = nil
         imageView.image = nil
@@ -226,6 +237,9 @@ public class AsyncImageView: UIView {
     
     public override func layoutSubviews() {
         super.layoutSubviews()
+        if setNeedsFetchImage {
+            fetchImage()
+        }
         switch cornerRadius {
         case .value(let value):
             layer.cornerRadius = value
