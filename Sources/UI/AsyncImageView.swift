@@ -214,8 +214,10 @@ public class AsyncImageView: UIView {
     public override func willMove(toWindow newWindow: UIWindow?) {
         super.willMove(toWindow: newWindow)
         if newWindow == nil {
-            cancel()
-            setNeedsFetchImage = true
+            if imageCancellable != nil {
+                cancel()
+                setNeedsFetchImage = true
+            }
         }
     }
     
