@@ -219,6 +219,8 @@ public class AsyncImageView: UIView {
                 cancel()
                 setNeedsFetchImage = true
             }
+        } else if setNeedsFetchImage {
+            fetchImage()
         }
     }
     
