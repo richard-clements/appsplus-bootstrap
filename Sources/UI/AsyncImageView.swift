@@ -12,6 +12,7 @@ public struct AssetImage {
 public protocol AsyncImage {
     func equals(_ image: AsyncImage) -> Bool
     func imagePublisher() -> AnyPublisher<AssetImage, URLError>
+    func hash(into hasher: inout Hasher)
 }
 
 @available(iOS 13.0, tvOS 13.0, *)
