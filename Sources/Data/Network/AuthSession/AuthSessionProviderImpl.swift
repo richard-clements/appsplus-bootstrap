@@ -15,13 +15,18 @@ public struct AuthSessionProviderImpl: AuthSessionProvider {
     private let authSessionPassthroughSubject = PassthroughSubject<AnyAuthToken?, Never>()
     
     public var deviceName: String {
-        if let name = secureStorage.string(forKey: .deviceName) {
+        get {
+            if let name = secureStorage.string(forKey: .deviceName) {
+                return name
+            }
+            
+            let name = UUID().uuidString
+            try? secureStorage.setString(name, forKey: .deviceName)
             return name
         }
-        
-        let name = UUID().uuidString
-        try? secureStorage.setString(name, forKey: .deviceName)
-        return name
+        set {
+            secureStorage.setString(newValue, forKey: .deviceName)
+        }
     }
     
     public init(secureStorage: SecureStorage) {
