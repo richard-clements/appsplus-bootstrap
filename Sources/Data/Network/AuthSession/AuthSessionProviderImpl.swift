@@ -25,7 +25,7 @@ public struct AuthSessionProviderImpl: AuthSessionProvider {
             return name
         }
         set {
-            secureStorage.setString(newValue, forKey: .deviceName)
+            try? secureStorage.setString(newValue, forKey: .deviceName)
         }
     }
     
