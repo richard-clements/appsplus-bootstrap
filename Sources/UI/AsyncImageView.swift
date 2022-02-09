@@ -110,7 +110,7 @@ public class AsyncImageView: UIView {
             }
         }
     }
-    override var bounds: CGRect {
+    public override var bounds: CGRect {
         didSet {
             if oldValue != bounds {
                 setNeedsFetchImage = true
