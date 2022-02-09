@@ -2,6 +2,7 @@
 
 import UIKit
 import Combine
+import CoreGraphics
 
 public struct AssetImage {
     let image: UIImage
@@ -106,6 +107,14 @@ public class AsyncImageView: UIView {
         didSet {
             if oldValue != cornerRadius {
                 setNeedsLayout()
+            }
+        }
+    }
+    override var bounds: CGRect {
+        didSet {
+            if oldValue != bounds {
+                setNeedsFetchImage = true
+                fetchImage()
             }
         }
     }
