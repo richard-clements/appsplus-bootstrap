@@ -35,4 +35,15 @@ public extension ValidationError {
     
 }
 
+extension ValidationError: LocalizedError {
+    
+    public var errorDescription: String? {
+        errors
+            .values
+            .flatMap { $0 }
+            .joined(separator: "\n")
+    }
+    
+}
+
 #endif

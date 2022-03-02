@@ -1,3 +1,5 @@
+#if canImport(UIKit)
+
 import UIKit
 
 extension UIViewController {
@@ -11,3 +13,5 @@ extension UIViewController {
         view.endEditing(true)
     }
 }
+
+#endif
