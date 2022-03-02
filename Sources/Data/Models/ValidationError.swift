@@ -6,7 +6,7 @@ public enum ValidationParseError: Error {
     case failedToParse
 }
 
-public struct ValidationError<Field: Hashable & CaseIterable & RawRepresentable>: Equatable where Field.RawValue == String {
+public struct ValidationError<Field: Hashable & CaseIterable & RawRepresentable>: Equatable, Error where Field.RawValue == String {
     public let errors: [Field: [String]]
     
     public init(errors: [Field: [String]]) {
