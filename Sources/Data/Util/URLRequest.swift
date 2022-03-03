@@ -21,4 +21,18 @@ extension URLRequest {
     
 }
 
+extension URL {
+    func appendingQueryComponent(_ item: URLQueryItem) -> URL {
+        var components = URLComponents(url: self, resolvingAgainstBaseURL: false)
+        var queryItems = components?.queryItems ?? []
+        queryItems.append(item)
+        components?.queryItems = queryItems
+        return components!.url!
+    }
+    
+    func appendingPageQuery(_ page: Int) -> URL {
+        appendingQueryComponent(URLQueryItem(name: "page", value: page.description))
+    }
+}
+
 #endif

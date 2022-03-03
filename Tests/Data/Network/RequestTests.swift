@@ -73,6 +73,24 @@ class RequestTests: XCTestCase {
             return request.value(forHTTPHeaderField: "Content-Type") == "application/json"
         }
     }
+    
+    func testAppendQuery() {
+        property("Append query updates url") <- forAll(URL.arbitrary, String.arbitrary, String?.arbitrary) { url, queryName, queryValue in
+            let newComponents = URLComponents(
+                url: url.appendingQueryComponent(URLQueryItem(name: queryName, value: queryValue)),
+                resolvingAgainstBaseURL: false
+            )
+            return newComponents?.queryItems?.contains(URLQueryItem(name: queryName, value: queryValue)) == true
+        }
+        
+        property("Append page query updates url") <- forAll(URL.arbitrary, Int.arbitrary) { url, page in
+            let newComponents = URLComponents(
+                url: url.appendingPageQuery(page),
+                resolvingAgainstBaseURL: false
+            )
+            return newComponents?.queryItems?.contains(URLQueryItem(name: "page", value: page.description)) == true
+        }
+    }
 }
 
 #endif
