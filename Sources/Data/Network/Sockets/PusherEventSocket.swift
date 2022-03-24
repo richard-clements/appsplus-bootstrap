@@ -46,8 +46,11 @@ public class PusherWebSocket: EventSocket, PusherDelegate {
         }
 
         func subscribe(_ channelName: String) {
-            let subscribedChannel = subscribedChannels.first { $0.name == channelName }
-            if subscribedChannel?.connection == .connected {
+            let subscribedChannel = subscribedChannels.first {
+                $0.name == channelName &&
+                $0.subscribed
+            }
+            guard subscribedChannel == nil else {
                 return
             }
             subscribedChannels.append(pusher.subscribe(channelName))
