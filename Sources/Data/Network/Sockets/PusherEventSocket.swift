@@ -4,7 +4,7 @@ import Foundation
 import Combine
 import PusherSwift
 
-public class PusherWebSocketImpl: PusherDelegate {
+public class PusherWebSocket: EventSocket, PusherDelegate {
 
     class AuthRequestBuilder: AuthRequestBuilderProtocol {
         private var request: URLRequest
