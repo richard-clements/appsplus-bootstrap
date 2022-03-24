@@ -90,7 +90,7 @@ public class PusherWebSocket: EventSocket, PusherDelegate {
     public init(
         authenticator: Authenticator,
         endpoint: URL,
-        usesTLS: Bool
+        usesTLS: Bool,
         port: Int,
         versionNumber: String,
         urlSession: URLSession,
