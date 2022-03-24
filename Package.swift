@@ -70,17 +70,24 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/typelift/SwiftCheck", .exact("0.12.0")),
-        .package(url: "https://github.com/richard-clements/combine-extensions", .exact("0.0.6"))
+        .package(url: "https://github.com/richard-clements/combine-extensions", .exact("0.0.6")),
+        .package(url: "https://github.com/pusher/pusher-websocket-swift.git", .exact("8.0.0"))
     ],
     targets: [
         .target(
             name: "AppsPlusData",
-            sources: ["Data"]
+            sources: ["Data"],
+            dependencies: [
+                .product(name: "PusherSwift", package: "pusher-websocket-swift")
+            ]
         ),
         .testTarget(
             name: "AppsPlusDataTests",
             sources: ["Data"],
-            dependencies: ["AppsPlusData", "SwiftCheck"]
+            dependencies: [
+                "AppsPlusData",
+                "SwiftCheck"
+            ]
         ),
         .target(
             name: "AppsPlusUI",
