@@ -187,14 +187,12 @@ public class PusherWebSocket: EventSocket, PusherDelegate {
                 receiveRequest: { [weak self] demand in
                     guard demand > 0,
                           let self = self else { return }
-                    if self.pusher == nil || self.pusher?.connection != .connected {
-                        self.attemptConnection()
-                            .map {
-                                $0.subscribe(channel.rawValue)
-                            }
-                            .sink { _ in } receiveValue: {_ in}
-                            .store(in: &self.cancellables)
-                    }
+                    self.attemptConnection()
+                        .map {
+                            $0.subscribe(channel.rawValue)
+                        }
+                        .sink { _ in } receiveValue: {_ in}
+                        .store(in: &self.cancellables)
                 }
             )
             .eraseToAnyPublisher()
