@@ -79,6 +79,7 @@ public class PusherWebSocket: EventSocket, PusherDelegate {
     private var urlSession: URLSession
     private var endpoint: URL
     private var port: Int
+    private var usesTLS: Bool
     private var versionNumber: String
     private var pusherKey: String
     private var eventsPublisher = PassthroughSubject<SocketMessage, Never>()
@@ -89,6 +90,7 @@ public class PusherWebSocket: EventSocket, PusherDelegate {
     public init(
         authenticator: Authenticator,
         endpoint: URL,
+        usesTLS: Bool
         port: Int,
         versionNumber: String,
         urlSession: URLSession,
@@ -100,6 +102,7 @@ public class PusherWebSocket: EventSocket, PusherDelegate {
         self.versionNumber = versionNumber
         self.pusherKey = pusherKey
         self.port = port
+        self.usesTLS = usesTLS
     }
 
     deinit {
@@ -148,7 +151,7 @@ public class PusherWebSocket: EventSocket, PusherDelegate {
             autoReconnect: true,
             host: .host(endpoint.host!),
             port: port,
-            useTLS: false,
+            useTLS: usesTLS,
             activityTimeout: 60
         )
 
