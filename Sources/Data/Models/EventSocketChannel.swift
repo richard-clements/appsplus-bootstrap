@@ -1,6 +1,6 @@
 import Foundation
 
-public struct SocketChannel: Equatable {
+public struct SocketChannel: Equatable, Hashable {
     public let rawValue: String
     
     public init(rawValue: String) {

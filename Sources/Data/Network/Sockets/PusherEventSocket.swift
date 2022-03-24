@@ -74,6 +74,7 @@ public class PusherWebSocket: EventSocket, PusherDelegate {
     private var pusherKey: String
     private var eventsPublisher = PassthroughSubject<SocketMessage, Never>()
     private var subscribedChannels = [SocketChannel]()
+    private var subscriptions = [SocketChannel: AnyPublisher<SocketMessage, Never>]()
     private var cancellables = Set<AnyCancellable>()
 
     public init(
@@ -155,31 +156,44 @@ public class PusherWebSocket: EventSocket, PusherDelegate {
                 events + [.connected, .disconnected, .subscribed]
             ).contains($0.event)
         }
-
-        guard let pusher = pusher, pusher.connection == .connected else {
+        
+        if pusher == nil || pusher?.connection != .connected {
             attemptConnection()
                 .map {
                     $0.subscribe(channel.rawValue)
                 }
                 .sink { _ in } receiveValue: {_ in}
                 .store(in: &cancellables)
-
-            return eventsPublisher
+        }
+        
+        if let publisher = subscriptions[channel] {
+            return publisher
                 .share()
                 .filter(filter)
                 .eraseToAnyPublisher()
         }
-
-        pusher.subscribe(channel.rawValue)
-
-        return eventsPublisher
+        
+        pusher?.subscribe(channel.rawValue)
+        
+        let publisher = eventsPublisher
+            .handleEvents(receiveCancel: {
+                DispatchQueue.main.async { [weak self] in
+                    self?.unsubscribe(fromChannel: channel)
+                }
+            })
+            .eraseToAnyPublisher()
+        
+        subscriptions[channel] = publisher
+        
+        return publisher
             .share()
             .filter(filter)
             .eraseToAnyPublisher()
     }
 
-    public func unsubscribe(fromChannel channel: SocketChannel) {
+    private func unsubscribe(fromChannel channel: SocketChannel) {
         pusher?.unsubscribe(channel.rawValue)
+        subscriptions[channel] = nil
         subscribedChannels.removeAll { $0.rawValue == channel.rawValue }
     }
 
