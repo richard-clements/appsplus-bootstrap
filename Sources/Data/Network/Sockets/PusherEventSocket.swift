@@ -22,6 +22,7 @@ public class PusherWebSocket: EventSocket, PusherDelegate {
     private class PusherBinder {
 
         private let pusher: Pusher
+        private var subscribedChannels = [PusherChannel]()
 
         var delegate: PusherDelegate? {
             get {
@@ -45,11 +46,16 @@ public class PusherWebSocket: EventSocket, PusherDelegate {
         }
 
         func subscribe(_ channelName: String) {
-            _ = pusher.subscribe(channelName)
+            let subscribedChannel = subscribedChannels.first { $0.name == channelName }
+            if subscribedChannel?.connection == .connected {
+                return
+            }
+            subscribedChannels.append(pusher.subscribe(channelName))
         }
 
         func unsubscribe(_ channelName: String) {
             pusher.unsubscribe(channelName)
+            subscribedChannels.removeAll { $0.name == channelName }
         }
 
         func bind(eventCallback: @escaping (PusherEvent) -> Void) {
@@ -113,7 +119,12 @@ public class PusherWebSocket: EventSocket, PusherDelegate {
     }
 
     private func attemptConnection() -> AnyPublisher<PusherBinder, EventSocketError> {
-        buildAuthenticationRequest()
+        if let pusher = pusher, pusher.connection == .connected {
+            return Just(pusher)
+                .setFailureType(to: EventSocketError.self)
+                .eraseToAnyPublisher()
+        }
+        return buildAuthenticationRequest()
             .mapError { _ in EventSocketError.unknown }
             .map { [unowned self] in
                  initializePusher($0)
@@ -149,21 +160,11 @@ public class PusherWebSocket: EventSocket, PusherDelegate {
     }
 
     public func subscribe(to channel: SocketChannel, for events: [SocketEvent]) -> AnyPublisher<SocketMessage, Never> {
-        subscribedChannels.append(channel)
         let filter: (SocketMessage) -> Bool = {
             return $0.channel == channel &&
             events.isEmpty ? true : (
                 events + [.connected, .disconnected, .subscribed]
             ).contains($0.event)
-        }
-        
-        if pusher == nil || pusher?.connection != .connected {
-            attemptConnection()
-                .map {
-                    $0.subscribe(channel.rawValue)
-                }
-                .sink { _ in } receiveValue: {_ in}
-                .store(in: &cancellables)
         }
         
         if let publisher = subscriptions[channel] {
@@ -173,14 +174,26 @@ public class PusherWebSocket: EventSocket, PusherDelegate {
                 .eraseToAnyPublisher()
         }
         
-        pusher?.subscribe(channel.rawValue)
-        
         let publisher = eventsPublisher
-            .handleEvents(receiveCancel: {
-                DispatchQueue.main.async { [weak self] in
-                    self?.unsubscribe(fromChannel: channel)
+            .handleEvents(
+                receiveCancel: {
+                    DispatchQueue.main.async { [weak self] in
+                        self?.unsubscribe(fromChannel: channel)
+                    }
+                },
+                receiveRequest: { [weak self] demand in
+                    guard demand > 0,
+                          let self = self else { return }
+                    if self.pusher == nil || self.pusher?.connection != .connected {
+                        self.attemptConnection()
+                            .map {
+                                $0.subscribe(channel.rawValue)
+                            }
+                            .sink { _ in } receiveValue: {_ in}
+                            .store(in: &self.cancellables)
+                    }
                 }
-            })
+            )
             .eraseToAnyPublisher()
         
         subscriptions[channel] = publisher
@@ -194,7 +207,6 @@ public class PusherWebSocket: EventSocket, PusherDelegate {
     private func unsubscribe(fromChannel channel: SocketChannel) {
         pusher?.unsubscribe(channel.rawValue)
         subscriptions[channel] = nil
-        subscribedChannels.removeAll { $0.rawValue == channel.rawValue }
     }
 
     public func failedToSubscribeToChannel(name: String, response: URLResponse?, data: String?, error: NSError?) {
@@ -202,11 +214,13 @@ public class PusherWebSocket: EventSocket, PusherDelegate {
     }
 
     public func subscribedToChannel(name: String) {
-        guard let channel = subscribedChannels.first(where: { $0.rawValue == name }) else {
-            return
-        }
-
-        eventsPublisher.send(.init(channel: channel, event: .subscribed, data: nil))
+        eventsPublisher.send(
+            .init(
+                channel: SocketChannel(rawValue: name),
+                event: .subscribed,
+                data: nil
+            )
+        )
     }
 
     public func changedConnectionState(from old: ConnectionState, to new: ConnectionState) {
@@ -218,9 +232,10 @@ public class PusherWebSocket: EventSocket, PusherDelegate {
             pusher?.unbindAll()
             pusher?.bind(
                 eventCallback: { [unowned self] (item: PusherEvent) in
-                    guard let channel = subscribedChannels.first(where: { $0.rawValue == item.channelName }) else {
+                    guard let channelName = item.channelName else {
                         return
                     }
+                    let channel = SocketChannel(rawValue: channelName)
                     let event = SocketEvent(rawValue: item.eventName)
 
                     let data = item.data
