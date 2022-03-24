@@ -3,6 +3,8 @@ import Combine
 
 public class MockEventSocket: EventSocket {
     
+    public init() {}
+    
     public var disconnectCalled = false
     public func disconnect() {
         disconnectCalled = true
@@ -16,4 +18,5 @@ public class MockEventSocket: EventSocket {
         subscribeEvents = events
         return subscriptionPublisher
     }
+    
 }
