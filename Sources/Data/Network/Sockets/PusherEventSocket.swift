@@ -19,7 +19,7 @@ public class PusherEventSocket: EventSocket, PusherDelegate {
         }
     }
 
-    private class PusherBinder {
+    class PusherBinder {
 
         private let pusher: Pusher
         private var subscribedChannels = [PusherChannel]()
@@ -37,7 +37,7 @@ public class PusherEventSocket: EventSocket, PusherDelegate {
             return pusher.connection.connectionState
         }
 
-        init(key: String, options: PusherClientOptions) {
+        required init(key: String, options: PusherClientOptions) {
             self.pusher = Pusher(key: key, options: options)
         }
 
@@ -108,6 +108,10 @@ public class PusherEventSocket: EventSocket, PusherDelegate {
     deinit {
         disconnect()
     }
+    
+    func classForPusherBinder() -> PusherBinder.Type {
+        PusherBinder.self
+    }
 
     func buildAuthenticationRequest() -> AnyPublisher<URLRequest, AuthenticatorError> {
         var urlComponents = URLComponents(url: endpoint, resolvingAgainstBaseURL: false)!
@@ -155,7 +159,7 @@ public class PusherEventSocket: EventSocket, PusherDelegate {
             activityTimeout: 60
         )
 
-        pusher = PusherBinder(key: pusherKey, options: options)
+        pusher = classForPusherBinder().init(key: pusherKey, options: options)
         pusher!.delegate = self
         return pusher!
     }
