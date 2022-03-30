@@ -76,13 +76,14 @@ public class PusherEventSocket: EventSocket, PusherDelegate {
 
     private var pusher: PusherBinder?
     private var authenticator: Authenticator
-    private var urlSession: URLSession
-    private var endpoint: URL
-    private var port: Int
-    private var usesTLS: Bool
-    private var versionNumber: String
-    private var pusherKey: String
-    private var eventsPublisher = PassthroughSubject<SocketMessage, Never>()
+    private let urlSession: URLSession
+    private let endpoint: URL
+    private let port: Int
+    private let usesTLS: Bool
+    private let versionNumber: String
+    private let pusherKey: String
+    private let authenticationPath: String?
+    private let eventsPublisher = PassthroughSubject<SocketMessage, Never>()
     private var subscribedChannels = [SocketChannel]()
     private var subscriptions = [SocketChannel: AnyPublisher<SocketMessage, Never>]()
     private var cancellables = Set<AnyCancellable>()
@@ -94,7 +95,8 @@ public class PusherEventSocket: EventSocket, PusherDelegate {
         port: Int,
         versionNumber: String,
         urlSession: URLSession,
-        pusherKey: String
+        pusherKey: String,
+        authenticationPath: String?
     ) {
         self.authenticator = authenticator
         self.urlSession = urlSession
@@ -103,6 +105,7 @@ public class PusherEventSocket: EventSocket, PusherDelegate {
         self.pusherKey = pusherKey
         self.port = port
         self.usesTLS = usesTLS
+        self.authenticationPath = authenticationPath
     }
 
     deinit {
@@ -113,18 +116,23 @@ public class PusherEventSocket: EventSocket, PusherDelegate {
         PusherBinder.self
     }
 
-    func buildAuthenticationRequest() -> AnyPublisher<URLRequest, AuthenticatorError> {
-        var urlComponents = URLComponents(url: endpoint, resolvingAgainstBaseURL: false)!
-        urlComponents.path = "/api/broadcasting/auth"
-        var request = URLRequest(url: urlComponents.url!, versionNumber: versionNumber)
+    func buildAuthenticationRequest() -> AnyPublisher<URLRequest?, AuthenticatorError> {
+        guard let authenticationPath = authenticationPath else {
+            return Just(nil)
+                .setFailureType(to: AuthenticatorError.self)
+                .eraseToAnyPublisher()
+        }
+
+        let url = endpoint.appendingPathComponent(authenticationPath)
+        var request = URLRequest(url: url, versionNumber: versionNumber)
         request.set(httpMethod: .post)
 
-        return authenticator
-            .authenticate(
+        return authenticator.authenticate(
                 request: AuthenticatedRequest(urlRequest: request),
                 forceRefresh: false,
                 urlSession: urlSession
             )
+            .map { $0 as URLRequest? }
             .eraseToAnyPublisher()
     }
 
@@ -146,11 +154,17 @@ public class PusherEventSocket: EventSocket, PusherDelegate {
             .eraseToAnyPublisher()
     }
 
-    private func initializePusher(_ authenticationRequest: URLRequest) -> PusherBinder {
-        let options = PusherClientOptions(
-            authMethod: AuthMethod.authRequestBuilder(
+    private func initializePusher(_ authenticationRequest: URLRequest?) -> PusherBinder {
+        let authMethod: AuthMethod
+        if let authenticationRequest = authenticationRequest {
+            authMethod = AuthMethod.authRequestBuilder(
                 authRequestBuilder: AuthRequestBuilder(request: authenticationRequest)
-            ),
+            )
+        } else {
+            authMethod = .noMethod
+        }
+        let options = PusherClientOptions(
+            authMethod: authMethod,
             attemptToReturnJSONObject: false,
             autoReconnect: true,
             host: .host(endpoint.host!),
