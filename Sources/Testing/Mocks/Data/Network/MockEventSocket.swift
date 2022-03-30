@@ -10,9 +10,9 @@ public class MockEventSocket: EventSocket {
         disconnectCalled = true
     }
     
-    var subscribeToChannel: SocketChannel?
-    var subscribeEvents: [SocketEvent]?
-    var subscriptionPublisher: AnyPublisher<SocketMessage, Never> = PassthroughSubject<SocketMessage, Never>().eraseToAnyPublisher()
+    public var subscribeToChannel: SocketChannel?
+    public var subscribeEvents: [SocketEvent]?
+    public var subscriptionPublisher: AnyPublisher<SocketMessage, Never> = PassthroughSubject<SocketMessage, Never>().eraseToAnyPublisher()
     public func subscribe(to channel: SocketChannel, for events: [SocketEvent]) -> AnyPublisher<SocketMessage, Never> {
         subscribeToChannel = channel
         subscribeEvents = events
