@@ -1,8 +1,9 @@
-#if canImport(UIKit) && canImport(Combine) && (os(iOS) || os(tvOS) || os(macOS))
+#if canImport(UIKit) && canImport(Combine) && canImport(Foundation) && (os(iOS) || os(tvOS) || os(macOS))
 
 import UIKit
 import Combine
 import CoreGraphics
+import Foundation
 
 public struct AssetImage {
     let image: UIImage
@@ -273,12 +274,18 @@ public class AsyncImageView: UIView {
                     return
                 }
                 let size = self.bounds.size
+                
+                if let cachedImage = ImageCache.shared.image(for: asset.image, size: size) {
+                    completion(.success(AssetImage(image: cachedImage, isCached: asset.isCached)))
+                }
+                
                 let image = asset.image
                 if image.size.width <= size.width && image.size.height <= size.height {
                     completion(.success(asset))
                 } else {
                     self.resizeQueue.async {
                         let resizedImage = self.redrawImage(image, toFit: size)
+                        ImageCache.shared.setResizedImage(resizedImage, for: asset.image, at: size)
                         completion(.success(AssetImage(image: resizedImage, isCached: asset.isCached)))
                     }
                 }
@@ -288,6 +295,24 @@ public class AsyncImageView: UIView {
     
     private func redrawImage(_ image: UIImage, toFit size: CGSize) -> UIImage {
         image.atSize(size)
+    }
+}
+
+private struct ImageCache {
+    static let shared = ImageCache()
+    
+    private let cache = NSCache<NSString, UIImage>()
+    
+    private func key(for image: UIImage, size: CGSize) -> NSString {
+        "\(image.hashValue)|\(round(size.width))|\(round(size.height)))" as NSString
+    }
+    
+    func image(for image: UIImage, size: CGSize) -> UIImage? {
+        cache.object(forKey: key(for: image, size: size))
+    }
+    
+    func setResizedImage(_ image: UIImage, for originalImage: UIImage, at size: CGSize) {
+        cache.setObject(image, forKey: key(for: originalImage, size: size))
     }
 }
 
