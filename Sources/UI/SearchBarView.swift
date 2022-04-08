@@ -201,22 +201,23 @@ public class SearchBarView: UIView {
     }
 
     private func animateState(_ state: State) {
-        UIView.animate(withDuration: 0.3) { [unowned self] in
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            guard let self = self else { return }
             switch state {
             case .idle:
-                let textIsEmpty = textField.text?.isEmpty ?? true
-                image.isHidden = textIsEmpty ? false : true
-                cancelButton.alpha = textIsEmpty ? 0 : 1
-                image.alpha = textIsEmpty ? 1 : 0
+                let textIsEmpty = self.textField.text?.isEmpty ?? true
+                self.isHidden = textIsEmpty ? false : true
+                self.alpha = textIsEmpty ? 0 : 1
+                self.alpha = textIsEmpty ? 1 : 0
             case .searching:
-                cancelButton.isHidden = false
-                cancelButton.alpha = 1
-                image.alpha = 0
+                self.isHidden = false
+                self.alpha = 1
+                self.alpha = 0
             }
-        } completion: { [unowned self] in
-            if $0 {
-                cancelButton.isHidden = cancelButton.alpha == 0
-                image.isHidden = image.alpha == 0
+        } completion: { [weak self] in
+            if let self = self, $0 {
+                self.cancelButton.isHidden = self.cancelButton.alpha == 0
+                self.image.isHidden = self.image.alpha == 0
             }
         }
     }
