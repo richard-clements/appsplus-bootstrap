@@ -206,13 +206,13 @@ public class SearchBarView: UIView {
             switch state {
             case .idle:
                 let textIsEmpty = self.textField.text?.isEmpty ?? true
-                self.isHidden = textIsEmpty ? false : true
-                self.alpha = textIsEmpty ? 0 : 1
-                self.alpha = textIsEmpty ? 1 : 0
+                self.image.isHidden = textIsEmpty ? false : true
+                self.cancelButton.alpha = textIsEmpty ? 0 : 1
+                self.image.alpha = textIsEmpty ? 1 : 0
             case .searching:
-                self.isHidden = false
-                self.alpha = 1
-                self.alpha = 0
+                self.cancelButton.isHidden = false
+                self.cancelButton.alpha = 1
+                self.image.alpha = 0
             }
         } completion: { [weak self] in
             if let self = self, $0 {
