@@ -34,3 +34,47 @@ db.entity(SomeInterestingModelClass.self)
     ...
   }
 ```
+
+### Creating & Updating
+
+An entity can be created in a similar way to fetching, you just have to use a different action on the initial entity. Then use the `modify` function to edit the resource with the correct properties. Relationships can be amended by using the second property of the closure which contains the database itself.
+
+```
+db.entity(SomeInterestingModelClass.self)
+  .create()
+  .modify {
+    $0.valueShouldBeThis = true
+    $0.relationship = $1.entity(AnotherInterestingModelClass.self)
+      .fetch()
+      .suchThat { \.propertyString == "some string" }
+      .limit(1)
+      .perform()
+      .first
+  }
+  .perform()
+  .save()
+  .sink(recieveCompletion: { _ in }, receiveValue: { _ in })
+```
+
+An update can be done in a similar way
+
+```
+db.entity(SomeInterestingModelClass.self)
+  .update(orCreate: true)
+  ...
+```
+
+Using `update()` will only update an object if it exists, whereas `update(orCreate: true)` will create the object if it doesn't exists.
+
+### Deletions
+
+Deletions are done in exactly the same way, but you instead use the `delete` action on the entity.
+
+```
+db.entity(SomeInterestingModelClass.self)
+  .delete()
+  .suchThat { \.identity == 5 }
+  .perform()
+  .save()
+  .sink(recieveCompletion: { _ in }, receiveValue: { _ in })
+```
