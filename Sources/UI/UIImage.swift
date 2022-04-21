@@ -25,7 +25,7 @@ extension UIImage {
         let heightRatio = self.size.height / size.height
         
         var newSize = self.size
-        if widthRatio > heightRatio {
+        if widthRatio < heightRatio {
             let scaleFactor = size.width/newSize.width
             newSize.width = size.width
             newSize.height *= scaleFactor
