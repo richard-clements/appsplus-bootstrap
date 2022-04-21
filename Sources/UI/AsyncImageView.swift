@@ -132,6 +132,10 @@ public class AsyncImageView: UIView {
     public override var contentMode: UIView.ContentMode {
         didSet {
             imageView.contentMode = contentMode
+            if oldValue != contentMode {
+                setNeedsFetchImage = true
+                fetchImage()
+            }
         }
     }
     
@@ -211,8 +215,8 @@ public class AsyncImageView: UIView {
                 if result.isCached {
                     imageView.alpha = 1
                 } else {
-                    UIView.animate(withDuration: 0.3) {
-                        imageView.alpha = 1
+                    UIView.animate(withDuration: 0.3) { [weak self] in
+                        self?.imageView.alpha = 1
                     }
                 }
             })
@@ -274,18 +278,19 @@ public class AsyncImageView: UIView {
                     return
                 }
                 let size = self.bounds.size
+                let contentMode = self.contentMode
                 
-                if let cachedImage = ImageCache.shared.image(for: asset.image, size: size) {
+                if let cachedImage = ImageCache.shared.image(for: asset.image, size: size, contentMode: contentMode) {
                     completion(.success(AssetImage(image: cachedImage, isCached: asset.isCached)))
                 }
                 
                 let image = asset.image
-                if image.size.width <= size.width && image.size.height <= size.height {
+                if self.validImage(image, forSize: size, contentMode: contentMode) {
                     completion(.success(asset))
                 } else {
                     self.resizeQueue.async {
-                        let resizedImage = self.redrawImage(image, toFit: size)
-                        ImageCache.shared.setResizedImage(resizedImage, for: asset.image, at: size)
+                        let resizedImage = self.redrawImage(image, toFit: size, contentMode: contentMode)
+                        ImageCache.shared.setResizedImage(resizedImage, for: asset.image, at: size, contentMode: contentMode)
                         completion(.success(AssetImage(image: resizedImage, isCached: asset.isCached)))
                     }
                 }
@@ -293,8 +298,17 @@ public class AsyncImageView: UIView {
         }.eraseToAnyPublisher()
     }
     
-    private func redrawImage(_ image: UIImage, toFit size: CGSize) -> UIImage {
-        image.atSize(size)
+    private func validImage(_ image: UIImage, forSize size: CGSize, contentMode: UIView.ContentMode) -> Bool {
+        switch contentMode {
+        case .scaleAspectFit:
+            return image.size.width <= size.width && image.size.height <= size.height
+        default:
+            return image.size.width <= size.width || image.size.height <= size.height
+        }
+    }
+    
+    private func redrawImage(_ image: UIImage, toFit size: CGSize, contentMode: UIView.ContentMode) -> UIImage {
+        image.atSize(size, contentMode: contentMode)
     }
 }
 
@@ -303,16 +317,16 @@ private struct ImageCache {
     
     private let cache = NSCache<NSString, UIImage>()
     
-    private func key(for image: UIImage, size: CGSize) -> NSString {
-        "\(image.hashValue)|\(round(size.width))|\(round(size.height)))" as NSString
+    private func key(for image: UIImage, size: CGSize, contentMode: UIView.ContentMode) -> NSString {
+        "\(image.hashValue)|\(round(size.width))|\(round(size.height))|\(contentMode.rawValue)" as NSString
     }
     
-    func image(for image: UIImage, size: CGSize) -> UIImage? {
-        cache.object(forKey: key(for: image, size: size))
+    func image(for image: UIImage, size: CGSize, contentMode: UIView.ContentMode) -> UIImage? {
+        cache.object(forKey: key(for: image, size: size, contentMode: contentMode))
     }
     
-    func setResizedImage(_ image: UIImage, for originalImage: UIImage, at size: CGSize) {
-        cache.setObject(image, forKey: key(for: originalImage, size: size))
+    func setResizedImage(_ image: UIImage, for originalImage: UIImage, at size: CGSize, contentMode: UIView.ContentMode) {
+        cache.setObject(image, forKey: key(for: originalImage, size: size, contentMode: contentMode))
     }
 }
 
