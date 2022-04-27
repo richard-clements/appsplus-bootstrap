@@ -26,11 +26,11 @@ extension FilterRequest where Entity: NSManagedObject {
 }
 
 private func contained<Root: NSManagedObject, Value: CVarArgConvertible>(in array: [Value], for keyPath: KeyPath<Root, Value>) -> NSPredicate {
-    NSPredicate(format: "\(keyPath.keyPath) IN %@", array.map { $0.asCVarArg() })
+    NSPredicate(format: "\(keyPath.keyPath) IN %@", array.map { $0.asCVarArg() } as NSArray)
 }
 
 private func contained<Root: NSManagedObject, Value: CVarArgConvertible>(in array: [Value?], for keyPath: KeyPath<Root, Value?>) -> NSPredicate {
-    NSPredicate(format: "\(keyPath.keyPath) IN %@", array.map { $0?.asCVarArg() })
+    NSPredicate(format: "\(keyPath.keyPath) IN %@", array.map { $0?.asCVarArg() } as NSArray)
 }
 
 extension FilterRequest where Entity: NSManagedObject {

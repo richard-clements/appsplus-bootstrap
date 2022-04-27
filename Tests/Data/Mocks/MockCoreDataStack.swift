@@ -24,7 +24,7 @@ class MockPersistentContainer: NSPersistentContainer, CoreDataPersistentContaine
     
     func contextForWriting() -> AnyPublisher<NSManagedObjectContext, Error> {
         Future { [unowned self] promise in
-            writingContext.perform {
+            writingContext.perform { [writingContext] in
                 promise(.success(writingContext))
             }
         }.eraseToAnyPublisher()
