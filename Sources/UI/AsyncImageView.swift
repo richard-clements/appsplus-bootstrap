@@ -8,10 +8,12 @@ import Foundation
 public struct AssetImage {
     let image: UIImage
     let isCached: Bool
+    let originalRequest: AsyncImage
 }
 
 @available(iOS 13.0, tvOS 13.0, *)
 public protocol AsyncImage {
+    var key: String { get }
     func equals(_ image: AsyncImage) -> Bool
     func imagePublisher() -> AnyPublisher<AssetImage, URLError>
     func hash(into hasher: inout Hasher)
@@ -47,10 +49,14 @@ extension Optional where Wrapped == AsyncImage {
 @available(iOS 13.0, tvOS 13.0, *)
 extension URL: AsyncImage {
     
+    public var key: String {
+        absoluteString
+    }
+    
     public func imagePublisher() -> AnyPublisher<AssetImage, URLError> {
         if let cachedResult = URLCache.shared.cachedResponse(for: URLRequest(url: self)),
            let image = UIImage(data: cachedResult.data) {
-            return Just(AssetImage(image: image, isCached: true))
+            return Just(AssetImage(image: image, isCached: true, originalRequest: self))
                 .setFailureType(to: URLError.self)
                 .eraseToAnyPublisher()
         }
@@ -59,7 +65,7 @@ extension URL: AsyncImage {
                 guard let image = UIImage(data: data) else {
                     throw URLError(.cannotDecodeRawData)
                 }
-                return AssetImage(image: image, isCached: false)
+                return AssetImage(image: image, isCached: false, originalRequest: self)
             }
             .mapError { $0 as? URLError ?? URLError(.badServerResponse) }
             .eraseToAnyPublisher()
@@ -70,14 +76,17 @@ extension URL: AsyncImage {
 @available(iOS 13.0, tvOS 13.0, *)
 extension UIImage: AsyncImage {
     
+    public var key: String {
+        description
+    }
+    
     public func imagePublisher() -> AnyPublisher<AssetImage, URLError> {
-        Just(AssetImage(image: self, isCached: true))
+        Just(AssetImage(image: self, isCached: true, originalRequest: self))
             .setFailureType(to: URLError.self)
             .eraseToAnyPublisher()
     }
     
 }
-
 
 @available(iOS 13.0, tvOS 13.0, *)
 public class AsyncImageView: UIView {
@@ -100,7 +109,7 @@ public class AsyncImageView: UIView {
         didSet {
             if oldValue.equals(image) != true {
                 setNeedsFetchImage = true
-                fetchImage()
+                setNeedsLayout()
             }
         }
     }
@@ -115,7 +124,7 @@ public class AsyncImageView: UIView {
         didSet {
             if oldValue != bounds {
                 setNeedsFetchImage = true
-                fetchImage()
+                setNeedsLayout()
             }
         }
     }
@@ -134,7 +143,7 @@ public class AsyncImageView: UIView {
             imageView.contentMode = contentMode
             if oldValue != contentMode {
                 setNeedsFetchImage = true
-                fetchImage()
+                setNeedsLayout()
             }
         }
     }
@@ -198,8 +207,8 @@ public class AsyncImageView: UIView {
         setNeedsFetchImage = false
         state = .loading
         imageCancellable = image.imagePublisher()
-            .flatMap { [unowned self] in
-                self.resizeImage($0)
+            .flatMap { [unowned self] (assetImage: AssetImage) -> AnyPublisher<AssetImage, URLError> in
+                self.resizeImage(assetImage)
             }
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { [unowned self] completion in
@@ -229,12 +238,10 @@ public class AsyncImageView: UIView {
     public override func willMove(toWindow newWindow: UIWindow?) {
         super.willMove(toWindow: newWindow)
         if newWindow == nil {
-            if imageCancellable != nil {
-                cancel()
-                setNeedsFetchImage = true
-            }
-        } else if setNeedsFetchImage {
-            fetchImage()
+            cancel()
+            setNeedsFetchImage = true
+        } else {
+            setNeedsLayout()
         }
     }
     
@@ -259,12 +266,7 @@ public class AsyncImageView: UIView {
         if setNeedsFetchImage {
             fetchImage()
         }
-        switch cornerRadius {
-        case .value(let value):
-            layer.cornerRadius = value
-        case .percentage(let percentage):
-            layer.cornerRadius = (bounds.height / 2) * percentage
-        }
+        apply(cornerRadius: cornerRadius)
     }
     
     private func resizeImage<ImageError: Error>(_ asset: AssetImage) -> AnyPublisher<AssetImage, ImageError> {
@@ -280,18 +282,15 @@ public class AsyncImageView: UIView {
                 let size = self.bounds.size
                 let contentMode = self.contentMode
                 
-                if let cachedImage = ImageCache.shared.image(for: asset.image, size: size, contentMode: contentMode) {
-                    completion(.success(AssetImage(image: cachedImage, isCached: asset.isCached)))
-                }
-                
-                let image = asset.image
-                if self.validImage(image, forSize: size, contentMode: contentMode) {
+                if self.validImage(asset.image, forSize: size, contentMode: contentMode) {
                     completion(.success(asset))
+                } else if let cachedImage = ImageCache.shared.image(for: asset.originalRequest, size: size, contentMode: contentMode) {
+                    completion(.success(AssetImage(image: cachedImage, isCached: asset.isCached, originalRequest: asset.originalRequest)))
                 } else {
                     self.resizeQueue.async {
-                        let resizedImage = self.redrawImage(image, toFit: size, contentMode: contentMode)
-                        ImageCache.shared.setResizedImage(resizedImage, for: asset.image, at: size, contentMode: contentMode)
-                        completion(.success(AssetImage(image: resizedImage, isCached: asset.isCached)))
+                        let resizedImage = self.redrawImage(asset.image, toFit: size, contentMode: contentMode)
+                        ImageCache.shared.setResizedImage(resizedImage, for: asset.originalRequest, at: size, contentMode: contentMode)
+                        completion(.success(AssetImage(image: resizedImage, isCached: asset.isCached, originalRequest: asset.originalRequest)))
                     }
                 }
             }
@@ -317,17 +316,18 @@ private struct ImageCache {
     
     private let cache = NSCache<NSString, UIImage>()
     
-    private func key(for image: UIImage, size: CGSize, contentMode: UIView.ContentMode) -> NSString {
-        "\(image.hashValue)|\(round(size.width))|\(round(size.height))|\(contentMode.rawValue)" as NSString
+    private func key(for image: AsyncImage, size: CGSize, contentMode: UIView.ContentMode) -> NSString {
+        "\(image.key)|\(round(size.width))|\(round(size.height))|\(contentMode.rawValue)" as NSString
     }
     
-    func image(for image: UIImage, size: CGSize, contentMode: UIView.ContentMode) -> UIImage? {
+    func image(for image: AsyncImage, size: CGSize, contentMode: UIView.ContentMode) -> UIImage? {
         cache.object(forKey: key(for: image, size: size, contentMode: contentMode))
     }
     
-    func setResizedImage(_ image: UIImage, for originalImage: UIImage, at size: CGSize, contentMode: UIView.ContentMode) {
+    func setResizedImage(_ image: UIImage, for originalImage: AsyncImage, at size: CGSize, contentMode: UIView.ContentMode) {
         cache.setObject(image, forKey: key(for: originalImage, size: size, contentMode: contentMode))
     }
 }
+
 
 #endif
