@@ -13,7 +13,7 @@ public struct AssetImage {
 
 @available(iOS 13.0, tvOS 13.0, *)
 public protocol AsyncImage {
-    var key: String { get }
+    var key: String? { get }
     func equals(_ image: AsyncImage) -> Bool
     func imagePublisher() -> AnyPublisher<AssetImage, URLError>
     func hash(into hasher: inout Hasher)
@@ -49,7 +49,7 @@ extension Optional where Wrapped == AsyncImage {
 @available(iOS 13.0, tvOS 13.0, *)
 extension URL: AsyncImage {
     
-    public var key: String {
+    public var key: String? {
         absoluteString
     }
     
@@ -76,8 +76,8 @@ extension URL: AsyncImage {
 @available(iOS 13.0, tvOS 13.0, *)
 extension UIImage: AsyncImage {
     
-    public var key: String {
-        description
+    public var key: String? {
+        nil
     }
     
     public func imagePublisher() -> AnyPublisher<AssetImage, URLError> {
@@ -316,16 +316,22 @@ private struct ImageCache {
     
     private let cache = NSCache<NSString, UIImage>()
     
-    private func key(for image: AsyncImage, size: CGSize, contentMode: UIView.ContentMode) -> NSString {
-        "\(image.key)|\(round(size.width))|\(round(size.height))|\(contentMode.rawValue)" as NSString
+    private func key(for identifier: String, size: CGSize, contentMode: UIView.ContentMode) -> NSString {
+        "\(identifier)|\(round(size.width))|\(round(size.height))|\(contentMode.rawValue)" as NSString
     }
     
     func image(for image: AsyncImage, size: CGSize, contentMode: UIView.ContentMode) -> UIImage? {
-        cache.object(forKey: key(for: image, size: size, contentMode: contentMode))
+        if let identifier = image.key {
+            return cache.object(forKey: key(for: identifier, size: size, contentMode: contentMode))
+        } else {
+            return nil
+        }
     }
     
     func setResizedImage(_ image: UIImage, for originalImage: AsyncImage, at size: CGSize, contentMode: UIView.ContentMode) {
-        cache.setObject(image, forKey: key(for: originalImage, size: size, contentMode: contentMode))
+        if let identifier = originalImage.key {
+            cache.setObject(image, forKey: key(for: identifier, size: size, contentMode: contentMode))
+        }
     }
 }
 
