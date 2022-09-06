@@ -39,6 +39,21 @@ extension UIView {
             .intersection(frame)
             .inset(by: UIEdgeInsets(top: -topMargin, left: -leftMargin, bottom: -bottomMargin, right: -rightMargin))
     }
+    
+    func pinToBottom(
+        of view: UIView,
+        bottomMargin: CGFloat = 0,
+        safeMargin: CGFloat = 0
+    ) {
+        translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            view.bottomAnchor.constraint(greaterThanOrEqualTo: bottomAnchor, constant: bottomMargin)
+        ])
+        
+        let safeConstraint = view.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: bottomAnchor, constant: safeMargin)
+        safeConstraint.priority = .defaultHigh
+        safeConstraint.isActive = true
+    }
 }
 
 #endif
