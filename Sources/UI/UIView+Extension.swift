@@ -40,7 +40,7 @@ extension UIView {
             .inset(by: UIEdgeInsets(top: -topMargin, left: -leftMargin, bottom: -bottomMargin, right: -rightMargin))
     }
     
-    func pinToBottom(
+    public func pinToBottom(
         of view: UIView,
         bottomMargin: CGFloat = 0,
         safeMargin: CGFloat = 0
