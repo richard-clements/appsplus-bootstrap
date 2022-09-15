@@ -18,7 +18,7 @@ extension ServerError: LocalizedError {
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 extension Data {
     
-    func parseServerError<Field: Hashable & CaseIterable & RawRepresentable>(
+    public func parseServerError<Field: Hashable & CaseIterable & RawRepresentable>(
         validationFields: Field.Type
     ) -> Error where Field.RawValue == String {
         do {
@@ -28,7 +28,7 @@ extension Data {
         }
     }
     
-    func parseServerError() -> Error {
+    public func parseServerError() -> Error {
         do {
             return try JSONDecoder().decode(ServerError.self, from: self)
         } catch {
