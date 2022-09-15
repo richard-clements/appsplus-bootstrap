@@ -9,10 +9,10 @@ public class BearerAuthenticator<AuthToken: AuthTokenProtocol>: Authenticator {
     private let queue: DispatchQueue
     private var refreshPublisher: AnyPublisher<AuthToken, AuthenticatorError>?
     private let authSessionProvider: AuthSessionProvider
-    private let refreshUrl: URL
+    private let refreshUrl: URL?
     private let version: String
     
-    public init(authSessionProvider: AuthSessionProvider, refreshUrl: URL, bundleIdentifier: String, version: String) {
+    public init(authSessionProvider: AuthSessionProvider, refreshUrl: URL?, bundleIdentifier: String, version: String) {
         self.authSessionProvider = authSessionProvider
         self.refreshUrl = refreshUrl
         self.version = version
@@ -20,7 +20,10 @@ public class BearerAuthenticator<AuthToken: AuthTokenProtocol>: Authenticator {
     }
     
     private func refreshToken(authSession: AuthToken, urlSession: URLSession) -> AnyPublisher<AuthToken, AuthenticatorError> {
-        queue.sync {
+        guard let refreshUrl = refreshUrl else {
+            return Fail(error: AuthenticatorError.refreshFailed).eraseToAnyPublisher()
+        }
+        return queue.sync {
             if let refreshPublisher = refreshPublisher {
                 return refreshPublisher
             }
