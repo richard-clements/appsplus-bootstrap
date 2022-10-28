@@ -22,6 +22,6 @@ public struct TypeContainer<Parent, T> {
     }
 }
 
-typealias ParentTypeContainer<T: NSObject> = TypeContainer<T, T>
+public typealias ParentTypeContainer<T: NSObject> = TypeContainer<T, T>
 
 #endif
