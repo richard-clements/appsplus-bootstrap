@@ -12,13 +12,13 @@ extension CGFloat {
     public static func margin(_ x: Margin) -> CGFloat {
         switch x {
         case .xSmall:
-            return 5
+            return 4
         case .small:
-            return 10
+            return 8
         case .medium:
-            return 20
+            return 16
         case .large:
-            return 30
+            return 32
         }
     }
 }
