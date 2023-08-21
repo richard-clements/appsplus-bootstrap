@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/mxcl/Chalk.git",
         "state": {
           "branch": null,
-          "revision": "9aa9f348b86db3cf6702a3e43c081ecec80cf3c7",
-          "version": "0.4.0"
+          "revision": "a7f58e47a08ca5a84f73acc4bcf6c2c19d990609",
+          "version": "0.5.0"
         }
       },
       {
@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/llvm-swift/FileCheck.git",
         "state": {
           "branch": null,
-          "revision": "0dc8a5bff1a7f01e1d7bcc20c79e2127b2ea3eeb",
-          "version": "0.2.5"
+          "revision": "f7c5f1a9479b33a876a6f5632ca2b92a7ce4b667",
+          "version": "0.2.6"
         }
       },
       {
@@ -51,8 +51,8 @@
         "repositoryURL": "https://github.com/daltoniam/Starscream.git",
         "state": {
           "branch": null,
-          "revision": "e6b65c6d9077ea48b4a7bdda8994a1d3c6969c8d",
-          "version": "3.1.1"
+          "revision": "a063fda2b8145a231953c20e7a646be254365396",
+          "version": "3.1.2"
         }
       },
       {
@@ -60,17 +60,8 @@
         "repositoryURL": "https://github.com/apple/swift-argument-parser",
         "state": {
           "branch": null,
-          "revision": "6b2aa2748a7881eebb9f84fb10c01293e15b52ca",
-          "version": "0.5.0"
-        }
-      },
-      {
-        "package": "swift-nio-zlib-support",
-        "repositoryURL": "https://github.com/apple/swift-nio-zlib-support.git",
-        "state": {
-          "branch": null,
-          "revision": "37760e9a52030bb9011972c5213c3350fa9d41fd",
-          "version": "1.0.0"
+          "revision": "8f4d2753f0e4778c76d5f05ad16c74f707390531",
+          "version": "1.2.3"
         }
       },
       {

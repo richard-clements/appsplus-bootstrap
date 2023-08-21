@@ -74,7 +74,7 @@ extension URL: AsyncImage {
 }
 
 @available(iOS 13.0, tvOS 13.0, *)
-public struct LocalImage: AsyncImage {
+public struct LocalImage: AsyncImage, Equatable {
     
     public let path: String
     public let compressRate: CGFloat
@@ -89,8 +89,8 @@ public struct LocalImage: AsyncImage {
     }
     
     public func imagePublisher() -> AnyPublisher<AssetImage, URLError> {
-        return Future { promise in
-            DispatchQueue.global(.userInteractive).async {
+        return Future<AssetImage, URLError> { promise in
+            DispatchQueue.global(priority: .userInteractive).async {
                 guard let image = UIImage(contentsOfFile: path),
                       let compressedImageData = image.jpegData(compressionQuality: compressRate),
                       let compressedImage = UIImage(data: compressedImageData)  else {
@@ -101,8 +101,15 @@ public struct LocalImage: AsyncImage {
                 promise(.success(AssetImage(image: compressedImage, isCached: false, originalRequest: self)))
                 
             }
-        }
-        .setFailureType(to: URLError.self).eraseToAnyPublisher()
+        }.eraseToAnyPublisher()
+    }
+    
+    public func equals(_ image: AsyncImage) -> Bool {
+        self == image
+    }
+    
+    public func hash(into hasher: inout Hasher) {
+        <#code#>
     }
     
 }
