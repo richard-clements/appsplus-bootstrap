@@ -74,7 +74,7 @@ extension URL: AsyncImage {
 }
 
 @available(iOS 13.0, tvOS 13.0, *)
-public struct LocalImage: AsyncImage, Equatable {
+public struct LocalImage: AsyncImage, Equatable, Hashable {
     
     public let path: String
     public let compressRate: CGFloat
