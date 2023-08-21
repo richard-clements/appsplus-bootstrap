@@ -90,11 +90,11 @@ public struct LocalImage: AsyncImage, Equatable {
     
     public func imagePublisher() -> AnyPublisher<AssetImage, URLError> {
         return Future<AssetImage, URLError> { promise in
-            DispatchQueue.global(priority: .userInteractive).async {
+            DispatchQueue.global(qos: .userInteractive).async {
                 guard let image = UIImage(contentsOfFile: path),
                       let compressedImageData = image.jpegData(compressionQuality: compressRate),
                       let compressedImage = UIImage(data: compressedImageData)  else {
-                    promise(.failure(URLError.fileDoesNotExist))
+                    promise(.failure(URLError(URLError.fileDoesNotExist)))
                     return
                 }
                 
@@ -103,15 +103,6 @@ public struct LocalImage: AsyncImage, Equatable {
             }
         }.eraseToAnyPublisher()
     }
-    
-    public func equals(_ image: AsyncImage) -> Bool {
-        self == image
-    }
-    
-    public func hash(into hasher: inout Hasher) {
-        <#code#>
-    }
-    
 }
 
 @available(iOS 13.0, tvOS 13.0, *)
