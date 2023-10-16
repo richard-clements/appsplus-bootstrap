@@ -5,22 +5,22 @@ import CoreData
 
 extension FilterRequest where Entity: NSManagedObject {
     
-    public typealias KeyPathFilterBuilder<Value> = () -> KeyPathFilter<Entity, Value>
+    public typealias KeyPathFilterBuilder<Value> = (ParentTypeContainer<Entity>) -> KeyPathFilter<Entity, Value>
     
     public func suchThat<Value>(filter: KeyPathFilterBuilder<Value>) -> Self {
-        suchThat(predicate: filter().predicate)
+        suchThat(predicate: filter(ParentTypeContainer()).predicate)
     }
     
     public func and<Value>(filter: KeyPathFilterBuilder<Value>) -> Self {
-        and(predicate: filter().predicate)
+        and(predicate: filter(ParentTypeContainer()).predicate)
     }
     
     public func or<Value>(filter: KeyPathFilterBuilder<Value>) -> Self {
-        or(predicate: filter().predicate)
+        or(predicate: filter(ParentTypeContainer()).predicate)
     }
     
     public func excluding<Value>(filter: KeyPathFilterBuilder<Value>) -> Self {
-        excluding(predicate: filter().predicate)
+        excluding(predicate: filter(ParentTypeContainer()).predicate)
     }
     
 }

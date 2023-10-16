@@ -24,8 +24,8 @@ Fetching a resource from the database requires the fetch property of an entity. 
 ```
 db.entity(SomeInterestingModelClass.self)
   .fetch()
-  .suchThat { \.property1.intProperty == 5 }
-  .and { \.property1.stringProperty == "some string" }
+  .suchThat { $0.property1.intProperty == 5 }
+  .and { $0.property1.stringProperty == "some string" }
   .or(predicate: NSPredicate(...))
   .subscribe()
   .map { ... }
@@ -46,7 +46,7 @@ db.entity(SomeInterestingModelClass.self)
     $0.valueShouldBeThis = true
     $0.relationship = $1.entity(AnotherInterestingModelClass.self)
       .fetch()
-      .suchThat { \.propertyString == "some string" }
+      .suchThat { $0.propertyString == "some string" }
       .limit(1)
       .perform()
       .first
@@ -73,7 +73,7 @@ Deletions are done in exactly the same way, but you instead use the `delete` act
 ```
 db.entity(SomeInterestingModelClass.self)
   .delete()
-  .suchThat { \.identity == 5 }
+  .suchThat { $0.identity == 5 }
   .perform()
   .save()
   .sink(recieveCompletion: { _ in }, receiveValue: { _ in })

@@ -1,9 +1,8 @@
-#if canImport(Foundation) && canImport(Combine)
+#if canImport(Foundation)
 
 import Foundation
-import CoreData
 
-extension KeyPath where Root: NSManagedObject {
+extension KeyPath where Root: NSObject {
     
     var keyPath: String {
         NSExpression(forKeyPath: self).keyPath

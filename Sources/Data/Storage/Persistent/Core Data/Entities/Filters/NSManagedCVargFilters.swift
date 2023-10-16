@@ -100,7 +100,7 @@ extension NSNumber: Comparable {
 // MARK:- Equality
 // MARK: Optionals
 
-public func == <Root: NSManagedObject, Value: CVarArgConvertible>(lhs: KeyPath<Root, Value?>, rhs: Value?) -> KeyPathFilter<Root, Value?> {
+public func == <S, T, Value: CVarArgConvertible>(lhs: TypeContainer<S, T>, rhs: Value?) -> KeyPathFilter<S, Value?> {
     if let rhs = rhs {
         return KeyPathFilter(predicate: NSPredicate(format: "\(lhs.keyPath) == %@", rhs.asCVarArg()))
     } else {
@@ -108,7 +108,7 @@ public func == <Root: NSManagedObject, Value: CVarArgConvertible>(lhs: KeyPath<R
     }
 }
 
-public func != <Root: NSManagedObject, Value: CVarArgConvertible>(lhs: KeyPath<Root, Value?>, rhs: Value?) -> KeyPathFilter<Root, Value?> {
+public func != <S, T, Value: CVarArgConvertible>(lhs: TypeContainer<S, T>, rhs: Value?) -> KeyPathFilter<S, Value?> {
     if let rhs = rhs {
         return KeyPathFilter(predicate: NSPredicate(format: "\(lhs.keyPath) != %@", rhs.asCVarArg()))
     } else {
@@ -118,7 +118,7 @@ public func != <Root: NSManagedObject, Value: CVarArgConvertible>(lhs: KeyPath<R
 
 // MARK: Non Optionals
 
-public func == <Root: NSManagedObject, Value: CVarArgConvertible>(lhs: KeyPath<Root, Value>, rhs: Value?) -> KeyPathFilter<Root, Value> {
+public func == <S, T, Value: CVarArgConvertible>(lhs: TypeContainer<S, T>, rhs: Value?) -> KeyPathFilter<S, Value> {
     if let rhs = rhs {
         return KeyPathFilter(predicate: NSPredicate(format: "\(lhs.keyPath) == %@", rhs.asCVarArg()))
     } else {
@@ -126,7 +126,7 @@ public func == <Root: NSManagedObject, Value: CVarArgConvertible>(lhs: KeyPath<R
     }
 }
 
-public func != <Root: NSManagedObject, Value: CVarArgConvertible>(lhs: KeyPath<Root, Value>, rhs: Value?) -> KeyPathFilter<Root, Value> {
+public func != <S, T, Value: CVarArgConvertible>(lhs: TypeContainer<S, T>, rhs: Value?) -> KeyPathFilter<S, Value> {
     if let rhs = rhs {
         return KeyPathFilter(predicate: NSPredicate(format: "\(lhs.keyPath) != %@", rhs.asCVarArg()))
     } else {
@@ -137,37 +137,37 @@ public func != <Root: NSManagedObject, Value: CVarArgConvertible>(lhs: KeyPath<R
 // MARK:- Comparable
 // MARK: Optionals
 
-public func < <Root: NSManagedObject, Value: CVarArgConvertible & Comparable>(lhs: KeyPath<Root, Value?>, rhs: Value) -> KeyPathFilter<Root, Value?> {
+public func < <S, T, Value: CVarArgConvertible & Comparable>(lhs: TypeContainer<S, T>, rhs: Value) -> KeyPathFilter<S, Value?> {
     return KeyPathFilter(predicate: NSPredicate(format: "\(lhs.keyPath) < %@", rhs.asCVarArg()))
 }
 
-public func <= <Root: NSManagedObject, Value: CVarArgConvertible & Comparable>(lhs: KeyPath<Root, Value?>, rhs: Value) -> KeyPathFilter<Root, Value?> {
+public func <= <S, T, Value: CVarArgConvertible & Comparable>(lhs: TypeContainer<S, T>, rhs: Value) -> KeyPathFilter<S, Value?> {
     return KeyPathFilter(predicate: NSPredicate(format: "\(lhs.keyPath) <= %@", rhs.asCVarArg()))
 }
 
-public func > <Root: NSManagedObject, Value: CVarArgConvertible & Comparable>(lhs: KeyPath<Root, Value?>, rhs: Value) -> KeyPathFilter<Root, Value?> {
+public func > <S, T, Value: CVarArgConvertible & Comparable>(lhs: TypeContainer<S, T>, rhs: Value) -> KeyPathFilter<S, Value?> {
     return KeyPathFilter(predicate: NSPredicate(format: "\(lhs.keyPath) > %@", rhs.asCVarArg()))
 }
 
-public func >= <Root: NSManagedObject, Value: CVarArgConvertible & Comparable>(lhs: KeyPath<Root, Value?>, rhs: Value) -> KeyPathFilter<Root, Value?> {
+public func >= <S, T, Value: CVarArgConvertible & Comparable>(lhs: TypeContainer<S, T>, rhs: Value) -> KeyPathFilter<S, Value?> {
     return KeyPathFilter(predicate: NSPredicate(format: "\(lhs.keyPath) >= %@", rhs.asCVarArg()))
 }
 
 // MARK: Non Optionals
 
-public func < <Root: NSManagedObject, Value: CVarArgConvertible & Comparable>(lhs: KeyPath<Root, Value>, rhs: Value) -> KeyPathFilter<Root, Value> {
+public func < <S, T, Value: CVarArgConvertible & Comparable>(lhs: TypeContainer<S, T>, rhs: Value) -> KeyPathFilter<S, Value> {
     return KeyPathFilter(predicate: NSPredicate(format: "\(lhs.keyPath) < %@", rhs.asCVarArg()))
 }
 
-public func <= <Root: NSManagedObject, Value: CVarArgConvertible & Comparable>(lhs: KeyPath<Root, Value>, rhs: Value) -> KeyPathFilter<Root, Value> {
+public func <= <S, T, Value: CVarArgConvertible & Comparable>(lhs: TypeContainer<S, T>, rhs: Value) -> KeyPathFilter<S, Value> {
     return KeyPathFilter(predicate: NSPredicate(format: "\(lhs.keyPath) <= %@", rhs.asCVarArg()))
 }
 
-public func > <Root: NSManagedObject, Value: CVarArgConvertible & Comparable>(lhs: KeyPath<Root, Value>, rhs: Value) -> KeyPathFilter<Root, Value> {
+public func > <S, T, Value: CVarArgConvertible & Comparable>(lhs: TypeContainer<S, T>, rhs: Value) -> KeyPathFilter<S, Value> {
     return KeyPathFilter(predicate: NSPredicate(format: "\(lhs.keyPath) > %@", rhs.asCVarArg()))
 }
 
-public func >= <Root: NSManagedObject, Value: CVarArgConvertible & Comparable>(lhs: KeyPath<Root, Value>, rhs: Value) -> KeyPathFilter<Root, Value> {
+public func >= <S, T, Value: CVarArgConvertible & Comparable>(lhs: TypeContainer<S, T>, rhs: Value) -> KeyPathFilter<S, Value> {
     return KeyPathFilter(predicate: NSPredicate(format: "\(lhs.keyPath) >= %@", rhs.asCVarArg()))
 }
 
