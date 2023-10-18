@@ -350,11 +350,11 @@ public class AsyncImageView: UIView {
     }
 }
 
-private struct ImageCache {
+private class ImageCache {
     static let shared = ImageCache()
     
     private let cache = NSCache<NSString, UIImage>()
-    private var keys = [String]()
+    private var keys = [NSString]()
     
     private func key(for identifier: String, size: CGSize, contentMode: UIView.ContentMode) -> NSString {
         "\(identifier)|\(round(size.width))|\(round(size.height))|\(contentMode.rawValue)" as NSString
@@ -371,7 +371,7 @@ private struct ImageCache {
     func clearCache(for identifier: String) {
         let validKeys = keys.filter { $0.contains(identifier) }
         validKeys.forEach {
-            cache.removeObject(forKey: $0 as? NSString)
+            cache.removeObject(forKey: $0)
         }
         keys.removeAll(where: { validKeys.contains($0) })
     }
