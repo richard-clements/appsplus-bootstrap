@@ -22,6 +22,9 @@ public protocol AsyncImage {
 
 extension AsyncImage {
     public func clearCache() {
+        guard let key = key else {
+            return
+        }
         ImageCache.shared.clearCache(for: key)
     }
 }
