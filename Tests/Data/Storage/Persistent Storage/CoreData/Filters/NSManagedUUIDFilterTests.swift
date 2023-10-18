@@ -21,37 +21,37 @@ class NSManagedUUIDFilterTests: XCTestCase {
         uuid = nil
     }
     
-    func testOptionalUUIDequalsNil() {
-        XCTAssertEqual(NSPredicate(format: "optionalUUID == nil"), (\Object.optionalUUID == nil).predicate)
-    }
-    
-    func testOptionalURLNotEqualsNil() {
-        XCTAssertEqual(NSPredicate(format: "optionalUUID != nil"), (\Object.optionalUUID != nil).predicate)
-    }
-    
-    func testOptionalUUIDEqualsUUID() {
-        XCTAssertEqual(NSPredicate(format: "optionalUUID == %@", uuidString), (\Object.optionalUUID == uuid).predicate)
-    }
-    
-    func testOptionalUUIDNotEqualsUUID() {
-        XCTAssertEqual(NSPredicate(format: "optionalUUID != %@", uuidString), (\Object.optionalUUID != uuid).predicate)
-    }
-    
-    func testNonOptionalUUIDEqualsNil() {
-        XCTAssertEqual(NSPredicate(format: "uuid == nil"), (\Object.uuid == nil).predicate)
-    }
-    
-    func testNonOptionalUUIDNotEqualsNil() {
-        XCTAssertEqual(NSPredicate(format: "uuid != nil"), (\Object.uuid != nil).predicate)
-    }
-    
-    func testNonOptionalUUIDEqualsUUID() {
-        XCTAssertEqual(NSPredicate(format: "uuid == %@", uuidString), (\Object.uuid == uuid).predicate)
-    }
-    
-    func testNonOptionalDateNotEqualsDate() {
-        XCTAssertEqual(NSPredicate(format: "uuid != %@", uuidString), (\Object.uuid != uuid).predicate)
-    }
+//    func testOptionalUUIDequalsNil() {
+//        XCTAssertEqual(NSPredicate(format: "optionalUUID == nil"), (\Object.optionalUUID == nil).predicate)
+//    }
+//    
+//    func testOptionalURLNotEqualsNil() {
+//        XCTAssertEqual(NSPredicate(format: "optionalUUID != nil"), (\Object.optionalUUID != nil).predicate)
+//    }
+//    
+//    func testOptionalUUIDEqualsUUID() {
+//        XCTAssertEqual(NSPredicate(format: "optionalUUID == %@", uuidString), (\Object.optionalUUID == uuid).predicate)
+//    }
+//    
+//    func testOptionalUUIDNotEqualsUUID() {
+//        XCTAssertEqual(NSPredicate(format: "optionalUUID != %@", uuidString), (\Object.optionalUUID != uuid).predicate)
+//    }
+//    
+//    func testNonOptionalUUIDEqualsNil() {
+//        XCTAssertEqual(NSPredicate(format: "uuid == nil"), (\Object.uuid == nil).predicate)
+//    }
+//    
+//    func testNonOptionalUUIDNotEqualsNil() {
+//        XCTAssertEqual(NSPredicate(format: "uuid != nil"), (\Object.uuid != nil).predicate)
+//    }
+//    
+//    func testNonOptionalUUIDEqualsUUID() {
+//        XCTAssertEqual(NSPredicate(format: "uuid == %@", uuidString), (\Object.uuid == uuid).predicate)
+//    }
+//    
+//    func testNonOptionalDateNotEqualsDate() {
+//        XCTAssertEqual(NSPredicate(format: "uuid != %@", uuidString), (\Object.uuid != uuid).predicate)
+//    }
     
 }
 

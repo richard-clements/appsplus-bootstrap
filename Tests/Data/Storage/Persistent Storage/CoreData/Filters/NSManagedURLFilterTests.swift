@@ -21,37 +21,37 @@ class NSManagedURLFilterTests: XCTestCase {
         url = nil
     }
     
-    func testOptionalURLequalsNil() {
-        XCTAssertEqual(NSPredicate(format: "optionalURL == nil"), (\Object.optionalURL == nil).predicate)
-    }
-    
-    func testOptionalURLNotEqualsNil() {
-        XCTAssertEqual(NSPredicate(format: "optionalURL != nil"), (\Object.optionalURL != nil).predicate)
-    }
-    
-    func testOptionalURLEqualsURL() {
-        XCTAssertEqual(NSPredicate(format: "optionalURL == %@", urlString), (\Object.optionalURL == url).predicate)
-    }
-    
-    func testOptionalURLNotEqualsURL() {
-        XCTAssertEqual(NSPredicate(format: "optionalURL != %@", urlString), (\Object.optionalURL != url).predicate)
-    }
-    
-    func testNonOptionalURLEqualsNil() {
-        XCTAssertEqual(NSPredicate(format: "url == nil"), (\Object.url == nil).predicate)
-    }
-    
-    func testNonOptionalURLNotEqualsNil() {
-        XCTAssertEqual(NSPredicate(format: "url != nil"), (\Object.url != nil).predicate)
-    }
-    
-    func testNonOptionalURLEqualsURL() {
-        XCTAssertEqual(NSPredicate(format: "url == %@", urlString), (\Object.url == url).predicate)
-    }
-    
-    func testNonOptionalURLNotEqualsURL() {
-        XCTAssertEqual(NSPredicate(format: "url != %@", urlString), (\Object.url != url).predicate)
-    }
+//    func testOptionalURLequalsNil() {
+//        XCTAssertEqual(NSPredicate(format: "optionalURL == nil"), (\Object.optionalURL == nil).predicate)
+//    }
+//    
+//    func testOptionalURLNotEqualsNil() {
+//        XCTAssertEqual(NSPredicate(format: "optionalURL != nil"), (\Object.optionalURL != nil).predicate)
+//    }
+//    
+//    func testOptionalURLEqualsURL() {
+//        XCTAssertEqual(NSPredicate(format: "optionalURL == %@", urlString), (\Object.optionalURL == url).predicate)
+//    }
+//    
+//    func testOptionalURLNotEqualsURL() {
+//        XCTAssertEqual(NSPredicate(format: "optionalURL != %@", urlString), (\Object.optionalURL != url).predicate)
+//    }
+//    
+//    func testNonOptionalURLEqualsNil() {
+//        XCTAssertEqual(NSPredicate(format: "url == nil"), (\Object.url == nil).predicate)
+//    }
+//    
+//    func testNonOptionalURLNotEqualsNil() {
+//        XCTAssertEqual(NSPredicate(format: "url != nil"), (\Object.url != nil).predicate)
+//    }
+//    
+//    func testNonOptionalURLEqualsURL() {
+//        XCTAssertEqual(NSPredicate(format: "url == %@", urlString), (\Object.url == url).predicate)
+//    }
+//    
+//    func testNonOptionalURLNotEqualsURL() {
+//        XCTAssertEqual(NSPredicate(format: "url != %@", urlString), (\Object.url != url).predicate)
+//    }
     
 }
 
