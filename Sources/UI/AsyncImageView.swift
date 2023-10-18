@@ -17,6 +17,13 @@ public protocol AsyncImage {
     func equals(_ image: AsyncImage) -> Bool
     func imagePublisher() -> AnyPublisher<AssetImage, URLError>
     func hash(into hasher: inout Hasher)
+    func clearCache()
+}
+
+extension AsyncImage {
+    func clearCache() {
+        ImageCache.shared.clearCache(for: key)
+    }
 }
 
 @available(iOS 13.0, tvOS 13.0, *)
@@ -347,6 +354,7 @@ private struct ImageCache {
     static let shared = ImageCache()
     
     private let cache = NSCache<NSString, UIImage>()
+    private let keys = [String]()
     
     private func key(for identifier: String, size: CGSize, contentMode: UIView.ContentMode) -> NSString {
         "\(identifier)|\(round(size.width))|\(round(size.height))|\(contentMode.rawValue)" as NSString
@@ -360,9 +368,19 @@ private struct ImageCache {
         }
     }
     
+    func clearCache(for identifier: String) {
+        let validKeys = keys.filter { $0.contains(identifier) }
+        validKeys.forEach {
+            cache.removeObject(forKey: $0)
+        }
+        keys.removeAll(where: { validKeys.contains($0) })
+    }
+    
     func setResizedImage(_ image: UIImage, for originalImage: AsyncImage, at size: CGSize, contentMode: UIView.ContentMode) {
         if let identifier = originalImage.key {
-            cache.setObject(image, forKey: key(for: identifier, size: size, contentMode: contentMode))
+            let key = key(for: identifier, size: size, contentMode: contentMode)
+            cache.setObject(image, forKey: key)
+            keys.append(key)
         }
     }
 }
