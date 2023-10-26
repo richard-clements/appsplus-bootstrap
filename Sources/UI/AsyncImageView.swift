@@ -121,6 +121,17 @@ public struct LocalImage: AsyncImage, Equatable, Hashable {
             }
         }.eraseToAnyPublisher()
     }
+    
+    public func completeUrl() -> AnyPublisher<URL, URLError> {
+        return Future<URL, URLError> { promise in
+            guard let docDirectory = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false) else {
+                promise(.failure(URLError(URLError.fileDoesNotExist)))
+                return
+            }
+            
+            promise(.success(URL(fileURLWithPath: docDirectory.appendingPathComponent(path).path)))
+        }.eraseToAnyPublisher()
+    }
 }
 
 @available(iOS 13.0, tvOS 13.0, *)
