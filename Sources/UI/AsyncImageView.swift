@@ -106,7 +106,7 @@ public struct LocalImage: AsyncImage, Equatable, Hashable {
                     return
                 }
                 
-                let fileUrl = URL(fileURLWithPath: docDirectory.appendingPathComponent(path).path())
+                let fileUrl = URL(fileURLWithPath: docDirectory.appendingPathComponent(path).path)
                 
                 guard let data = try? Data(contentsOf: fileUrl),
                       let image = UIImage(data: data),
