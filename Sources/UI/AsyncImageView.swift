@@ -101,8 +101,14 @@ public struct LocalImage: AsyncImage, Equatable, Hashable {
     public func imagePublisher() -> AnyPublisher<AssetImage, URLError> {
         return Future<AssetImage, URLError> { promise in
             DispatchQueue.global(qos: .userInteractive).async {
-                guard let documentDirectoryUrl = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false),
-                      let imageUrl = documentDirectoryUrl?.appendPathExtension(path),
+                guard let imageUrl = try? FileManager
+                    .default
+                    .url(
+                        for: .documentDirectory,
+                        in: .userDomainMask,
+                        appropriateFor: nil,
+                        create: false
+                    )?.appendPathExtension(path),
                       let image = UIImage(contentsOfFile: imageUrl),
                       let compressedImageData = image.jpegData(compressionQuality: compressRate),
                       let compressedImage = UIImage(data: compressedImageData) else {
