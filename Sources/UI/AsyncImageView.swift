@@ -86,7 +86,7 @@ extension URL: AsyncImage {
 @available(iOS 13.0, tvOS 13.0, *)
 public struct LocalImage: AsyncImage, Equatable, Hashable {
     
-    public let path: String // This path must not contain the dynamic document directory of a local image url path
+    public let path: String
     public let compressRate: CGFloat
     
     public init(path: String, compressRate: CGFloat = 0.8) {
@@ -101,15 +101,15 @@ public struct LocalImage: AsyncImage, Equatable, Hashable {
     public func imagePublisher() -> AnyPublisher<AssetImage, URLError> {
         return Future<AssetImage, URLError> { promise in
             DispatchQueue.global(qos: .userInteractive).async {
-                guard let imageUrl = try? FileManager
+                guard let docDirectory = try? FileManager
                     .default
                     .url(
                         for: .documentDirectory,
                         in: .userDomainMask,
                         appropriateFor: nil,
                         create: false
-                    )?.appendPathExtension(path),
-                      let image = UIImage(contentsOfFile: imageUrl),
+                    ),
+                      let image = UIImage(contentsOfFile: docDirectory.appendingPathComponent(path).absoluteString),
                       let compressedImageData = image.jpegData(compressionQuality: compressRate),
                       let compressedImage = UIImage(data: compressedImageData) else {
                     promise(.failure(URLError(URLError.fileDoesNotExist)))
