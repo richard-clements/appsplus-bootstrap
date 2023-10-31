@@ -47,6 +47,9 @@ extension Gen where A == String {
             numerics
         ]).proliferate.map { String($0) }
     }
+}
+
+extension Gen where A == Optional<String> {
     
     public static func alphanumerics() -> Gen<String?> {
         let upper = Gen<Character>.fromElements(in: "A"..."Z")
@@ -59,5 +62,7 @@ extension Gen where A == String {
         ]).proliferate.map { Optional(String($0)) }])
     }
 }
+
+
 
 #endif
