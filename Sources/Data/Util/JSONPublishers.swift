@@ -15,7 +15,7 @@ struct JSONDecodeError: LocalizedError {
 
 extension JSONSerialization {
     
-    static func jsonObject(with data: Data, options: JSONSerialization.ReadingOptions) throws -> JSON {
+    public static func jsonObject(with data: Data, options: JSONSerialization.ReadingOptions) throws -> JSON {
         do {
             let value: Any = try jsonObject(with: data, options: options)
             return JSON(data: value)
@@ -27,7 +27,7 @@ extension JSONSerialization {
 }
 
 extension Publisher where Output == Data {
-    func mapToJSON(options: JSONSerialization.ReadingOptions) -> AnyPublisher<JSON, Error> {
+    public func mapToJSON(options: JSONSerialization.ReadingOptions) -> AnyPublisher<JSON, Error> {
         self.mapError { $0 as Error }
             .tryMap { data -> JSON in
                 do {
@@ -39,7 +39,7 @@ extension Publisher where Output == Data {
             .eraseToAnyPublisher()
     }
     
-    func jsonPaginationData(options: JSONSerialization.ReadingOptions) -> AnyPublisher<Page<JSON>, Error> {
+    public func jsonPaginationData(options: JSONSerialization.ReadingOptions) -> AnyPublisher<Page<JSON>, Error> {
         self.mapToJSON(options: options)
             .tryMap { json -> Page<JSON> in
                 guard let data = json["data"]?.array,
@@ -55,7 +55,7 @@ extension Publisher where Output == Data {
 }
 
 extension Publisher where Output == JSON {
-    func guardId() -> AnyPublisher<(id: Int64, json: JSON), Error> {
+    public func guardId() -> AnyPublisher<(id: Int64, json: JSON), Error> {
         tryMap {
             guard let id = $0["id"]?.int64 else {
                 throw JSONDecodeError.invalidArguments
@@ -66,7 +66,7 @@ extension Publisher where Output == JSON {
         .eraseToAnyPublisher()
     }
     
-    func guardKeyInt64(key: String) -> AnyPublisher<(key: Int64, json: JSON), Error> {
+    public func guardKeyInt64(key: String) -> AnyPublisher<(key: Int64, json: JSON), Error> {
         tryMap {
             guard let key = $0[key]?.int64 else {
                 throw JSONDecodeError.invalidArguments
