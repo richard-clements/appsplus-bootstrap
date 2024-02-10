@@ -44,7 +44,7 @@ struct AsynchronousCoreDataEntity<EntityType>: AsynchronousEntity {
     func delete() -> AsynchronousDeleteRequest<EntityType> {
         AsynchronousDeleteRequest(publisher: { request in
             writePublisher()
-                .flatMap { context in
+                .flatMap { (context: NSManagedObjectContext) -> Future in
                     Future { promise in
                         context.perform {
                             promise(.success(CoreDataEntity(identifier: identifier, context: context).delete(request: request.asFetchRequest())))
@@ -62,7 +62,7 @@ extension AsynchronousCoreDataEntity {
     
     func createOrUpdatePublisher<EntityType>(for request: AsynchronousUpdateRequest<EntityType>) -> AnyPublisher<PersistentStoreUpdate, Error> {
         writePublisher()
-            .flatMap { context in
+            .flatMap { (context: NSManagedObjectContext) -> Future in
                 Future { promise in
                     context.perform {
                         promise(

@@ -1,4 +1,4 @@
-// swift-tools-version:5.4
+// swift-tools-version:5.9.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -48,7 +48,7 @@ extension Target {
 let package = Package(
     name: "AppsPlus",
     platforms: [
-        .iOS(.v13), .tvOS(.v13), .macOS(.v10_15), .watchOS(.v6)
+        .iOS(.v16), .tvOS(.v13), .macOS(.v10_15), .watchOS(.v6)
     ],
     products: [
         .library(
@@ -69,9 +69,9 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/typelift/SwiftCheck", .exact("0.12.0")),
-        .package(url: "https://github.com/Image-Plus-Apps/combine-extensions", .exact("0.0.6")),
-        .package(url: "https://github.com/pusher/pusher-websocket-swift.git", .exact("8.0.0"))
+        .package(url: "https://github.com/typelift/SwiftCheck", exact: "0.12.0"),
+        .package(url: "https://github.com/Image-Plus-Apps/combine-extensions", exact: "0.0.6"),
+        .package(url: "https://github.com/pusher/pusher-websocket-swift.git", exact: "8.0.0")
     ],
     targets: [
         .target(
