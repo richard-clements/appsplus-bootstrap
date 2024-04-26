@@ -377,6 +377,7 @@ private class ImageCache {
     
     private let cache = NSCache<NSString, UIImage>()
     private var keys = [NSString]()
+    private let queue = DispatchQueue(label: "IP-CACHE-KEYS-QUEUE", attributes: .concurrent)
     
     private func key(for identifier: String, size: CGSize, contentMode: UIView.ContentMode) -> NSString {
         "\(identifier)|\(round(size.width))|\(round(size.height))|\(contentMode.rawValue)" as NSString
@@ -391,18 +392,27 @@ private class ImageCache {
     }
     
     func clearCache(for identifier: String) {
-        let validKeys = keys.filter { $0.contains(identifier) }
-        validKeys.forEach {
-            cache.removeObject(forKey: $0)
+        var validKeys: [NSString]!
+        
+        queue.sync {
+            validKeys = keys.filter { $0.contains(identifier) }
+            validKeys.forEach {
+                cache.removeObject(forKey: $0)
+            }
         }
-        keys.removeAll(where: { validKeys.contains($0) })
+        
+        queue.async(flags: .barrier) { [weak self] in
+            self?.keys.removeAll(where: { validKeys.contains($0) })
+        }
     }
     
     func setResizedImage(_ image: UIImage, for originalImage: AsyncImage, at size: CGSize, contentMode: UIView.ContentMode) {
         if let identifier = originalImage.key {
             let key = key(for: identifier, size: size, contentMode: contentMode)
             cache.setObject(image, forKey: key)
-            keys.append(key)
+            queue.async(flags: .barrier) { [weak self] in
+                self?.keys.append(key)
+            }
         }
     }
 }
