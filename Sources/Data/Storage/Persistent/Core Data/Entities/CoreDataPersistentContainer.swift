@@ -26,7 +26,16 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
     }
     
     private var cancellables = Set<AnyCancellable>()
-    private var writeContext: NSManagedObjectContext?
+    private weak var _writeContext: NSManagedObjectContext?
+    private var writeContext: NSManagedObjectContext {
+        if let context = _writeContext {
+            return context
+        } else {
+            let context = newBackgroundContext()
+            _writeContext = context
+            return context
+        }
+    }
     private var readContexts = [NSManagedContextScope: NSManagedObjectContext]()
     private var lastUsedContexts = [NSManagedContextScope: Date]()
     private let readContextsQueue = DispatchQueue(label: "PersistentContainer.\(UUID().uuidString).ReadContexts")
@@ -34,7 +43,7 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
     
     public override func loadPersistentStores(completionHandler block: @escaping (NSPersistentStoreDescription, Error?) -> Void) {
         super.loadPersistentStores { [weak self] in
-            self?.writeContext = self?.newBackgroundContext()
+            self?._writeContext = self?.newBackgroundContext()
             self?.handleSave()
             self?.startDestroyTimer()
             self?.viewContext.performAndWait { [weak self] in
@@ -97,8 +106,7 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
         }.eraseToAnyPublisher()
     }
     
-    private func handleSave() {
-        guard let writeContext = writeContext else { return }
+    private func handleSave() {s
         NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave, object: writeContext)
             .sink { [unowned self] note in
                 viewContext.perform { [weak self] in
