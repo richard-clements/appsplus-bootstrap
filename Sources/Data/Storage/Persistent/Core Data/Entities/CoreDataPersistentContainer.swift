@@ -106,7 +106,7 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
         }.eraseToAnyPublisher()
     }
     
-    private func handleSave() {s
+    private func handleSave() {
         NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave, object: writeContext)
             .sink { [unowned self] note in
                 viewContext.perform { [weak self] in
