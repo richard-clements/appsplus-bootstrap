@@ -44,7 +44,7 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
             return context
         } else {
             let context = newBackgroundContext()
-            let observer = DeallocationObserver {
+            var observer = DeallocationObserver {
                     print("Background context is being deallocated")
                 }
                 objc_setAssociatedObject(context, &observer, observer, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
