@@ -7,7 +7,7 @@ import CoreData
 struct SynchronousCoreDataEntity<EntityType>: SynchronousEntity {
     
     let identifier: String
-    weak var context: NSManagedObjectContext?
+    let context: NSManagedObjectContext
     
     func create() -> SynchronousUpdateRequest<EntityType> {
         SynchronousUpdateRequest(executor: { request in

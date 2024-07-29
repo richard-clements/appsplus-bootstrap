@@ -38,13 +38,13 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
     }
     
     private var cancellables = Set<AnyCancellable>()
-    private var _writeContext: NSManagedObjectContext?
+    private weak var _writeContext: NSManagedObjectContext?
     private var writeContext: NSManagedObjectContext {
         if let context = _writeContext {
             return context
         } else {
             let context = newBackgroundContext()
-            var observer = DeallocationObserver {
+            let observer = DeallocationObserver {
                     print("Background context is being deallocated")
                 }
                 objc_setAssociatedObject(context, &observer, observer, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
