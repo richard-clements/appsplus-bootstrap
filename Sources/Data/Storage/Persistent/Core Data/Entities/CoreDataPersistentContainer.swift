@@ -38,18 +38,17 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
     }
     
     private var cancellables = Set<AnyCancellable>()
-    private var didSaveCancellable: AnyCancellable?
     private weak var _writeContext: NSManagedObjectContext?
     private var writeContext: NSManagedObjectContext {
         if let context = _writeContext {
             return context
         } else {
             let context = newBackgroundContext()
-            handleSave(for: context)
             var observer = DeallocationObserver {
-                    print("Background context is being deallocated")
-                }
-                objc_setAssociatedObject(context, &observer, observer, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+                print("Background context is being deallocated")
+            }
+            objc_setAssociatedObject(context, &observer, observer, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            handleSave(for: context)
             _writeContext = context
             return context
         }
@@ -127,14 +126,13 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
     }
     
     private func handleSave(for context: NSManagedObjectContext) {
-//        didSaveCancellable?.cancel()
-//        didSaveCancellable = nil
-        didSaveCancellable = NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave, object: context)
+        NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave, object: context)
             .sink { [unowned self] note in
                 viewContext.perform { [weak self] in
                     self?.viewContext.mergeChanges(fromContextDidSave: note)
                 }
             }
+            .store(in: &cancellables)
     }
 }
 
