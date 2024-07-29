@@ -16,18 +16,6 @@ public protocol CoreDataPersistentContainer {
     func contextForReading() -> AnyPublisher<NSManagedObjectContext, Error>
 }
 
-public class DeallocationObserver {
-    public let onDeallocate: () -> Void
-
-    init(onDeallocate: @escaping () -> Void) {
-        self.onDeallocate = onDeallocate
-    }
-
-    deinit {
-        onDeallocate()
-    }
-}
-
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 public class PersistentContainer: NSPersistentContainer, CoreDataPersistentContainer {
     
@@ -44,10 +32,6 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
             return context
         } else {
             let context = newBackgroundContext()
-            var observer = DeallocationObserver {
-                print("Background context is being deallocated")
-            }
-            objc_setAssociatedObject(context, &observer, observer, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             handleSave(for: context)
             _writeContext = context
             return context
@@ -66,10 +50,6 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
             }
             block($0, $1)
         }
-    }
-    
-    deinit {
-        print("deinited")
     }
     
     public override func newBackgroundContext() -> NSManagedObjectContext {
