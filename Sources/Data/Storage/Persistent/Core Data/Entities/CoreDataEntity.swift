@@ -7,12 +7,12 @@ import CoreData
 struct CoreDataEntity {
     
     let identifier: String
-    let context: NSManagedObjectContext
+    weak var context: NSManagedObjectContext?
     
     func delete(request: NSFetchRequest<NSFetchRequestResult>) -> PersistentStoreUpdate {
-        (try? context.fetch(request))?.compactMap { $0 as? NSManagedObject }
+        (try? context?.fetch(request))?.compactMap { $0 as? NSManagedObject }
             .forEach {
-                context.delete($0)
+                context?.delete($0)
             }
         return CoreDataUpdate(identifier: identifier, context: context)
     }
@@ -26,7 +26,7 @@ struct CoreDataEntity {
         modifier: ((EntityType, SynchronousStorage) -> Void)?
     ) -> PersistentStoreUpdate {
         if shouldUpdate {
-            let fetchResults = (try? context.fetch(fetchRequest))?.compactMap { $0 as? EntityType } ?? []
+            let fetchResults = (try? context?.fetch(fetchRequest))?.compactMap { $0 as? EntityType } ?? []
             if fetchResults.isEmpty && !shouldCreate {
                 return CoreDataUpdate(identifier: identifier, context: context)
             } else if fetchResults.isEmpty && shouldCreate {
@@ -57,7 +57,7 @@ struct CoreDataEntity {
     }
     
     func fetch<EntityType>(request: NSFetchRequest<NSFetchRequestResult>) -> [EntityType] {
-        (try? context.fetch(request))?.compactMap { $0 as? EntityType } ?? []
+        (try? context?.fetch(request))?.compactMap { $0 as? EntityType } ?? []
     }
     
     private func create<EntityType>(
@@ -66,7 +66,8 @@ struct CoreDataEntity {
         modifier: ((EntityType, SynchronousStorage) -> Void)?
     ) -> PersistentStoreUpdate {
         let storage = SynchronousCoreDataStorage(identifier: identifier, context: context)
-        guard let entity = NSEntityDescription.insertNewObject(forEntityName: entityName, into: context) as? EntityType else {
+        guard let context = context,
+            let entity = NSEntityDescription.insertNewObject(forEntityName: entityName, into: context) as? EntityType else {
             return CoreDataUpdate(identifier: identifier, context: context)
         }
         guard prevalidation?(entity, storage) != false else {

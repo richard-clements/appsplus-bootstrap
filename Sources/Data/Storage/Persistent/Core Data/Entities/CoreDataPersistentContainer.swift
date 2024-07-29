@@ -38,7 +38,7 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
     }
     
     private var cancellables = Set<AnyCancellable>()
-    private weak var _writeContext: NSManagedObjectContext?
+    private var _writeContext: NSManagedObjectContext?
     private var writeContext: NSManagedObjectContext {
         if let context = _writeContext {
             return context

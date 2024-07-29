@@ -7,7 +7,7 @@ import CoreData
 struct SynchronousCoreDataStorage: SynchronousStorage {
     
     let identifier: String
-    let context: NSManagedObjectContext
+    weak var context: NSManagedObjectContext?
     
     func entity<EntityType>(_ type: EntityType.Type) -> AnySynchronousEntity<EntityType> {
         SynchronousCoreDataEntity(identifier: identifier, context: context).eraseToAnyEntity()

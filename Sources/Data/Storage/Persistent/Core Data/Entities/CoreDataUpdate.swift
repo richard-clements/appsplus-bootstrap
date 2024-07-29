@@ -8,14 +8,14 @@ import Combine
 struct CoreDataUpdate: PersistentStoreUpdate {
     
     let identifier: String
-    let context: NSManagedObjectContext
+    weak var context: NSManagedObjectContext?
     
     func commit() -> AnyPublisher<Void, Error> {
         Future { promise in
-            context.perform {
+            context?.perform {
                 do {
-                    if context.hasChanges {
-                        try context.save()
+                    if context?.hasChanges ?? false {
+                        try context?.save()
                     }
                     promise(.success(()))
                 } catch {
