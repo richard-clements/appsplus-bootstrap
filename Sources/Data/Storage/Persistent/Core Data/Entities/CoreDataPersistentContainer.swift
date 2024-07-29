@@ -49,6 +49,7 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
                 }
                 objc_setAssociatedObject(context, &observer, observer, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             _writeContext = context
+            handleSave()
             return context
         }
     }
