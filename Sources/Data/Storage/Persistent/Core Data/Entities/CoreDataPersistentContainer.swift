@@ -69,6 +69,10 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
         }
     }
     
+    deinit {
+        print("deinited")
+    }
+    
     public override func newBackgroundContext() -> NSManagedObjectContext {
         let context = super.newBackgroundContext()
         context.performAndWait {
@@ -123,8 +127,8 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
     }
     
     private func handleSave(for context: NSManagedObjectContext) {
-        didSaveCancellable?.cancel()
-        didSaveCancellable = nil
+//        didSaveCancellable?.cancel()
+//        didSaveCancellable = nil
         didSaveCancellable = NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave, object: context)
             .sink { [unowned self] note in
                 viewContext.perform { [weak self] in
