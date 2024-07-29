@@ -38,18 +38,19 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
     }
     
     private var cancellables = Set<AnyCancellable>()
+    private var didSaveCancellable: AnyCancellable?
     private weak var _writeContext: NSManagedObjectContext?
     private var writeContext: NSManagedObjectContext {
         if let context = _writeContext {
             return context
         } else {
             let context = newBackgroundContext()
+            handleSave(for: context)
             var observer = DeallocationObserver {
                     print("Background context is being deallocated")
                 }
                 objc_setAssociatedObject(context, &observer, observer, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             _writeContext = context
-            handleSave()
             return context
         }
     }
@@ -60,7 +61,6 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
     
     public override func loadPersistentStores(completionHandler block: @escaping (NSPersistentStoreDescription, Error?) -> Void) {
         super.loadPersistentStores { [weak self] in
-            self?.handleSave()
             self?.startDestroyTimer()
             self?.viewContext.performAndWait { [weak self] in
                 self?.viewContext.userInfo[String.contextProvider] = { [weak self] in self as NSManagedContextProvider?}
@@ -122,14 +122,15 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
         }.eraseToAnyPublisher()
     }
     
-    private func handleSave() {
-        NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave, object: writeContext)
+    private func handleSave(for context: NSManagedObjectContext) {
+        didSaveCancellable?.cancel()
+        didSaveCancellable = nil
+        didSaveCancellable = NotificationCenter.default.publisher(for: .NSManagedObjectContextDidSave, object: context)
             .sink { [unowned self] note in
                 viewContext.perform { [weak self] in
                     self?.viewContext.mergeChanges(fromContextDidSave: note)
                 }
             }
-            .store(in: &cancellables)
     }
 }
 
