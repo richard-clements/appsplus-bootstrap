@@ -21,7 +21,7 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
     
     enum PersistentContainerError: Error {
         case writeUnavailable
-        case readUnvailable
+        case readUnavailable
         case saveFailure(error: Error?)
     }
     
