@@ -43,7 +43,6 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
     
     public override func loadPersistentStores(completionHandler block: @escaping (NSPersistentStoreDescription, Error?) -> Void) {
         super.loadPersistentStores { [weak self] in
-            self?._writeContext = self?.newBackgroundContext()
             self?.handleSave()
             self?.startDestroyTimer()
             self?.viewContext.performAndWait { [weak self] in
