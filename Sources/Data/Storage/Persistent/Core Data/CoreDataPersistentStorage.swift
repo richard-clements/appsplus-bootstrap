@@ -22,7 +22,7 @@ public class CoreDataPersistentStorage: PersistentStorage {
             }
         }
     }
-    
+
     public func entity<T>(_ type: T.Type) -> AnyAsynchronousEntity<T> {
         AsynchronousCoreDataEntity(identifier: identifier) { [weak self] in
             self?.container.contextForWriting() ?? Fail(error: CoreDataPersistentStorageError.storeUnavailable).eraseToAnyPublisher()
