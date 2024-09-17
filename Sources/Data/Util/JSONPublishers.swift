@@ -47,7 +47,7 @@ extension Publisher where Output == Data {
                       let lastPage = json["meta"]?["last_page"]?.integer else {
                     throw JSONDecodeError.invalidArguments
                 }
-                return Page(data: data, meta: .init(currentPage: currentPage, lastPage: lastPage))
+                return Page(data: data, meta: .init(currentPage: currentPage, lastPage: lastPage, total: json["meta"]?["total"]?.integer))
             }
             .eraseToAnyPublisher()
     }
