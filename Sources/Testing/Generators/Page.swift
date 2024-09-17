@@ -8,16 +8,19 @@ extension Page {
     public static func generator(
         dataGenerator: Gen<[T]>,
         pageGenerator: Gen<Int> = Int.arbitrary.suchThat { $0 > 0 },
-        lastPageOffset: Gen<Int> = Gen.fromElements(in: 0...5)
+        lastPageOffset: Gen<Int> = Gen.fromElements(in: 0...5),
+        totalGenerator: Gen<Int?> = Int?.arbitrary
     ) -> Gen<Page<T>> {
         Gen.compose {
             let currentPage = $0.generate(using: pageGenerator)
             let lastPage = currentPage + $0.generate(using: lastPageOffset)
+            let total = $0.generate(using: totalGenerator)
             return Page(
                 data: $0.generate(using: dataGenerator),
                 meta: .init(
                     currentPage: currentPage,
-                    lastPage: lastPage
+                    lastPage: lastPage,
+                    total: total
                 )
             )
         }
