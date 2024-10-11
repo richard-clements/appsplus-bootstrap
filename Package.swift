@@ -48,7 +48,7 @@ extension Target {
 let package = Package(
     name: "AppsPlus",
     platforms: [
-        .iOS(.v16), .tvOS(.v13), .macOS(.v10_15), .watchOS(.v6)
+        .iOS(.v14), .tvOS(.v13), .macOS(.v10_15), .watchOS(.v6)
     ],
     products: [
         .library(
