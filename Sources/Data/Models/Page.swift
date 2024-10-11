@@ -7,10 +7,12 @@ public struct Page<T> {
     public struct Meta: Equatable, Codable {
         public let currentPage: Int
         public let lastPage: Int
+        public let total: Int?
         
-        public init(currentPage: Int, lastPage: Int) {
+        public init(currentPage: Int, lastPage: Int, total: Int?) {
             self.currentPage = currentPage
             self.lastPage = lastPage
+            self.total = total
         }
     }
     
@@ -30,17 +32,17 @@ extension Page {
     
     public func map<S>(_ transform: (T) throws -> S) rethrows -> Page<S> {
         let transformedData = try data.map(transform)
-        return Page<S>(data: transformedData, meta: .init(currentPage: meta.currentPage, lastPage: meta.lastPage))
+        return Page<S>(data: transformedData, meta: .init(currentPage: meta.currentPage, lastPage: meta.lastPage, total: meta.total))
     }
     
     public func compactMap<S>(_ transform: (T) throws -> S?) rethrows -> Page<S> {
         let transformedData = try data.compactMap(transform)
-        return Page<S>(data: transformedData, meta: .init(currentPage: meta.currentPage, lastPage: meta.lastPage))
+        return Page<S>(data: transformedData, meta: .init(currentPage: meta.currentPage, lastPage: meta.lastPage, total: meta.total))
     }
     
     public func flatMap<N, S>(_ transform: ([N]) throws -> [S]) rethrows -> Page<S> where T == [N] {
         let transformedData = try data.flatMap(transform)
-        return Page<S>(data: transformedData, meta: .init(currentPage: meta.currentPage, lastPage: meta.lastPage))
+        return Page<S>(data: transformedData, meta: .init(currentPage: meta.currentPage, lastPage: meta.lastPage, total: meta.total))
     }
 }
 
