@@ -76,11 +76,13 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
                 promise(.failure(PersistentContainerError.writeUnavailable))
                 return
             }
-            writeContext.perform {
-                promise(.success(writeContext))
+            DispatchQueue.main.async {
+                writeContext.perform {
+                    promise(.success(writeContext))
+                }
             }
-        }
-        .receive(on: DispatchQueue.main)
+           
+        }.receive(on: DispatchQueue.main)
         .eraseToAnyPublisher()
     }
     
@@ -93,12 +95,12 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
     public func contextForReading() -> AnyPublisher<NSManagedObjectContext, Error> {
         let context = backgroundContext()
         return Future { promise in
-            context.perform {
-                promise(.success(context))
+            DispatchQueue.main.async {
+                context.perform {
+                    promise(.success(context))
+                }
             }
-        }
-        .receive(on: DispatchQueue.main)
-        .eraseToAnyPublisher()
+        }.eraseToAnyPublisher()
     }
     
     private func handleSave() {
