@@ -96,7 +96,9 @@ public class PersistentContainer: NSPersistentContainer, CoreDataPersistentConta
             context.perform {
                 promise(.success(context))
             }
-        }.eraseToAnyPublisher()
+        }
+        .receive(on: DispatchQueue.main)
+        .eraseToAnyPublisher()
     }
     
     private func handleSave() {
