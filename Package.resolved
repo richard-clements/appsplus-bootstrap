@@ -1,79 +1,77 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "Chalk",
-        "repositoryURL": "https://github.com/mxcl/Chalk.git",
-        "state": {
-          "branch": null,
-          "revision": "a7f58e47a08ca5a84f73acc4bcf6c2c19d990609",
-          "version": "0.5.0"
-        }
-      },
-      {
-        "package": "CombineExtensions",
-        "repositoryURL": "https://github.com/Image-Plus-Apps/combine-extensions",
-        "state": {
-          "branch": null,
-          "revision": "8ace4d5a777a6c759300b59dc634b6f29242132e",
-          "version": "0.0.6"
-        }
-      },
-      {
-        "package": "FileCheck",
-        "repositoryURL": "https://github.com/llvm-swift/FileCheck.git",
-        "state": {
-          "branch": null,
-          "revision": "f7c5f1a9479b33a876a6f5632ca2b92a7ce4b667",
-          "version": "0.2.6"
-        }
-      },
-      {
-        "package": "PusherSwift",
-        "repositoryURL": "https://github.com/pusher/pusher-websocket-swift.git",
-        "state": {
-          "branch": null,
-          "revision": "c1214f865cb7f7cd6db3cbdcfe849ca4c34f8e71",
-          "version": "8.0.0"
-        }
-      },
-      {
-        "package": "Reachability",
-        "repositoryURL": "https://github.com/ashleymills/Reachability.swift.git",
-        "state": {
-          "branch": null,
-          "revision": "c01bbdf2d633cf049ae1ed1a68a2020a8bda32e2",
-          "version": "5.1.0"
-        }
-      },
-      {
-        "package": "Starscream",
-        "repositoryURL": "https://github.com/daltoniam/Starscream.git",
-        "state": {
-          "branch": null,
-          "revision": "a063fda2b8145a231953c20e7a646be254365396",
-          "version": "3.1.2"
-        }
-      },
-      {
-        "package": "swift-argument-parser",
-        "repositoryURL": "https://github.com/apple/swift-argument-parser",
-        "state": {
-          "branch": null,
-          "revision": "8f4d2753f0e4778c76d5f05ad16c74f707390531",
-          "version": "1.2.3"
-        }
-      },
-      {
-        "package": "SwiftCheck",
-        "repositoryURL": "https://github.com/typelift/SwiftCheck",
-        "state": {
-          "branch": null,
-          "revision": "077c096c3ddfc38db223ac8e525ad16ffb987138",
-          "version": "0.12.0"
-        }
+  "pins" : [
+    {
+      "identity" : "chalk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mxcl/Chalk.git",
+      "state" : {
+        "revision" : "a7f58e47a08ca5a84f73acc4bcf6c2c19d990609",
+        "version" : "0.5.0"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "combine-extensions",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Image-Plus-Apps/combine-extensions",
+      "state" : {
+        "revision" : "8ace4d5a777a6c759300b59dc634b6f29242132e",
+        "version" : "0.0.6"
+      }
+    },
+    {
+      "identity" : "filecheck",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/llvm-swift/FileCheck.git",
+      "state" : {
+        "revision" : "f7c5f1a9479b33a876a6f5632ca2b92a7ce4b667",
+        "version" : "0.2.6"
+      }
+    },
+    {
+      "identity" : "pusher-websocket-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pusher/pusher-websocket-swift.git",
+      "state" : {
+        "revision" : "c1214f865cb7f7cd6db3cbdcfe849ca4c34f8e71",
+        "version" : "8.0.0"
+      }
+    },
+    {
+      "identity" : "reachability.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ashleymills/Reachability.swift.git",
+      "state" : {
+        "revision" : "c01bbdf2d633cf049ae1ed1a68a2020a8bda32e2",
+        "version" : "5.1.0"
+      }
+    },
+    {
+      "identity" : "starscream",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/daltoniam/Starscream.git",
+      "state" : {
+        "revision" : "a063fda2b8145a231953c20e7a646be254365396",
+        "version" : "3.1.2"
+      }
+    },
+    {
+      "identity" : "swift-argument-parser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-argument-parser",
+      "state" : {
+        "revision" : "8f4d2753f0e4778c76d5f05ad16c74f707390531",
+        "version" : "1.2.3"
+      }
+    },
+    {
+      "identity" : "swiftcheck",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/typelift/SwiftCheck",
+      "state" : {
+        "revision" : "077c096c3ddfc38db223ac8e525ad16ffb987138",
+        "version" : "0.12.0"
+      }
+    }
+  ],
+  "version" : 2
 }
