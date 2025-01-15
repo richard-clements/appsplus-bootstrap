@@ -123,16 +123,31 @@ public class PusherEventSocket: EventSocket, PusherDelegate {
                 .eraseToAnyPublisher()
         }
 
-        var request = URLRequest(url: authenticationUrl, versionNumber: versionNumber)
-        request.set(httpMethod: .post)
+        return Future { [weak self] promise in
+            guard let self = self else {
+                promise(.failure(AuthenticatorError.noAuthSession))
+                return
+            }
+            
+            Task {
+                do {
+                    var request = URLRequest(url: authenticationUrl, versionNumber: self.versionNumber)
+                    request.set(httpMethod: .post)
 
-        return authenticator.authenticate(
-                request: AuthenticatedRequest(urlRequest: request),
-                forceRefresh: false,
-                urlSession: urlSession
-            )
-            .map { $0 as URLRequest? }
-            .eraseToAnyPublisher()
+                    let authenticatedRequest = try await self.authenticator.authenticate(
+                        request: AuthenticatedRequest(urlRequest: request),
+                        forceRefresh: false,
+                        urlSession: self.urlSession
+                    )
+                    promise(.success(authenticatedRequest))
+                } catch let error as AuthenticatorError {
+                    promise(.failure(error))
+                } catch {
+                    promise(.failure(AuthenticatorError.noAuthSession)) // Handle unexpected errors
+                }
+            }
+        }
+        .eraseToAnyPublisher()
     }
 
     private func attemptConnection() -> AnyPublisher<PusherBinder, EventSocketError> {

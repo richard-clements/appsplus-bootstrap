@@ -10,7 +10,7 @@ public enum AuthenticatorError: Error, CaseIterable {
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 public protocol Authenticator {
-    func authenticate(request: Request, forceRefresh: Bool, urlSession: URLSession) -> AnyPublisher<URLRequest, AuthenticatorError>
+    func authenticate(request: Request, forceRefresh: Bool, urlSession: URLSession) async throws -> URLRequest
 }
 
 #endif

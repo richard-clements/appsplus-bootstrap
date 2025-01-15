@@ -24,6 +24,18 @@ extension JSONSerialization {
         }
     }
     
+    public static func jsonPaginationData(with data: Data, options: JSONSerialization.ReadingOptions) throws -> Page<JSON> {
+        let json: JSON = try Self.jsonObject(with: data, options: options)
+        
+        guard let data = json["data"]?.array,
+              let currentPage = json["meta"]?["current_page"]?.integer,
+              let lastPage = json["meta"]?["last_page"]?.integer else {
+            throw JSONDecodeError.invalidArguments
+        }
+        
+        return Page(data: data, meta: .init(currentPage: currentPage, lastPage: lastPage, total: json["meta"]?["total"]?.integer))
+    }
+    
 }
 
 extension Publisher where Output == Data {
