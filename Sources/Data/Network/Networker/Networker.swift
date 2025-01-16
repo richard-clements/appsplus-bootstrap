@@ -11,7 +11,6 @@ public enum NetworkError: Error {
 
 @available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
 public protocol Network {
-    func perform(request: Request) async throws -> (data: Data, response: URLResponse)
     func perform(request: Request) async throws -> (data: Data, response: HTTPURLResponse)
 }
 

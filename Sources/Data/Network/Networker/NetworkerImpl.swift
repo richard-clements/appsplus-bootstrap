@@ -100,7 +100,7 @@ public struct NetworkerImpl: Network {
         return (data: values.data, response: response)
     }
     
-    public func perform(request: Request) async throws -> (data: Data, response: URLResponse) {
+    private func perform(request: Request) async throws -> (data: Data, response: URLResponse) {
         do {
             return try await perform(request: request, forceAuthRefresh: false)
         } catch let error as RequestError {
