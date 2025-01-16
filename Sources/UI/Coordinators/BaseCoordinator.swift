@@ -9,7 +9,7 @@ protocol Coordinator: AnyObject {
     
 }
 
-public class BaseCoordinator: Coordinator {
+open class BaseCoordinator: Coordinator {
     
     var childCoordinators: [Coordinator] = []
     
