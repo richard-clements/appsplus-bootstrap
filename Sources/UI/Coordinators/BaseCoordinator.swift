@@ -13,7 +13,7 @@ open class BaseCoordinator: Coordinator {
     
     public var childCoordinators: [Coordinator] = []
     
-    public func start() {
+    open func start() {
         // Implementation specific to the coordinator
     }
     
