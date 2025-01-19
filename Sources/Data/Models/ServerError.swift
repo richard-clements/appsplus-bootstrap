@@ -20,7 +20,7 @@ extension Data {
     
     public func parseServerError<Field: Hashable & CaseIterable & RawRepresentable>(
         validationFields: Field.Type
-    ) -> Error where Field.RawValue == String {
+    ) -> Error? where Field.RawValue == String {
         do {
             return try ValidationError<Field>(data: self)
         } catch {
@@ -28,11 +28,11 @@ extension Data {
         }
     }
     
-    public func parseServerError() -> Error {
+    public func parseServerError() -> Error? {
         do {
             return try JSONDecoder().decode(ServerError.self, from: self)
         } catch {
-            return NetworkError.urlError(.init(.badServerResponse))
+            return nil
         }
     }
 }
