@@ -21,6 +21,11 @@ public struct IPAsyncImageView: UIViewRepresentable {
     @Binding public var image: IPAsyncImage
     public let contentMode: UIView.ContentMode
     
+    public init(image: Binding<IPAsyncImage>, contentMode: UIView.ContentMode) {
+        self._image = image
+        self.contentMode = contentMode
+    }
+    
     public func makeUIView(context: Context) -> AsyncImageView {
         let view = AsyncImageView()
         view.image = image.image
