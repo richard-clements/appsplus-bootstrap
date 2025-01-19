@@ -1,31 +1,26 @@
-//#if canImport(Foundation) && canImport(Combine)
-//
-//import Foundation
-//import Combine
-//@testable import AppsPlusData
-//
-//@available(iOS 13.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
-//class MockAuthenticator: Authenticator {
-//    
-//    var authenticationUpdater: ((Request) -> URLRequest)?
-//    var authenticationError: AuthenticatorError?
-//    var authentications = [(request: Request, calledWithForceRefresh: Bool)]()
-//    
-//    func authenticate(request: Request, forceRefresh: Bool, urlSession: URLSession) -> AnyPublisher<URLRequest, AuthenticatorError> {
-//        authentications.append((request, forceRefresh))
-//        if let authenticationError = authenticationError {
-//            return Fail(error: authenticationError)
-//                .eraseToAnyPublisher()
-//        } else if let authenticationUpdater = authenticationUpdater {
-//            return Just(authenticationUpdater(request))
-//                .setFailureType(to: AuthenticatorError.self)
-//                .eraseToAnyPublisher()
-//        } else {
-//            return Fail(error: AuthenticatorError.refreshFailed)
-//                .eraseToAnyPublisher()
-//        }
-//    }
-//    
-//}
-//
-//#endif
+#if canImport(Foundation)
+
+import Foundation
+@testable import AppsPlusData
+
+@available(iOS 15.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
+class MockAuthenticator: Authenticator {
+    
+    var authenticationUpdater: ((Request) -> URLRequest)?
+    var authenticationError: AuthenticatorError?
+    var authentications = [(request: Request, calledWithForceRefresh: Bool)]()
+    
+    func authenticate(request: any AppsPlusData.Request, forceRefresh: Bool, urlSession: URLSession) async throws -> URLRequest {
+        authentications.append((request, forceRefresh))
+        if let authenticationError = authenticationError {
+            throw authenticationError
+        } else if let authenticationUpdater = authenticationUpdater {
+            return authenticationUpdater(request)
+        } else {
+            throw AuthenticatorError.refreshFailed
+        }
+    }
+    
+}
+
+#endif

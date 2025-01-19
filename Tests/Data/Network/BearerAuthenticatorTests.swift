@@ -1,55 +1,66 @@
-//#if canImport(XCTest) && canImport(SwiftCheck) && canImport(Combine) && !os(watchOS)
+#if canImport(XCTest) && canImport(SwiftCheck) && !os(watchOS)
+
+import XCTest
+import SwiftCheck
+import Combine
+@testable import AppsPlusData
+
+@available(iOS 15.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
+class BearerAuthenticatorTests: XCTestCase {
+    
+    var session: URLSession!
+    var refreshUrl: URL!
+    var authSessionProvider: MockAuthSessionProvider!
+    var authenticator: BearerAuthenticator<MockAuthToken>!
+    
+    override func setUpWithError() throws {
+        MockNetworkProtocol.setUpForTests()
+        session = URLSession.mock
+        refreshUrl = URL(string: "https://www.test.com/refreshtoken")!
+        authSessionProvider = MockAuthSessionProvider()
+        authSessionProvider.currentDeviceName = "my_test_device"
+        authenticator = BearerAuthenticator(authSessionProvider: authSessionProvider, refreshUrl: refreshUrl, bundleIdentifier: "testingidentifier", version: "device_version")
+        // Put setup code here. This method is called before the invocation of each test method in the class.
+    }
+    
+    override func tearDownWithError() throws {
+        MockNetworkProtocol.tearDownForTests()
+        session = nil
+        refreshUrl = nil
+        authSessionProvider = nil
+        authenticator = nil
+        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    }
+    
+    func testAuthenticatingRequests() async throws {
+        // Test description
+//        property("Requests which do not require authentication remain unaltered") <- forAll(
+//            MockRequest.generator(requiresAuthenticationGenerator: .pure(false)),
+//            Bool.arbitrary
+//        ) { [weak self] request, forceRefresh in
+//            guard let self = self else {
+//                XCTFail("Self was deallocated before the test completed.")
+//                return false
+//            }
+//            
+//            do {
+//                // Execute the async function synchronously
+//                let result = try Task {
+//                    try await self.authenticator.authenticate(
+//                        request: request,
+//                        forceRefresh: forceRefresh,
+//                        urlSession: self.session
+//                    )
+//                }.value
 //
-//import XCTest
-//import SwiftCheck
-//import Combine
-//@testable import AppsPlusData
-//
-//@available(iOS 15.0, tvOS 13.0, macOS 10.15, watchOS 6.0, *)
-//class BearerAuthenticatorTests: XCTestCase {
-//    
-//    var session: URLSession!
-//    var refreshUrl: URL!
-//    var authSessionProvider: MockAuthSessionProvider!
-//    var authenticator: BearerAuthenticator<MockAuthToken>!
-//    var cancellables: Set<AnyCancellable>!
-//    
-//    override func setUpWithError() throws {
-//        MockNetworkProtocol.setUpForTests()
-//        session = URLSession.mock
-//        refreshUrl = URL(string: "https://www.test.com/refreshtoken")!
-//        authSessionProvider = MockAuthSessionProvider()
-//        authSessionProvider.currentDeviceName = "my_test_device"
-//        authenticator = BearerAuthenticator(authSessionProvider: authSessionProvider, refreshUrl: refreshUrl, bundleIdentifier: "testingidentifier", version: "device_version")
-//        cancellables = Set()
-//        // Put setup code here. This method is called before the invocation of each test method in the class.
-//    }
-//    
-//    override func tearDownWithError() throws {
-//        MockNetworkProtocol.tearDownForTests()
-//        session = nil
-//        refreshUrl = nil
-//        authSessionProvider = nil
-//        authenticator = nil
-//        cancellables = nil
-//        // Put teardown code here. This method is called after the invocation of each test method in the class.
-//    }
-//    
-//    func testAuthenticatingRequests() {
-//        property("Requests which do not require authentication remain unaltered") <- forAll(MockRequest.generator(requiresAuthenticationGenerator: .pure(false)), Bool.arbitrary) { [unowned self] request, forceRefresh in
-//            let expectation = XCTestExpectation()
-//            var outputRequest: URLRequest?
-//            authenticator.authenticate(request: request, forceRefresh: forceRefresh, urlSession: session)
-//                .sink { _ in
-//                    expectation.fulfill()
-//                } receiveValue: {
-//                    outputRequest = $0
-//                }
-//                .store(in: &cancellables)
-//            wait(for: [expectation], timeout: 2)
-//            return outputRequest == request.urlRequest
-//        }
-//        
+//                // Assert the result matches the original request
+//                return result == request.urlRequest
+//            } catch {
+//                XCTFail("Unexpected error: \(error)")
+//                return false
+//            }
+    
+        
 //        property("Requests which do require authentication are updated with valid access token") <- forAll(MockRequest.generator(requiresAuthenticationGenerator: .pure(true)), MockAuthToken.generator()) { [unowned self] request, authSession in
 //            let expectation = XCTestExpectation()
 //            authSessionProvider.currentAuthSession = authSession
@@ -80,9 +91,9 @@
 //            wait(for: [expectation], timeout: 2)
 //            return outputError == .noAuthSession
 //        }
-//    }
-//    
-//    func testRequestAttemptToRefreshWhenForceRefreshIsTrue() {
+    }
+    
+    func testRequestAttemptToRefreshWhenForceRefreshIsTrue() {
 //        let request = MockRequest(urlRequest: URLRequest(url: URL(string: "https://test.com/resource?param1=1")!), requiresAuthentication: true)
 //        let expectation = XCTestExpectation()
 //        authSessionProvider.currentAuthSession = MockAuthToken(accessToken: "ACCESS_TOKEN", refreshToken: "REFRESH_TOKEN")
@@ -119,9 +130,9 @@
 //        XCTAssertEqual("application/json", uniqueRequestsMade.first?.value(forHTTPHeaderField: "Content-Type"))
 //        XCTAssertEqual("application/json", uniqueRequestsMade.first?.value(forHTTPHeaderField: "Accept"))
 //        XCTAssertEqual("POST", uniqueRequestsMade.first?.httpMethod)
-//    }
-//    
-//    func testRefreshRequestRetries3Times_OnRequestFailure() {
+    }
+    
+    func testRefreshRequestRetries3Times_OnRequestFailure() {
 //        let request = MockRequest(urlRequest: URLRequest(url: URL(string: "https://test.com/resource?param1=1")!), requiresAuthentication: true)
 //        let expectation = XCTestExpectation()
 //        authSessionProvider.currentAuthSession = MockAuthToken(accessToken: "ACCESS_TOKEN", refreshToken: "REFRESH_TOKEN")
@@ -139,9 +150,9 @@
 //        
 //        // Initial request, plus 3 retries
 //        XCTAssertEqual(4, MockNetworkProtocol.requests.count)
-//    }
-//    
-//    func testRefreshRequestDoesNotRetry_OnRequestResponse() {
+    }
+    
+    func testRefreshRequestDoesNotRetry_OnRequestResponse() {
 //        let request = MockRequest(urlRequest: URLRequest(url: URL(string: "https://test.com/resource?param1=1")!), requiresAuthentication: true)
 //        let expectation = XCTestExpectation()
 //        authSessionProvider.currentAuthSession = MockAuthToken(accessToken: "ACCESS_TOKEN", refreshToken: "REFRESH_TOKEN")
@@ -158,9 +169,9 @@
 //        wait(for: [expectation], timeout: 2)
 //        
 //        XCTAssertEqual(1, MockNetworkProtocol.requests.count)
-//    }
-//    
-//    func testRequestFailsWithRefreshFailed_OnRefreshRequestFailure() {
+    }
+    
+    func testRequestFailsWithRefreshFailed_OnRefreshRequestFailure() {
 //        let request = MockRequest(urlRequest: URLRequest(url: URL(string: "https://test.com/resource?param1=1")!), requiresAuthentication: true)
 //        let expectation = XCTestExpectation()
 //        authSessionProvider.currentAuthSession = MockAuthToken(accessToken: "ACCESS_TOKEN", refreshToken: "REFRESH_TOKEN")
@@ -183,9 +194,9 @@
 //        XCTAssertEqual(.refreshFailed, outputError)
 //        XCTAssertNil(authSessionProvider.replacedAuthSession)
 //        XCTAssertTrue(authSessionProvider.didCallReplace)
-//    }
-//    
-//    func testRequestFailsWithRefreshFailed_OnRefreshReplacementFailure() {
+    }
+    
+    func testRequestFailsWithRefreshFailed_OnRefreshReplacementFailure() {
 //        let request = MockRequest(urlRequest: URLRequest(url: URL(string: "https://test.com/resource?param1=1")!), requiresAuthentication: true)
 //        let expectation = XCTestExpectation()
 //        authSessionProvider.currentAuthSession = MockAuthToken(accessToken: "ACCESS_TOKEN", refreshToken: "REFRESH_TOKEN")
@@ -213,9 +224,9 @@
 //        wait(for: [expectation], timeout: 2)
 //        
 //        XCTAssertEqual(.refreshFailed, outputError)
-//    }
-//    
-//    func testRequestUpdatesWithNewAuthSession_OnSuccessfulRefresh() {
+    }
+    
+    func testRequestUpdatesWithNewAuthSession_OnSuccessfulRefresh() {
 //        let request = MockRequest(urlRequest: URLRequest(url: URL(string: "https://test.com/resource?param1=1")!), requiresAuthentication: true)
 //        let expectation = XCTestExpectation()
 //        authSessionProvider.currentAuthSession = MockAuthToken(accessToken: "ACCESS_TOKEN", refreshToken: "REFRESH_TOKEN")
@@ -245,9 +256,9 @@
 //        XCTAssertEqual("NEW_ACCESS_TOKEN", authSessionProvider.replacedAuthSession?.accessToken)
 //        XCTAssertEqual("NEW_REFRESH_TOKEN", authSessionProvider.replacedAuthSession?.refreshToken)
 //        XCTAssertEqual("Bearer NEW_ACCESS_TOKEN", outputRequest?.value(forHTTPHeaderField: "Authorization"))
-//    }
-//    
-//    func testMultipleRequestsUsePendingRefreshTokenHandler() {
+    }
+    
+    func testMultipleRequestsUsePendingRefreshTokenHandler() {
 //        let expectation = XCTestExpectation()
 //        authSessionProvider.currentAuthSession = MockAuthToken(accessToken: "ACCESS_TOKEN", refreshToken: "REFRESH_TOKEN")
 //        authSessionProvider.replaceSuccess = true
@@ -290,9 +301,9 @@
 //        
 //        XCTAssertEqual(1, MockNetworkProtocol.requests.count)
 //        XCTAssertEqual(expectedAccessTokens, accessTokens)
-//    }
-//    
-//    func testTokensCanBeRefreshedConsecutively() {
+    }
+    
+    func testTokensCanBeRefreshedConsecutively() {
 //        authSessionProvider.currentAuthSession = MockAuthToken(accessToken: "ACCESS_TOKEN", refreshToken: "REFRESH_TOKEN")
 //        authSessionProvider.replaceSuccess = true
 //        
@@ -337,7 +348,7 @@
 //        let outputAccessTokens = outputRequests.map { $0.value(forHTTPHeaderField: "Authorization") }
 //        
 //        XCTAssertEqual(expectedAccessTokens, outputAccessTokens)
-//    }
-//}
-//
-//#endif
+    }
+}
+
+#endif

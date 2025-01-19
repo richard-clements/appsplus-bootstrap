@@ -13,7 +13,7 @@ extension Target {
             name: name,
             dependencies: dependencies,
             path: "Sources",
-            exclude: Array(Set(["Data", "UI", "Testing", "AutoUpdater"]).subtracting(sources)),
+            exclude: Array(Set(["Data", "UI", "Testing"]).subtracting(sources)),
             sources: sources,
             publicHeadersPath: nil,
             cSettings: nil,
@@ -34,7 +34,7 @@ extension Target {
             name: name,
             dependencies: dependencies,
             path: "Tests",
-            exclude: Array(Set(["Data", "AutoUpdater"]).subtracting(sources)),
+            exclude: Array(Set(["Data"]).subtracting(sources)),
             sources: sources,
             resources: nil,
             cSettings: nil,
@@ -62,10 +62,6 @@ let package = Package(
         .library(
             name: "AppsPlusTesting",
             targets: ["AppsPlusTesting"]
-        ),
-        .library(
-            name: "AutoUpdater",
-            targets: ["AutoUpdater"]
         )
     ],
     dependencies: [
@@ -99,15 +95,6 @@ let package = Package(
             name: "AppsPlusTesting",
             sources: ["Testing"],
             dependencies: ["AppsPlusData", "SwiftCheck"]
-        ),
-        .target(
-            name: "AutoUpdater",
-            sources: ["AutoUpdater"]
-        ),
-        .testTarget(
-            name: "AutoUpdaterTests",
-            sources: ["AutoUpdater"],
-            dependencies: ["AutoUpdater"]
         )
     ]
 )
