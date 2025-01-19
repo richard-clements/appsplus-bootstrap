@@ -25,7 +25,7 @@ extension AnyPublisher where Output == (data: Data, response: HTTPURLResponse), 
             if response.isSuccessful {
                 return ()
             } else {
-                throw data.parseServerError()
+                throw data.parseServerError() ?? NetworkError.urlError(.init(.badServerResponse))
             }
         }
         .eraseToAnyPublisher()
